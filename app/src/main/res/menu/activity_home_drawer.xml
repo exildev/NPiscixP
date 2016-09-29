@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_clientes"
+            android:icon="@drawable/ic_account_circle"
+            android:title="Clientes" />
+        <item
+            android:id="@+id/nav_rutas"
+            android:icon="@drawable/ic_direction"
+            android:title="Rutas" />
+        <item
+            android:id="@+id/nav_actividades"
+            android:icon="@drawable/ic_event"
+            android:title="Actividades" />
+        <item
+            android:id="@+id/nav_reportes"
+            android:icon="@drawable/ic_report"
+            android:title="Historial de reportes" />
+        <item
+            android:id="@+id/nav_soluciones"
+            android:icon="@drawable/ic_build"
+            android:title="Historial de soluciones" />
+        <item
+            android:id="@+id/nav_informativos"
+            android:icon="@drawable/ic_info"
+            android:title="Reportes informativos" />
+        <item
+            android:id="@+id/nav_notificaciones"
+            android:icon="@drawable/ic_info"
+            android:title="Notificaciones" />
+    </group>
+
+    <group>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_outline"
+                android:title="Acerca de" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app"
+                android:title="Cerrar sesión" />
+    </group>
+
+</menu>
