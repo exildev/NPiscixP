@@ -8,4 +8,6 @@
     <color name="colorReport">#F44336</color>
     <color name="colorReportDark">#E53935</color>
     <color name="colorReportAccent">#263238</color>
+    <color name="tealPrimary">#009688</color>
+    <color name="greenPrimary">#81c784</color>
 </resources>

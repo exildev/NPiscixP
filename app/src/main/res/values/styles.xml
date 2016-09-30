@@ -23,4 +23,19 @@
         <item name="colorAccent">@color/colorReportAccent</item>
     </style>
 
+
+    <style name="AppTheme.RedButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorReport</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.GreenButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/greenPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.TealButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/tealPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>
