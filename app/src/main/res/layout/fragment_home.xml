@@ -128,6 +128,7 @@ tools:context="co.com.exile.piscix.HomeFragment">
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/reporte_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
