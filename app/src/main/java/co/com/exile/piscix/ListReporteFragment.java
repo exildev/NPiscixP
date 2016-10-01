@@ -2,9 +2,12 @@ package co.com.exile.piscix;
 
 
 import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -191,6 +195,27 @@ public class ListReporteFragment extends Fragment {
         });
 
         VolleySingleton.getInstance(this.getContext()).addToRequestQueue(reportesRequest);
+    }
+
+    public void action(View view){
+        ViewGroup row = (ViewGroup) view.getParent();
+        final RelativeLayout container = (RelativeLayout) row.findViewById(R.id.container);
+        TextView subtitle = (TextView) row.findViewById(R.id.subtitle);
+        TextView title = (TextView) row.findViewById(R.id.nombre);
+        CardView icon = (CardView) row.findViewById(R.id.pedido_icon_card);
+        final float scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
+        int close_height = (int) (72 * scale + 0.5f);
+        final ImageView imageDrop = (ImageView) row.findViewById(R.id.drop_image);
+
+        if (container.getHeight() == close_height) {
+            subtitle.setVisibility(View.GONE);
+            title.setTextColor(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
+            expand(container, imageDrop);
+        }else {
+            title.setTextColor(Color.parseColor("#000000"));
+            subtitle.setVisibility(View.VISIBLE);
+            collapse(container, imageDrop);
+        }
     }
 
     private void expand(final View container, final ImageView icon) {

@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,7 +108,8 @@ public class HomeActivity extends AppCompatActivity
         inHome = false;
 
         if (id == R.id.nav_clientes || id == R.id.clientes_btn) {
-            MenuItem myActionMenuItem = mMenu.findItem( R.id.action_search);
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+            Log.e("menu item", myActionMenuItem.toString());
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
             Fragment fragment = ClienteFragment.ClienteFragmentInstance(searchView);
@@ -122,10 +124,10 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_actividades) {
 
         } else if (id == R.id.nav_reportes || id == R.id.reporte_btn) {
-            MenuItem myActionMenuItem = mMenu.findItem( R.id.action_search);
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = ListReporteFragment.listReporteFragmentInstance(searchView);
+            Fragment fragment = new ListReporteFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)

@@ -301,9 +301,9 @@
         </RelativeLayout>
     </LinearLayout>
     <View
+        android:id="@+id/action"
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:onClick="action" />
+        android:foreground="?android:attr/selectableItemBackground" />
 </RelativeLayout>

@@ -105,7 +105,7 @@ public class ListReporteActivity extends AppCompatActivity {
         infiniteListView = (InfiniteListView) findViewById(R.id.content_list_reporte);
 
         itemList = new ArrayList<>();
-        InfiniteListAdapter adapter = new InfiniteListAdapter<Reporte>(this, R.layout.reporte, itemList) {
+        final InfiniteListAdapter adapter = new InfiniteListAdapter<Reporte>(this, R.layout.reporte, itemList) {
             @Override
             public void onNewLoadRequired() {
                 getClientes();
@@ -149,6 +149,16 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.tipo = (TextView) convertView.findViewById(R.id.tipo);
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
+
+
+                    final View action = convertView.findViewById(R.id.action);
+
+                    action.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            action(view);
+                        }
+                    });
 
                     convertView.setTag(holder);
 
