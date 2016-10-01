@@ -100,11 +100,11 @@ public class ReporteActivity extends AppCompatActivity  {
             }
         }
 
-        /*if (intent.hasExtra("name")){
+        if (intent.hasExtra("name")){
             String name = intent.getStringExtra("name");
-            TextView n = (TextView) findViewById(R.id.name);
+            TextView n = (TextView) findViewById(R.id.cliente_title);
             n.setText(name);
-        }*/
+        }
 
         setTypeSpinner();
         validPermissions();
@@ -265,8 +265,6 @@ public class ReporteActivity extends AppCompatActivity  {
     }
 
     private void send() {
-        showLoading();
-
         final CircularProgressView circle = (CircularProgressView) findViewById(R.id.progress_view);
         circle.setMaxProgress(100);
         circle.setProgress(0);
@@ -277,6 +275,23 @@ public class ReporteActivity extends AppCompatActivity  {
         String piscina = piscinas[selectedPiscina].id + "";
         String latitud = format("%s", getLastBestLocation().getLatitude());
         String longitud = format("%s", getLastBestLocation().getLongitude());
+
+        if(nombre.equals("")){
+            Snackbar.make(findViewById(R.id.nombre), "El campo nombre no puede estar vacio", 800).show();
+            return;
+        }
+
+        if (descripcion.equals("")){
+            Snackbar.make(findViewById(R.id.descripcion), "El campo descripción no puede estar vacio", 800).show();
+            return;
+        }
+
+        if (images.size() < 1){
+            Snackbar.make(findViewById(R.id.descripcion), "Debe escojer al menos una imagen", 800).show();
+            return;
+        }
+
+        showLoading();
 
         try {
             UploadNotificationConfig notificationConfig = new UploadNotificationConfig()
@@ -321,7 +336,11 @@ public class ReporteActivity extends AppCompatActivity  {
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
                     hideLoading();
-                    Snackbar.make(findViewById(R.id.main_layout), "Enviado exitosamente", 1000).show();
+                    Intent intent = new Intent(ReporteActivity.this, ListReporteActivity.class);
+                    intent.putExtra("send", true);
+                    intent.putExtras(getIntent());
+                    startActivity(intent);
+                    finish();
                     Log.e("send", "code: " + serverResponse.getHttpCode());
                     Log.e("send", serverResponse.getBodyAsString());
                 }

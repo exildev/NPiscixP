@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(final String username, final String password){
-        String url = "http://104.236.33.228:8050/usuarios/login/piscinero/";
+        String url = "http://104.236.33.228:8050/usuarios/login/";
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

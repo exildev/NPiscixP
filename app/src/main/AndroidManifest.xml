@@ -9,12 +9,11 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
-
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
@@ -40,6 +39,10 @@
             android:name=".ReporteActivity"
             android:label="@string/title_activity_reporte"
             android:theme="@style/ReportTheme" />
+        <activity
+            android:name=".ListReporteActivity"
+            android:label="@string/title_activity_list_reporte"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

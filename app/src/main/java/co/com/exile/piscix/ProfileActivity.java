@@ -16,6 +16,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -112,8 +113,20 @@ public class ProfileActivity extends AppCompatActivity {
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.reporte, popup.getMenu());
+        inflater.inflate(R.menu.profile_menu, popup.getMenu());
         popup.show();
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.nav_history){
+                    Intent intent = new Intent(ProfileActivity.this, ListReporteActivity.class);
+                    intent.putExtras(getIntent());
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
     }
 
     public void openSheet(){
@@ -410,6 +423,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ReporteActivity.class);
         intent.putExtra("piscinas", pJSON);
         intent.putExtra("name", name);
+        intent.putExtras(getIntent());
         startActivity(intent);
     }
 }

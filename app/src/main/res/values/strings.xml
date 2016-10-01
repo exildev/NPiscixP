@@ -106,4 +106,7 @@
     <string name="title_activity_reporte">Reporte</string>
     <string name="tipo_prompt">Tipo de reporte</string>
     <string name="pisicina_prompt">Pisicina</string>
+    <string name="title_activity_list_reporte">Historial de reportes</string>
+    <string name="estado_abierto">Abierto</string>
+    <string name="estado_cerrado">Cerrado</string>
 </resources>
