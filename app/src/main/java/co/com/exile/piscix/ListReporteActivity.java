@@ -149,17 +149,6 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.tipo = (TextView) convertView.findViewById(R.id.tipo);
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
-
-
-                    final View action = convertView.findViewById(R.id.action);
-
-                    action.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            action(view);
-                        }
-                    });
-
                     convertView.setTag(holder);
 
                 } else {
@@ -186,6 +175,14 @@ public class ListReporteActivity extends AppCompatActivity {
                         holder.solution_button.setVisibility(View.GONE);
                     }
                 }
+
+                final View action = convertView.findViewById(R.id.action);
+                action.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        action(view);
+                    }
+                });
 
                 return convertView;
             }
@@ -254,9 +251,11 @@ public class ListReporteActivity extends AppCompatActivity {
         if (container.getHeight() == close_height) {
             subtitle.setVisibility(View.GONE);
             title.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            icon.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
             expand(container, imageDrop);
         }else {
             title.setTextColor(Color.parseColor("#000000"));
+            icon.setCardBackgroundColor(Color.parseColor("#b2b2b2"));
             subtitle.setVisibility(View.VISIBLE);
             collapse(container, imageDrop);
         }
@@ -323,9 +322,5 @@ public class ListReporteActivity extends AppCompatActivity {
         TextView descripcion;
         Button chat_button;
         Button solution_button;
-    }
-
-    void setSearchView(){
-
     }
 }

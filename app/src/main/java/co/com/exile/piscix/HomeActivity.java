@@ -127,7 +127,7 @@ public class HomeActivity extends AppCompatActivity
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = new ListReporteFragment();
+            Fragment fragment = ListReporteFragment.listReporteFragmentInstance(searchView);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)

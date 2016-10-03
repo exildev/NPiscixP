@@ -65,6 +65,7 @@ public class ListReporteFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_list_reporte, container, false);
         setInfiniteList(fragment);
+        setSearchView();
         return fragment;
     }
 
@@ -144,6 +145,14 @@ public class ListReporteFragment extends Fragment {
                     }
                 }
 
+                final View action = convertView.findViewById(R.id.action);
+                action.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        action(view);
+                    }
+                });
+
                 return convertView;
             }
         };
@@ -154,7 +163,7 @@ public class ListReporteFragment extends Fragment {
 
     void getClientes() {
         infiniteListView.startLoading();
-        String url = "http://104.236.33.228:8050/reportes/reporte/list/?&page=" + page + "&search=" + search;
+        String url = "http://104.236.33.228:8050/reportes/reporte/list/?page=" + page + "&search=" + search;
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -210,10 +219,12 @@ public class ListReporteFragment extends Fragment {
         if (container.getHeight() == close_height) {
             subtitle.setVisibility(View.GONE);
             title.setTextColor(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
+            icon.setCardBackgroundColor(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
             expand(container, imageDrop);
         }else {
             title.setTextColor(Color.parseColor("#000000"));
             subtitle.setVisibility(View.VISIBLE);
+            icon.setCardBackgroundColor(Color.parseColor("#b2b2b2"));
             collapse(container, imageDrop);
         }
     }
@@ -265,6 +276,29 @@ public class ListReporteFragment extends Fragment {
             }
         });
         va.start();
+    }
+
+    void setSearchView(){
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast like print
+                Log.i("search", "SearchOnQueryTextSubmit: " + query);
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                VolleySingleton.getInstance(ListReporteFragment.this.getContext()).cancelAll();
+                search = s;
+                infiniteListView.clearList();
+                page = 1;
+                getClientes();
+                return false;
+            }
+        });
     }
 
 }

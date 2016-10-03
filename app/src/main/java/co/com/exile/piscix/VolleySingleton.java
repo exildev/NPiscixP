@@ -1,6 +1,7 @@
 package co.com.exile.piscix;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,6 +44,16 @@ class VolleySingleton {
 
     <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
+    }
+
+    void cancelAll(){
+        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                Log.d("DEBUG","request running: "+request.getUrl());
+                return true;
+            }
+        });
     }
 
     String getCookie(String name, URI url){
