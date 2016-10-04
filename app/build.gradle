@@ -35,5 +35,6 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'net.gotev:uploadservice:3.0.3'
+    compile 'com.afollestad.material-dialogs:core:0.9.0.2'
     testCompile 'junit:junit:4.12'
 }

@@ -58,7 +58,7 @@ import static java.lang.String.*;
 
 public class ReporteActivity extends AppCompatActivity  {
 
-    private static final int REQUEST_CODE_PICKER = 1;
+    private static final int REQUEST_CODE_PICKER = 2;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
