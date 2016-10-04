@@ -138,6 +138,7 @@ public class ListReporteFragment extends Fragment {
                     holder.tipo = (TextView) convertView.findViewById(R.id.tipo);
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
+                    holder.icon = (CardView) convertView.findViewById(R.id.pedido_icon_card);
 
                     convertView.setTag(holder);
 
@@ -155,9 +156,10 @@ public class ListReporteFragment extends Fragment {
                     holder.piscina.setText(reporte.getPiscina());
                     holder.tipo.setText(reporte.getTipo_de_reporte());
                     holder.subtitle.setText(reporte.getNombre());
-                    if (reporte.isEstado()) {
+                    if (!reporte.isEstado()) {
                         holder.subtitle.setText(R.string.estado_abierto);
                         holder.estado.setText(R.string.estado_abierto);
+                        holder.icon.setCardBackgroundColor(ContextCompat.getColor(this.getContext(), R.color.colorReport));
                     } else {
                         holder.subtitle.setText(R.string.estado_cerrado);
                         holder.estado.setText(R.string.estado_cerrado);
@@ -168,7 +170,7 @@ public class ListReporteFragment extends Fragment {
                     holder.solution_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            solucion(view, position);
+                            solucion(position);
                         }
                     });
                 }
@@ -331,7 +333,7 @@ public class ListReporteFragment extends Fragment {
         });
     }
 
-    private void solucion(View view, int position) {
+    private void solucion(final int position) {
         new MaterialDialog.Builder(this.getContext())
                 .title("Solución")
                 .customView(R.layout.solucion, true)
@@ -368,7 +370,7 @@ public class ListReporteFragment extends Fragment {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        send(dialog.getCustomView());
+                        send(dialog, position);
                     }
                 })
                 .show();
@@ -398,23 +400,38 @@ public class ListReporteFragment extends Fragment {
     }
 
 
-    private void send(View view) {
+    private void send(final MaterialDialog dialog, int position) {
+
+        dialog.dismiss();
+
+        final MaterialDialog loading = new MaterialDialog.Builder(this.getContext())
+                .title("Subiendo reporte")
+                .content("Por favor espere")
+                .progress(true, 0)
+                .show();
+
+       View view = dialog.getCustomView();
 
         String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
         String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
+        String reporte = String.valueOf(itemList.get(position).getId());
 
         if(nombre.equals("")){
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
-            til.setErrorEnabled(true);
             til.setError("Debe ingresar un nombre");
             return;
+        }else{
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
+            til.setError("");
         }
 
         if (descripcion.equals("")){
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
-            til.setErrorEnabled(true);
             til.setError("Debe ingresar una descripción");
             return;
+        }else{
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
+            til.setError("");
         }
 
         if (images.size() < 1){
@@ -422,28 +439,29 @@ public class ListReporteFragment extends Fragment {
             return;
         }
 
-        /*try {
+        try {
             UploadNotificationConfig notificationConfig = new UploadNotificationConfig()
-                    .setTitle("Subiendo reporte")
-                    .setInProgressMessage("Subiendo reporte a [[UPLOAD_RATE]] ([[PROGRESS]])")
-                    .setErrorMessage("Hubo un error al subir el reporte")
+                    .setTitle("Subiendo solucion")
+                    .setInProgressMessage("Subiendo solucion a [[UPLOAD_RATE]] ([[PROGRESS]])")
+                    .setErrorMessage("Hubo un error al subir la solucion")
                     .setCompletedMessage("Subida completada exitosamente en [[ELAPSED_TIME]]")
                     .setAutoClearOnSuccess(true);
 
             MultipartUploadRequest upload =
-                    new MultipartUploadRequest(this.getContext(), "http://104.236.33.228:8050/reportes/reporte/form/")
+                    new MultipartUploadRequest(this.getContext(), "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/")
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
                             .setMaxRetries(1)
                             .addParameter("nombre", nombre)
                             .addParameter("descripcion", descripcion)
-                            .addParameter("fotoreporte_set-TOTAL_FORMS", format("%d", images.size()))
-                            .addParameter("fotoreporte_set-INITIAL_FORMS", "0")
-                            .addParameter("fotoreporte_set-MIN_NUM_FORMS", "0")
-                            .addParameter("fotoreporte_set-MAX_NUM_FORMS", "5");
+                            .addParameter("reporte", reporte)
+                            .addParameter("fotosolucion_set-TOTAL_FORMS", format("%d", images.size()))
+                            .addParameter("fotosolucion_set-INITIAL_FORMS", "0")
+                            .addParameter("fotosolucion_set-MIN_NUM_FORMS", "0")
+                            .addParameter("fotosolucion_set-MAX_NUM_FORMS", "5");
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
-                upload.addFileToUpload(image.getPath(), "fotoreporte_set-" + i + "-url");
+                upload.addFileToUpload(image.getPath(), "fotosolucion_set-" + i + "-url");
             }
 
             upload.setDelegate(new UploadStatusDelegate() {
@@ -454,18 +472,18 @@ public class ListReporteFragment extends Fragment {
 
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
-                    hideLoading();
+                    loading.dismiss();
                     Log.e("send", exception.getMessage());
                 }
 
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    hideLoading();
-                    Intent intent = new Intent(ReporteActivity.this, ListReporteActivity.class);
+                    /*Intent intent = new Intent(ReporteActivity.this, ListReporteActivity.class);
                     intent.putExtra("send", true);
                     intent.putExtras(getIntent());
                     startActivity(intent);
-                    finish();
+                    finish();*/
+                    loading.dismiss();
                     Log.e("send", "code: " + serverResponse.getHttpCode());
                     Log.e("send", serverResponse.getBodyAsString());
                 }
@@ -476,6 +494,8 @@ public class ListReporteFragment extends Fragment {
             }).startUpload();
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
-        }*/
+        }
     }
+
+
 }

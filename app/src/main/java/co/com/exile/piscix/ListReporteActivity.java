@@ -165,7 +165,7 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.piscina.setText(reporte.getPiscina());
                     holder.tipo.setText(reporte.getTipo_de_reporte());
                     holder.subtitle.setText(reporte.getNombre());
-                    if (reporte.isEstado()) {
+                    if (!reporte.isEstado()) {
                         holder.subtitle.setText(R.string.estado_abierto);
                         holder.estado.setText(R.string.estado_abierto);
                     } else {
@@ -320,6 +320,7 @@ public class ListReporteActivity extends AppCompatActivity {
         TextView tipo;
         TextView cierre;
         TextView descripcion;
+        CardView icon;
         Button chat_button;
         Button solution_button;
     }
