@@ -160,17 +160,20 @@ public class ListReporteFragment extends Fragment {
                         holder.subtitle.setText(R.string.estado_abierto);
                         holder.estado.setText(R.string.estado_abierto);
                         holder.icon.setCardBackgroundColor(ContextCompat.getColor(this.getContext(), R.color.colorReport));
+                        holder.chat_button.setVisibility(View.VISIBLE);
+                        holder.solution_button.setVisibility(View.VISIBLE);
                     } else {
                         holder.subtitle.setText(R.string.estado_cerrado);
                         holder.estado.setText(R.string.estado_cerrado);
                         holder.chat_button.setVisibility(View.GONE);
                         holder.solution_button.setVisibility(View.GONE);
+                        holder.icon.setCardBackgroundColor(Color.parseColor("#b2b2b2"));
                     }
 
                     holder.solution_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            solucion(position);
+                            solucion(view, position);
                         }
                     });
                 }
@@ -190,7 +193,6 @@ public class ListReporteFragment extends Fragment {
         infiniteListView.setAdapter(adapter);
         getClientes();
     }
-
 
 
     void getClientes() {
@@ -238,12 +240,11 @@ public class ListReporteFragment extends Fragment {
         VolleySingleton.getInstance(this.getContext()).addToRequestQueue(reportesRequest);
     }
 
-    public void action(View view){
+    public void action(View view) {
         ViewGroup row = (ViewGroup) view.getParent();
         final RelativeLayout container = (RelativeLayout) row.findViewById(R.id.container);
         TextView subtitle = (TextView) row.findViewById(R.id.subtitle);
         TextView title = (TextView) row.findViewById(R.id.nombre);
-        CardView icon = (CardView) row.findViewById(R.id.pedido_icon_card);
         final float scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
         int close_height = (int) (72 * scale + 0.5f);
         final ImageView imageDrop = (ImageView) row.findViewById(R.id.drop_image);
@@ -251,12 +252,10 @@ public class ListReporteFragment extends Fragment {
         if (container.getHeight() == close_height) {
             subtitle.setVisibility(View.GONE);
             title.setTextColor(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
-            icon.setCardBackgroundColor(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
             expand(container, imageDrop);
-        }else {
+        } else {
             title.setTextColor(Color.parseColor("#000000"));
             subtitle.setVisibility(View.VISIBLE);
-            icon.setCardBackgroundColor(Color.parseColor("#b2b2b2"));
             collapse(container, imageDrop);
         }
     }
@@ -289,7 +288,7 @@ public class ListReporteFragment extends Fragment {
         container.startAnimation(a);
     }
 
-    private void collapse(final View container, final ImageView icon){
+    private void collapse(final View container, final ImageView icon) {
         final float scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
         final int actualHeight = container.getMeasuredHeight();
         int targetHeight = (int) (72 * scale + 0.5f);
@@ -310,17 +309,18 @@ public class ListReporteFragment extends Fragment {
         va.start();
     }
 
-    void setSearchView(){
+    void setSearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Toast like print
                 Log.i("search", "SearchOnQueryTextSubmit: " + query);
-                if( ! searchView.isIconified()) {
+                if (!searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 VolleySingleton.getInstance(ListReporteFragment.this.getContext()).cancelAll();
@@ -333,7 +333,7 @@ public class ListReporteFragment extends Fragment {
         });
     }
 
-    private void solucion(final int position) {
+    private void solucion(final View view, final int position) {
         new MaterialDialog.Builder(this.getContext())
                 .title("Solución")
                 .customView(R.layout.solucion, true)
@@ -370,7 +370,7 @@ public class ListReporteFragment extends Fragment {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        send(dialog, position);
+                        send(dialog, position, view);
                     }
                 })
                 .show();
@@ -399,8 +399,36 @@ public class ListReporteFragment extends Fragment {
         startActivityForResult(intent, REQUEST_CODE_PICKER);
     }
 
+    private void send(final MaterialDialog dialog, int position, View button) {
 
-    private void send(final MaterialDialog dialog, int position) {
+        View view = dialog.getCustomView();
+
+        String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
+        String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
+        String reporte = String.valueOf(itemList.get(position).getId());
+
+        if (nombre.equals("")) {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
+            til.setError("Debe ingresar un nombre");
+            return;
+        } else {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
+            til.setError("");
+        }
+
+        if (descripcion.equals("")) {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
+            til.setError("Debe ingresar una descripción");
+            return;
+        } else {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
+            til.setError("");
+        }
+
+        if (images.size() < 1) {
+            Snackbar.make(this.getActivity().findViewById(R.id.descripcion), "Debe escojer al menos una imagen", 800).show();
+            return;
+        }
 
         dialog.dismiss();
 
@@ -409,35 +437,6 @@ public class ListReporteFragment extends Fragment {
                 .content("Por favor espere")
                 .progress(true, 0)
                 .show();
-
-       View view = dialog.getCustomView();
-
-        String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
-        String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
-        String reporte = String.valueOf(itemList.get(position).getId());
-
-        if(nombre.equals("")){
-            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
-            til.setError("Debe ingresar un nombre");
-            return;
-        }else{
-            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
-            til.setError("");
-        }
-
-        if (descripcion.equals("")){
-            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
-            til.setError("Debe ingresar una descripción");
-            return;
-        }else{
-            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
-            til.setError("");
-        }
-
-        if (images.size() < 1){
-            Snackbar.make(this.getActivity().findViewById(R.id.descripcion), "Debe escojer al menos una imagen", 800).show();
-            return;
-        }
 
         try {
             UploadNotificationConfig notificationConfig = new UploadNotificationConfig()
@@ -478,12 +477,10 @@ public class ListReporteFragment extends Fragment {
 
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    /*Intent intent = new Intent(ReporteActivity.this, ListReporteActivity.class);
-                    intent.putExtra("send", true);
-                    intent.putExtras(getIntent());
-                    startActivity(intent);
-                    finish();*/
                     loading.dismiss();
+                    infiniteListView.clearList();
+                    page = 1;
+                    getClientes();
                     Log.e("send", "code: " + serverResponse.getHttpCode());
                     Log.e("send", serverResponse.getBodyAsString());
                 }
@@ -496,6 +493,5 @@ public class ListReporteFragment extends Fragment {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
     }
-
 
 }
