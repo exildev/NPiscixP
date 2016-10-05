@@ -1,11 +1,15 @@
 package co.com.exile.piscix;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -25,20 +29,40 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
+import com.nguyenhoanglam.imagepicker.model.Image;
 import com.softw4re.views.InfiniteListAdapter;
 import com.softw4re.views.InfiniteListView;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
+import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadStatusDelegate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 public class ListReporteActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CODE_PICKER = 2;
+    private ArrayList<Image> images;
 
     private InfiniteListView infiniteListView;
     private ArrayList<Reporte> itemList;
@@ -67,6 +91,7 @@ public class ListReporteActivity extends AppCompatActivity {
             }
         });
         page = 1;
+        images = new ArrayList<>();
         setInfiniteList();
         if (getIntent().hasExtra("send")){
             Snackbar.make(fab, "Registro guardado con exito", 1000).show();
@@ -133,6 +158,7 @@ public class ListReporteActivity extends AppCompatActivity {
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
+                final int i = position;
                 ViewHolder holder;
 
                 if (convertView == null) {
@@ -149,6 +175,8 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.tipo = (TextView) convertView.findViewById(R.id.tipo);
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
+                    holder.icon = (CardView) convertView.findViewById(R.id.pedido_icon_card);
+                    holder.numero = (TextView) convertView.findViewById(R.id.numero);
                     convertView.setTag(holder);
 
                 } else {
@@ -165,15 +193,31 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.piscina.setText(reporte.getPiscina());
                     holder.tipo.setText(reporte.getTipo_de_reporte());
                     holder.subtitle.setText(reporte.getNombre());
+                    if (reporte.getNumero().equals("") || reporte.getNumero().equals("null")){
+                        holder.numero.setText("Sin numero");
+                    }else {
+                        holder.numero.setText(reporte.getNumero());
+                    }
                     if (!reporte.isEstado()) {
                         holder.subtitle.setText(R.string.estado_abierto);
                         holder.estado.setText(R.string.estado_abierto);
+                        holder.icon.setCardBackgroundColor(ContextCompat.getColor(this.getContext(), R.color.colorReport));
+                        holder.chat_button.setVisibility(View.VISIBLE);
+                        holder.solution_button.setVisibility(View.VISIBLE);
                     } else {
                         holder.subtitle.setText(R.string.estado_cerrado);
                         holder.estado.setText(R.string.estado_cerrado);
                         holder.chat_button.setVisibility(View.GONE);
                         holder.solution_button.setVisibility(View.GONE);
+                        holder.icon.setCardBackgroundColor(Color.parseColor("#b2b2b2"));
                     }
+
+                    holder.solution_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            solucion(i);
+                        }
+                    });
                 }
 
                 final View action = convertView.findViewById(R.id.action);
@@ -216,8 +260,9 @@ public class ListReporteActivity extends AppCompatActivity {
                         boolean estado = campo.getBoolean("estado");
                         String fecha = campo.getString("fecha");
                         String cliente = campo.getString("nombreC") + " " + campo.getString("apellidosC");
+                        String numero = campo.getString("numero");
                         String cierre = Reporte.CIERRES[campo.getInt("cierre") - 1];
-                        infiniteListView.addNewItem(new Reporte(id, nombre, descripcion, tipo_de_reporte, piscina, estado, fecha, cliente, cierre));
+                        infiniteListView.addNewItem(new Reporte(id, nombre, descripcion, tipo_de_reporte, piscina, estado, fecha, cliente, cierre, numero));
                     }
                     if (itemList.size() == count) {
                         infiniteListView.hasMore(false);
@@ -242,20 +287,14 @@ public class ListReporteActivity extends AppCompatActivity {
         ViewGroup row = (ViewGroup) view.getParent();
         final RelativeLayout container = (RelativeLayout) row.findViewById(R.id.container);
         TextView subtitle = (TextView) row.findViewById(R.id.subtitle);
-        TextView title = (TextView) row.findViewById(R.id.nombre);
-        CardView icon = (CardView) row.findViewById(R.id.pedido_icon_card);
         final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
         int close_height = (int) (72 * scale + 0.5f);
         final ImageView imageDrop = (ImageView) row.findViewById(R.id.drop_image);
 
         if (container.getHeight() == close_height) {
             subtitle.setVisibility(View.GONE);
-            title.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-            icon.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
             expand(container, imageDrop);
         }else {
-            title.setTextColor(Color.parseColor("#000000"));
-            icon.setCardBackgroundColor(Color.parseColor("#b2b2b2"));
             subtitle.setVisibility(View.VISIBLE);
             collapse(container, imageDrop);
         }
@@ -310,6 +349,208 @@ public class ListReporteActivity extends AppCompatActivity {
         va.start();
     }
 
+    private void solucion(final int position) {
+        new MaterialDialog.Builder(this)
+                .title("Solución")
+                .customView(R.layout.solucion, true)
+                .positiveText("Guardar")
+                .negativeText("Cerrar")
+                .negativeColor(ContextCompat.getColor(this, R.color.colorReport))
+                .neutralText("Fotos")
+                .neutralColor(ContextCompat.getColor(this, R.color.colorReportAccent))
+                .autoDismiss(false)
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        openPicker();
+                    }
+                })
+                .cancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        images = new ArrayList<>();
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        images = new ArrayList<>();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        send(dialog, position);
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK && data != null) {
+            images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
+        }
+    }
+
+    public void openPicker() {
+        Intent intent = new Intent(this, ImagePickerActivity.class);
+
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_FOLDER_MODE, true);
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_MODE, ImagePickerActivity.MODE_MULTIPLE);
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_LIMIT, 5);
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES, images);
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_FOLDER_TITLE, "Carpetas");
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_IMAGE_TITLE, "Toque para seleccionar");
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_IMAGE_DIRECTORY, "Camera");
+
+        startActivityForResult(intent, REQUEST_CODE_PICKER);
+    }
+
+    private void send(final MaterialDialog dialog, int position) {
+
+        View view = dialog.getCustomView();
+        dialog.dismiss();
+
+        String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
+        String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
+        String reporte = String.valueOf(itemList.get(position).getId());
+
+        if (nombre.equals("")) {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
+            til.setError("Debe ingresar un nombre");
+            return;
+        } else {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
+            til.setError("");
+        }
+
+        if (descripcion.equals("")) {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
+            til.setError("Debe ingresar una descripción");
+            return;
+        } else {
+            TextInputLayout til = (TextInputLayout) view.findViewById(R.id.descripcion_container);
+            til.setError("");
+        }
+
+        if (images.size() < 1) {
+            send(nombre, descripcion, reporte);
+            return;
+        }
+
+        final MaterialDialog loading = new MaterialDialog.Builder(this)
+                .title("Guardando la solución")
+                .content("Por favor espere")
+                .progress(true, 0)
+                .show();
+
+        try {
+            UploadNotificationConfig notificationConfig = new UploadNotificationConfig()
+                    .setTitle("Subiendo solucion")
+                    .setInProgressMessage("Subiendo solucion a [[UPLOAD_RATE]] ([[PROGRESS]])")
+                    .setErrorMessage("Hubo un error al subir la solucion")
+                    .setCompletedMessage("Subida completada exitosamente en [[ELAPSED_TIME]]")
+                    .setAutoClearOnSuccess(true);
+
+            MultipartUploadRequest upload =
+                    new MultipartUploadRequest(this, "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/")
+                            .setNotificationConfig(notificationConfig)
+                            .setAutoDeleteFilesAfterSuccessfulUpload(false)
+                            .setMaxRetries(1)
+                            .addParameter("nombre", nombre)
+                            .addParameter("descripcion", descripcion)
+                            .addParameter("reporte", reporte)
+                            .addParameter("fotosolucion_set-TOTAL_FORMS", format("%d", images.size()))
+                            .addParameter("fotosolucion_set-INITIAL_FORMS", "0")
+                            .addParameter("fotosolucion_set-MIN_NUM_FORMS", "0")
+                            .addParameter("fotosolucion_set-MAX_NUM_FORMS", "5");
+            for (int i = 0; i < images.size(); i++) {
+                Image image = images.get(i);
+                upload.addFileToUpload(image.getPath(), "fotosolucion_set-" + i + "-url");
+            }
+
+            upload.setDelegate(new UploadStatusDelegate() {
+                @Override
+                public void onProgress(UploadInfo uploadInfo) {
+
+                }
+
+                @Override
+                public void onError(UploadInfo uploadInfo, Exception exception) {
+                    loading.dismiss();
+                    Log.e("send", exception.getMessage());
+                }
+
+                @Override
+                public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    loading.dismiss();
+                    infiniteListView.clearList();
+                    page = 1;
+                    getClientes();
+                    Log.e("send", "code: " + serverResponse.getHttpCode());
+                    Log.e("send", serverResponse.getBodyAsString());
+                }
+
+                @Override
+                public void onCancelled(UploadInfo uploadInfo) {
+                }
+            }).startUpload();
+        } catch (Exception exc) {
+            Log.e("AndroidUploadService", exc.getMessage(), exc);
+        }
+    }
+
+    public void send(final String nombre, final String descripcion, final String reporte){
+        final MaterialDialog loading = new MaterialDialog.Builder(this)
+                .title("Guardando solución")
+                .content("Por favor espere")
+                .progress(true, 0)
+                .show();
+
+        String url = "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/";
+        StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        infiniteListView.clearList();
+                        page = 1;
+                        getClientes();
+                        loading.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        Log.e("solucion", new String(error.networkResponse.data));
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("nombre", nombre);
+                params.put("descripcion", descripcion);
+                params.put("reporte", reporte);
+                params.put("fotosolucion_set-TOTAL_FORMS", "0");
+                params.put("fotosolucion_set-INITIAL_FORMS", "0");
+                params.put("fotosolucion_set-MIN_NUM_FORMS", "0");
+                params.put("fotosolucion_set-MAX_NUM_FORMS", "5");
+                return params;
+            }
+        };
+        loginRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(loginRequest);
+    }
+
     static class ViewHolder {
         TextView nombre;
         TextView subtitle;
@@ -320,6 +561,7 @@ public class ListReporteActivity extends AppCompatActivity {
         TextView tipo;
         TextView cierre;
         TextView descripcion;
+        TextView numero;
         CardView icon;
         Button chat_button;
         Button solution_button;

@@ -115,6 +115,27 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Numero:"
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/numero"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="4" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/other_border"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Cliente:"
                         android:textColor="#000"
                         android:textSize="16sp" />
@@ -295,7 +316,7 @@
                     android:layout_gravity="end"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_buid_white"
-                    android:text="Soluciones"
+                    android:text="Solucion"
                     android:theme="@style/AppTheme.RedButton" />
             </LinearLayout>
         </RelativeLayout>

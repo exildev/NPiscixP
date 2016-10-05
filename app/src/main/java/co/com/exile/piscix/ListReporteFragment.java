@@ -29,10 +29,13 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.nguyenhoanglam.imagepicker.activity.ImagePicker;
 import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
@@ -51,6 +54,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -139,6 +144,7 @@ public class ListReporteFragment extends Fragment {
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
                     holder.icon = (CardView) convertView.findViewById(R.id.pedido_icon_card);
+                    holder.numero = (TextView) convertView.findViewById(R.id.numero);
 
                     convertView.setTag(holder);
 
@@ -156,6 +162,11 @@ public class ListReporteFragment extends Fragment {
                     holder.piscina.setText(reporte.getPiscina());
                     holder.tipo.setText(reporte.getTipo_de_reporte());
                     holder.subtitle.setText(reporte.getNombre());
+                    if (reporte.getNumero().equals("") || reporte.getNumero().equals("null")){
+                        holder.numero.setText("Sin numero");
+                    }else {
+                        holder.numero.setText(reporte.getNumero());
+                    }
                     if (!reporte.isEstado()) {
                         holder.subtitle.setText(R.string.estado_abierto);
                         holder.estado.setText(R.string.estado_abierto);
@@ -218,8 +229,9 @@ public class ListReporteFragment extends Fragment {
                         boolean estado = campo.getBoolean("estado");
                         String fecha = campo.getString("fecha");
                         String cliente = campo.getString("nombreC") + " " + campo.getString("apellidosC");
+                        String numero = campo.getString("numero");
                         String cierre = Reporte.CIERRES[campo.getInt("cierre") - 1];
-                        infiniteListView.addNewItem(new Reporte(id, nombre, descripcion, tipo_de_reporte, piscina, estado, fecha, cliente, cierre));
+                        infiniteListView.addNewItem(new Reporte(id, nombre, descripcion, tipo_de_reporte, piscina, estado, fecha, cliente, cierre, numero));
                     }
                     if (itemList.size() == count) {
                         infiniteListView.hasMore(false);
@@ -370,7 +382,7 @@ public class ListReporteFragment extends Fragment {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        send(dialog, position, view);
+                        send(dialog, position);
                     }
                 })
                 .show();
@@ -399,8 +411,9 @@ public class ListReporteFragment extends Fragment {
         startActivityForResult(intent, REQUEST_CODE_PICKER);
     }
 
-    private void send(final MaterialDialog dialog, int position, View button) {
+    private void send(final MaterialDialog dialog, int position) {
 
+        dialog.dismiss();
         View view = dialog.getCustomView();
 
         String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
@@ -426,11 +439,9 @@ public class ListReporteFragment extends Fragment {
         }
 
         if (images.size() < 1) {
-            Snackbar.make(this.getActivity().findViewById(R.id.descripcion), "Debe escojer al menos una imagen", 800).show();
+            send(nombre, descripcion, reporte);
             return;
         }
-
-        dialog.dismiss();
 
         final MaterialDialog loading = new MaterialDialog.Builder(this.getContext())
                 .title("Subiendo reporte")
@@ -492,6 +503,49 @@ public class ListReporteFragment extends Fragment {
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
+    }
+
+    public void send(final String nombre, final String descripcion, final String reporte){
+        final MaterialDialog loading = new MaterialDialog.Builder(this.getContext())
+                .title("Guardando solucion")
+                .content("Por favor espere")
+                .progress(true, 0)
+                .show();
+
+        String url = "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/";
+        StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        infiniteListView.clearList();
+                        page = 1;
+                        getClientes();
+                        loading.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        Log.e("solucion", new String(error.networkResponse.data));
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("nombre", nombre);
+                params.put("descripcion", descripcion);
+                params.put("reporte", reporte);
+                params.put("fotosolucion_set-TOTAL_FORMS", "0");
+                params.put("fotosolucion_set-INITIAL_FORMS", "0");
+                params.put("fotosolucion_set-MIN_NUM_FORMS", "0");
+                params.put("fotosolucion_set-MAX_NUM_FORMS", "5");
+                return params;
+            }
+        };
+        loginRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this.getContext()).addToRequestQueue(loginRequest);
     }
 
 }

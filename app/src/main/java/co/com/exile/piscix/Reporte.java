@@ -13,10 +13,11 @@ class Reporte {
     private String fecha;
     private String cliente;
     private String cierre;
+    private String numero;
 
     public static final String[] CIERRES = {"Automático", "Parcial", "A satisfacción"};
 
-    public Reporte(int id, String nombre, String descripcion, String tipo_de_reporte, String piscina, boolean estado, String fecha, String cliente, String cierre) {
+    public Reporte(int id, String nombre, String descripcion, String tipo_de_reporte, String piscina, boolean estado, String fecha, String cliente, String cierre, String numero) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -26,6 +27,7 @@ class Reporte {
         this.fecha = fecha;
         this.cliente = cliente;
         this.cierre = cierre;
+        this.numero = numero;
     }
 
     public int getId() {
@@ -62,5 +64,9 @@ class Reporte {
 
     String getCierre() {
         return cierre;
+    }
+
+    public String getNumero() {
+        return numero;
     }
 }
