@@ -1,8 +1,8 @@
-package co.com.exile.piscix;
+package co.com.exile.piscix.models;
 
 
 
-class Reporte {
+public class Reporte {
 
     int id;
     private String nombre;
@@ -38,11 +38,11 @@ class Reporte {
         return nombre;
     }
 
-    String getDescripcion() {
+    public String getDescripcion() {
         return descripcion;
     }
 
-    String getTipo_de_reporte() {
+    public String getTipo_de_reporte() {
         return tipo_de_reporte;
     }
 
@@ -50,19 +50,19 @@ class Reporte {
         return piscina;
     }
 
-    boolean isEstado() {
+    public boolean isEstado() {
         return estado;
     }
 
-    String getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    String getCliente() {
+    public String getCliente() {
         return cliente;
     }
 
-    String getCierre() {
+    public String getCierre() {
         return cierre;
     }
 

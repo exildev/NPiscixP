@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import co.com.exile.piscix.models.Cliente;
+
 /**
  * A simple {@link Fragment} subclass.
  */

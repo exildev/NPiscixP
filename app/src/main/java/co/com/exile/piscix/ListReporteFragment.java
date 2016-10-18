@@ -1,17 +1,26 @@
 package co.com.exile.piscix;
 
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -36,8 +45,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.nguyenhoanglam.imagepicker.activity.ImagePicker;
 import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
 import com.nguyenhoanglam.imagepicker.model.Image;
 import com.softw4re.views.InfiniteListAdapter;
@@ -57,6 +64,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import co.com.exile.piscix.models.Reporte;
+
 import static java.lang.String.format;
 
 
@@ -64,6 +73,10 @@ import static java.lang.String.format;
  * A simple {@link Fragment} subclass.
  */
 public class ListReporteFragment extends Fragment {
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
+    LocationManager locationManager;
 
     private static final int REQUEST_CODE_PICKER = 2;
     private ArrayList<Image> images;
@@ -88,12 +101,12 @@ public class ListReporteFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_list_reporte, container, false);
         setInfiniteList(fragment);
         setSearchView();
+        validPermissions();
         return fragment;
     }
 
@@ -104,14 +117,14 @@ public class ListReporteFragment extends Fragment {
         InfiniteListAdapter adapter = new InfiniteListAdapter<Reporte>(this.getActivity(), R.layout.reporte, itemList) {
             @Override
             public void onNewLoadRequired() {
-                getClientes();
+                getReportes();
             }
 
             @Override
             public void onRefresh() {
                 infiniteListView.clearList();
                 page = 1;
-                getClientes();
+                getReportes();
             }
 
             @Override
@@ -202,11 +215,10 @@ public class ListReporteFragment extends Fragment {
         };
 
         infiniteListView.setAdapter(adapter);
-        getClientes();
+        getReportes();
     }
 
-
-    void getClientes() {
+    void getReportes() {
         infiniteListView.startLoading();
         String url = "http://104.236.33.228:8050/reportes/reporte/list/?page=" + page + "&search=" + search;
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -339,7 +351,7 @@ public class ListReporteFragment extends Fragment {
                 search = s;
                 infiniteListView.clearList();
                 page = 1;
-                getClientes();
+                getReportes();
                 return false;
             }
         });
@@ -396,6 +408,33 @@ public class ListReporteFragment extends Fragment {
         }
     }
 
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                validPermissions();
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+                builder.setMessage("Para que esta aplicación funcione correctamente usted debe dar permisos de acceso al GPS ¿Desea hacerlo ahora?")
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                validPermissions();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ListReporteFragment.this.getActivity().finish();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+    }
+
     public void openPicker() {
         Intent intent = new Intent(this.getActivity(), ImagePickerActivity.class);
 
@@ -419,6 +458,8 @@ public class ListReporteFragment extends Fragment {
         String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
         String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
         String reporte = String.valueOf(itemList.get(position).getId());
+        String latitud = format("%s", getLastBestLocation().getLatitude());
+        String longitud = format("%s", getLastBestLocation().getLongitude());
 
         if (nombre.equals("")) {
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
@@ -439,7 +480,7 @@ public class ListReporteFragment extends Fragment {
         }
 
         if (images.size() < 1) {
-            send(nombre, descripcion, reporte);
+            send(nombre, descripcion, reporte, latitud, longitud);
             return;
         }
 
@@ -465,6 +506,8 @@ public class ListReporteFragment extends Fragment {
                             .addParameter("nombre", nombre)
                             .addParameter("descripcion", descripcion)
                             .addParameter("reporte", reporte)
+                            .addParameter("latitud", latitud)
+                            .addParameter("longitud", longitud)
                             .addParameter("fotosolucion_set-TOTAL_FORMS", format("%d", images.size()))
                             .addParameter("fotosolucion_set-INITIAL_FORMS", "0")
                             .addParameter("fotosolucion_set-MIN_NUM_FORMS", "0")
@@ -491,7 +534,7 @@ public class ListReporteFragment extends Fragment {
                     loading.dismiss();
                     infiniteListView.clearList();
                     page = 1;
-                    getClientes();
+                    getReportes();
                     Log.e("send", "code: " + serverResponse.getHttpCode());
                     Log.e("send", serverResponse.getBodyAsString());
                 }
@@ -505,7 +548,7 @@ public class ListReporteFragment extends Fragment {
         }
     }
 
-    public void send(final String nombre, final String descripcion, final String reporte){
+    public void send(final String nombre, final String descripcion, final String reporte, final String latitud, final String longitud){
         final MaterialDialog loading = new MaterialDialog.Builder(this.getContext())
                 .title("Guardando solucion")
                 .content("Por favor espere")
@@ -520,7 +563,7 @@ public class ListReporteFragment extends Fragment {
                         loading.dismiss();
                         infiniteListView.clearList();
                         page = 1;
-                        getClientes();
+                        getReportes();
                         loading.dismiss();
                     }
                 },
@@ -536,6 +579,8 @@ public class ListReporteFragment extends Fragment {
                 Map<String, String> params = new HashMap<>();
                 params.put("nombre", nombre);
                 params.put("descripcion", descripcion);
+                params.put("latitud", latitud);
+                params.put("longitud", longitud);
                 params.put("reporte", reporte);
                 params.put("fotosolucion_set-TOTAL_FORMS", "0");
                 params.put("fotosolucion_set-INITIAL_FORMS", "0");
@@ -546,6 +591,102 @@ public class ListReporteFragment extends Fragment {
         };
         loginRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(this.getContext()).addToRequestQueue(loginRequest);
+    }
+
+    private void validPermissions(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            }else if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            }else {
+                checkGPS();
+            }
+        }else {
+            checkGPS();
+        }
+    }
+
+    private void checkGPS(){
+        LocationManager L = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        if (!L.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage("Para que esta aplicación funcione correctamente debe estar atcivado el GPS\n¿Desea activarlo ahora?")
+                    .setCancelable(false)
+                    .setPositiveButton("Activar GPS", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent I = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(I);
+                        }
+                    })
+                    .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ListReporteFragment.this.getActivity().finish();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }else {
+            initGPS();
+        }
+    }
+
+    private void initGPS() {
+        Toast.makeText(this.getContext(), "pidiendo el gps ", Toast.LENGTH_SHORT).show();
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            validPermissions();
+            return;
+        }
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+    }
+
+    @Nullable
+    private Location getLastBestLocation() {
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            validPermissions();
+            return null;
+        }
+        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        long GPSLocationTime = 0;
+        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+
+        long NetLocationTime = 0;
+
+        if (null != locationNet) {
+            NetLocationTime = locationNet.getTime();
+        }
+
+        if ( 0 < GPSLocationTime - NetLocationTime ) {
+            return locationGPS;
+        }
+        else {
+            return locationNet;
+        }
     }
 
 }

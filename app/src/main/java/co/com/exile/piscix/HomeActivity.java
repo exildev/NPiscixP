@@ -134,8 +134,17 @@ public class HomeActivity extends AppCompatActivity
                     .commit();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setTitle("Reportes");
-        } else if (id == R.id.nav_soluciones) {
-
+        } else if (id == R.id.nav_soluciones || id == R.id.soluciones_btn) {
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+            myActionMenuItem.setVisible(true);
+            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+            Fragment fragment = SolucionesFragment.SolucionesFragmentInstance(searchView);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_frame, fragment)
+                    .commit();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Soluciones");
         } else if (id == R.id.nav_informativos) {
 
         } else if (id == R.id.nav_about) {

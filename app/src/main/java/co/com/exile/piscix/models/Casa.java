@@ -1,4 +1,4 @@
-package co.com.exile.piscix;
+package co.com.exile.piscix.models;
 
 /**
  * Created by pico on 24/09/2016.

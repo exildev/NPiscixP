@@ -1,18 +1,14 @@
-package co.com.exile.piscix;
+package co.com.exile.piscix.models;
 
 import android.content.Context;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-/**
- * Created by pico on 23/09/2016.
- */
 
 public class User implements Serializable {
     private String username;

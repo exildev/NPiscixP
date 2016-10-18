@@ -1,7 +1,7 @@
-package co.com.exile.piscix;
+package co.com.exile.piscix.models;
 
 
-class Piscina {
+public class Piscina {
     private int id;
     private String nombre;
     private double ancho;
@@ -10,7 +10,7 @@ class Piscina {
     private boolean estado;
     private String tipo;
 
-    Piscina(int id, String nombre, double ancho, double largo, double profundidad, boolean estado, String tipo) {
+    public Piscina(int id, String nombre, double ancho, double largo, double profundidad, boolean estado, String tipo) {
         this.id = id;
         this.nombre = nombre;
         this.ancho = ancho;
@@ -28,7 +28,7 @@ class Piscina {
         this.id = id;
     }
 
-    String getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
@@ -68,7 +68,7 @@ class Piscina {
         this.estado = estado;
     }
 
-    String getTipo() {
+    public String getTipo() {
         return tipo;
     }
 

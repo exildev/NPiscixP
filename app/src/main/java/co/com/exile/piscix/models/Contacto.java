@@ -1,4 +1,4 @@
-package co.com.exile.piscix;
+package co.com.exile.piscix.models;
 
 
 public class Contacto {

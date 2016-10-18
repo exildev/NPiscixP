@@ -34,6 +34,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import co.com.exile.piscix.models.Casa;
+import co.com.exile.piscix.models.Contacto;
+import co.com.exile.piscix.models.Piscina;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private String name;

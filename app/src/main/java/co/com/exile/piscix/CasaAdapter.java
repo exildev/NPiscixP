@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import co.com.exile.piscix.models.Casa;
+
 
 public class CasaAdapter extends RecyclerView.Adapter<CasaAdapter.CasaViewHolder>{
 

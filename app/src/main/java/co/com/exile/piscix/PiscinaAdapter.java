@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import co.com.exile.piscix.models.Piscina;
+
 
 public class PiscinaAdapter extends RecyclerView.Adapter<PiscinaAdapter.PiscinaViewHolder>{
 

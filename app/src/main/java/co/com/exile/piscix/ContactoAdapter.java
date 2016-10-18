@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import co.com.exile.piscix.models.Contacto;
+
 
 public class ContactoAdapter extends RecyclerView.Adapter<ContactoAdapter.ContactoViewHolder>{
 

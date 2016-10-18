@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import co.com.exile.piscix.models.Contacto;
+
 
 /**
  * A simple {@link Fragment} subclass.

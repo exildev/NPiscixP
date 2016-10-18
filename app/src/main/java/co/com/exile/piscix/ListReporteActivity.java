@@ -57,6 +57,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import co.com.exile.piscix.models.Reporte;
+
 import static java.lang.String.format;
 
 public class ListReporteActivity extends AppCompatActivity {
