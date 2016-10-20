@@ -107,6 +107,8 @@
     <string name="tipo_prompt">Tipo de reporte</string>
     <string name="pisicina_prompt">Pisicina</string>
     <string name="title_activity_list_reporte">Historial de reportes</string>
+    <string name="title_activity_gallery">Galeria</string>
     <string name="estado_abierto">Abierto</string>
     <string name="estado_cerrado">Cerrado</string>
+    <string name="no_photos">Opps parece que no hay fotos</string>
 </resources>

@@ -567,5 +567,6 @@ public class ListReporteActivity extends AppCompatActivity {
         CardView icon;
         Button chat_button;
         Button solution_button;
+        Button photos_button;
     }
 }

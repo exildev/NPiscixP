@@ -43,6 +43,9 @@
             android:name=".ListReporteActivity"
             android:label="@string/title_activity_list_reporte"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".GalleryActivity"
+            android:label="@string/title_activity_gallery"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -156,6 +157,7 @@ public class ListReporteFragment extends Fragment {
                     holder.tipo = (TextView) convertView.findViewById(R.id.tipo);
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
+                    holder.photos_button = (Button) convertView.findViewById(R.id.photos_button);
                     holder.icon = (CardView) convertView.findViewById(R.id.pedido_icon_card);
                     holder.numero = (TextView) convertView.findViewById(R.id.numero);
 
@@ -200,6 +202,12 @@ public class ListReporteFragment extends Fragment {
                             solucion(view, position);
                         }
                     });
+                    holder.photos_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            initGallery(position);
+                        }
+                    });
                 }
 
                 final View action = convertView.findViewById(R.id.action);
@@ -218,6 +226,13 @@ public class ListReporteFragment extends Fragment {
         getReportes();
     }
 
+    private void initGallery(int position){
+        int id = itemList.get(position).getId();
+        Intent intent = new Intent(this.getActivity(), GalleryActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("url", "http://104.236.33.228:8050/reportes/fotoreporte/list/?reporte=");
+        startActivity(intent);
+    }
     void getReportes() {
         infiniteListView.startLoading();
         String url = "http://104.236.33.228:8050/reportes/reporte/list/?page=" + page + "&search=" + search;
@@ -408,6 +423,7 @@ public class ListReporteFragment extends Fragment {
         }
     }
 
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {

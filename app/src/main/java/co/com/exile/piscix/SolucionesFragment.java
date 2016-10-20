@@ -2,6 +2,7 @@ package co.com.exile.piscix;
 
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -114,6 +115,7 @@ public class SolucionesFragment extends Fragment {
                     holder.cliente = (TextView) convertView.findViewById(R.id.cliente);
                     holder.descripcion = (TextView) convertView.findViewById(R.id.descripcion);
                     holder.fecha = (TextView) convertView.findViewById(R.id.fecha);
+                    holder.photos_button = (Button) convertView.findViewById(R.id.photos_button);
 
                     convertView.setTag(holder);
 
@@ -129,6 +131,13 @@ public class SolucionesFragment extends Fragment {
                     holder.cliente.setText(solucion.getCliente());
                     holder.descripcion.setText(solucion.getDescripcion());
                     holder.fecha.setText(solucion.getFecha());
+
+                    holder.photos_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            initGallery(position);
+                        }
+                    });
                 }
 
                 final View action = convertView.findViewById(R.id.action);
@@ -283,6 +292,14 @@ public class SolucionesFragment extends Fragment {
                 return false;
             }
         });
+    }
+
+    private void initGallery(int position){
+        int id = itemList.get(position).getId();
+        Intent intent = new Intent(this.getActivity(), GalleryActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("url", "http://104.236.33.228:8050/mantenimiento/service/fotomantenimiento/list/?mantenimiento=");
+        startActivity(intent);
     }
 
     static class ViewHolder {
