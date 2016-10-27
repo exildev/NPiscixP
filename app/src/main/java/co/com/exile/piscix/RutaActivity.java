@@ -1,6 +1,7 @@
 package co.com.exile.piscix;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -9,13 +10,32 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.softw4re.views.InfiniteListAdapter;
+import com.softw4re.views.InfiniteListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import co.com.exile.piscix.models.Planilla;
 
 public class RutaActivity extends AppCompatActivity {
 
@@ -95,6 +115,9 @@ public class RutaActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private InfiniteListView infiniteListView;
+        private ArrayList<Planilla> itemList;
+        private int page = 1;
 
         public PlaceholderFragment() {
         }
@@ -115,11 +138,149 @@ public class RutaActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ruta, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            setInfiniteList(rootView);
             return rootView;
         }
 
+        void setInfiniteList(View fragment) {
+            infiniteListView = (InfiniteListView) fragment.findViewById(R.id.content_list_planilla);
+
+            itemList = new ArrayList<>();
+            InfiniteListAdapter adapter = new InfiniteListAdapter<Planilla>(this.getActivity(), R.layout.ruta, itemList) {
+                @Override
+                public void onNewLoadRequired() {
+                    getReportes();
+                }
+
+                @Override
+                public void onRefresh() {
+                    infiniteListView.clearList();
+                    page = 1;
+                    getReportes();
+                }
+
+                @Override
+                public void onItemClick(int i) {
+                }
+
+                @Override
+                public void onItemLongClick(int i) {
+                    Toast.makeText(getContext(), "long click", Toast.LENGTH_LONG).show();
+                }
+
+                @NonNull
+                @Override
+                public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+
+                    ViewHolder holder;
+
+                    if (convertView == null) {
+                        int section = getArguments().getInt(ARG_SECTION_NUMBER);
+                        if (section == 1) {
+                            convertView = getActivity().getLayoutInflater().inflate(R.layout.ruta, parent, false);
+                        } else {
+                            convertView = getActivity().getLayoutInflater().inflate(R.layout.ruta_pendientes, parent, false);
+                        }
+                        holder = new ViewHolder();
+                        holder.title = (TextView) convertView.findViewById(R.id.title);
+                        holder.cliente = (TextView) convertView.findViewById(R.id.cliente);
+                        holder.medidas = (TextView) convertView.findViewById(R.id.medidas);
+                        holder.info_btn = (CardView) convertView.findViewById(R.id.info_btn);
+                        holder.action_image = (ImageView) convertView.findViewById(R.id.action_image);
+
+                        convertView.setTag(holder);
+
+                    } else {
+                        holder = (ViewHolder) convertView.getTag();
+                    }
+
+                    Planilla planilla = itemList.get(position);
+                    if (planilla != null) {
+                        holder.title.setText("Piscina " + planilla.getNombreP() + ", tipo " + planilla.getTipo());
+                        holder.cliente.setText(planilla.getNombreCF() + " " + planilla.getNombreCL());
+                        holder.medidas.setText(planilla.getProfundidad() + "m alto, " + planilla.getAncho() + "m ancho, " + planilla.getLargo() + "m largo");
+
+
+                    }
+
+                    return convertView;
+                }
+            };
+
+            infiniteListView.setAdapter(adapter);
+            getReportes();
+        }
+
+        void getReportes() {
+            infiniteListView.startLoading();
+            String url = "http://104.236.33.228:8050/actividades/planilladiaria/pendiente/list/?page=" + page;
+            int section = getArguments().getInt(ARG_SECTION_NUMBER);
+            if (section == 1) {
+                url = "http://104.236.33.228:8050/usuarios/service/list/asignaciones/?asigna=True&page=" + page;
+            }
+            JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        infiniteListView.stopLoading();
+                        JSONArray object_list = response.getJSONArray("object_list");
+                        if (response.has("next")) {
+                            page = response.getInt("next");
+                        }
+                        for (int i = 0; i < object_list.length(); i++) {
+                            JSONObject campo = object_list.getJSONObject(i);
+                            double ancho = campo.getDouble("ancho");
+                            Boolean espera = campo.get("espera").equals(null) ? null : campo.getBoolean("espera");
+                            double largo = campo.getDouble("largo");
+                            String nombreCF = campo.getString("nombreCF");
+                            String nombreCL = campo.getString("nombreCL");
+                            String nombreP = campo.getString("nombreP");
+                            int piscina = campo.getInt("piscina");
+                            int piscinero_id = campo.getInt("piscinero_id");
+                            Integer planilla = campo.get("planilla").equals(null) ? null : campo.getInt("planilla");
+                            double profundidad = campo.getDouble("profundidad");
+                            Boolean salida = campo.get("salida").equals(null) ? null : campo.getBoolean("salida");
+                            ;
+                            String tipo = campo.getString("tipo");
+                            Integer orden = null;
+                            if (campo.has("orden")) {
+                                orden = campo.get("orden").equals(null) ? null : campo.getInt("orden");
+                            }
+                            Integer id = null;
+                            if (campo.has("id")) {
+                                id = campo.get("id").equals(null) ? null : campo.getInt("id");
+                            }
+                            Double latitud = null;
+                            if (campo.has("latitud")) {
+                                latitud = campo.get("latitud").equals(null) ? null : campo.getDouble("latitud");
+                            }
+                            Double longitud = null;
+                            if (campo.has("longitud")) {
+                                longitud = campo.get("longitud").equals(null) ? null : campo.getDouble("longitud");
+                            }
+                            infiniteListView.addNewItem(new Planilla(ancho, espera, largo, nombreCF, nombreCL, nombreP, piscina, piscinero_id, planilla, profundidad, salida, tipo, orden, id, latitud, longitud));
+                        }
+                        if (response.has("count")) {
+                            int count = response.getInt("count");
+                            if (itemList.size() == count) {
+                                infiniteListView.hasMore(false);
+                            } else {
+                                infiniteListView.hasMore(true);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Activities", error.toString());
+                }
+            });
+
+            VolleySingleton.getInstance(this.getContext()).addToRequestQueue(reportesRequest);
+        }
 
     }
 
@@ -156,5 +317,13 @@ public class RutaActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    static class ViewHolder {
+        TextView title;
+        TextView cliente;
+        TextView medidas;
+        CardView info_btn;
+        ImageView action_image;
     }
 }
