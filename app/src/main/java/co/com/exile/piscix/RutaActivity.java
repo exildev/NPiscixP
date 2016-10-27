@@ -3,6 +3,7 @@ package co.com.exile.piscix;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -144,6 +145,12 @@ public class RutaActivity extends AppCompatActivity {
             if (requestCode == PLANILLA_RESULT && resultCode == RESULT_OK) {
                 int status = data.getIntExtra("status", -1);
                 String response = data.getStringExtra("response");
+                if (status == 200) {
+                    Snackbar.make(getActivity().findViewById(R.id.container), "Planilla registrada con exito", 800).show();
+                    page = 1;
+                    infiniteListView.clearList();
+                    getReportes();
+                }
                 Log.i("status", status + "");
                 Log.i("response", response);
             }
@@ -222,7 +229,7 @@ public class RutaActivity extends AppCompatActivity {
                                     Log.i("piscina", planilla.getPiscina() + "");
                                     Intent intent = new Intent(getActivity(), PlanillaActivity.class);
                                     intent.putExtra("piscina", planilla.getPiscina());
-                                    getActivity().startActivityForResult(intent, PLANILLA_RESULT);
+                                    PlaceholderFragment.this.startActivityForResult(intent, PLANILLA_RESULT);
                                 }
                             });
                         }

@@ -131,6 +131,7 @@ public class PlanillaActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Intent data = new Intent();
                         data.putExtra("response", response);
+                        data.putExtra("status", 200);
                         setResult(RESULT_OK, data);
                         finish();
                     }
