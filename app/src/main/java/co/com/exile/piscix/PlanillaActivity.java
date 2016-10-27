@@ -59,6 +59,8 @@ public class PlanillaActivity extends AppCompatActivity {
 
         piscina = getIntent().getIntExtra("piscina", -1);
 
+        hideLoading();
+
         validPermissions();
     }
 
@@ -104,7 +106,7 @@ public class PlanillaActivity extends AppCompatActivity {
     }
 
     public void send() {
-        Log.i("send", "Sending this shit " + piscina);
+        showLoading();
         final CheckBox cepillado = (CheckBox) findViewById(R.id.cepillado);
         final CheckBox aspirado = (CheckBox) findViewById(R.id.aspirado);
         final CheckBox retrolavado = (CheckBox) findViewById(R.id.retrolavado);
@@ -121,52 +123,56 @@ public class PlanillaActivity extends AppCompatActivity {
         final String latitud = format("%s", getLastBestLocation().getLatitude());
         final String longitud = format("%s", getLastBestLocation().getLongitude());
 
-        String url = "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/";
+        String url = "http://104.236.33.228:8050/actividades/planilladiaria/form/";
         final StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(PlanillaActivity.this, "parece que todo esta bien", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PlanillaActivity.this, "Enviando con exito", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("solucion", new String(error.networkResponse.data));
+                        String err = new String(error.networkResponse.data);
+                        for (String r : err.split("\n")) {
+                            Log.e("solucion", r);
+                        }
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 if (cepillado.isChecked()) {
-                    params.put("cepillado", "checked");
+                    params.put("cepillado", "on");
                 }
                 if (aspirado.isChecked()) {
-                    params.put("aspirado", "checked");
+                    params.put("aspirado", "on");
                 }
                 if (retrolavado.isChecked()) {
-                    params.put("retrolavado", "checked");
+                    params.put("retrolavado", "on");
                 }
                 if (aumento_agua.isChecked()) {
-                    params.put("aumento_agua", "checked");
+                    params.put("aumento_agua", "on");
                 }
                 if (aplicacion_cloro.isChecked()) {
-                    params.put("aplicacion_cloro", "checked");
+                    params.put("aplicacion_cloro", "on");
                 }
                 if (aplicacion_sulfato_al.isChecked()) {
-                    params.put("aplicacion_sulfato_al", "checked");
+                    params.put("aplicacion_sulfato_al", "on");
                 }
                 if (disminucion_ph.isChecked()) {
-                    params.put("disminucion_ph", "checked");
+                    params.put("disminucion_ph", "on");
                 }
                 if (aumento_ph.isChecked()) {
-                    params.put("aumento_ph", "checked");
+                    params.put("aumento_ph", "on");
                 }
                 if (clasificador_alg.isChecked()) {
-                    params.put("clasificador_alg", "checked");
+                    params.put("clasificador_alg", "on");
                 }
                 if (espera.isChecked()) {
-                    params.put("espera", "checked");
+                    params.put("espera", "on");
                 }
                 params.put("nivel_cloro", nivel_cloro.getText().toString());
                 params.put("nivel_ph", nivel_ph.getText().toString());
@@ -179,6 +185,16 @@ public class PlanillaActivity extends AppCompatActivity {
         };
         loginRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(this).addToRequestQueue(loginRequest);
+    }
+
+    private void showLoading() {
+        View modal = findViewById(R.id.modal);
+        modal.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        View modal = findViewById(R.id.modal);
+        modal.setVisibility(View.GONE);
     }
 
     private void validPermissions() {

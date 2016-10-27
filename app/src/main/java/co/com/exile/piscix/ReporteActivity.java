@@ -1,7 +1,6 @@
 package co.com.exile.piscix;
 
 import android.Manifest;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,13 +16,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -349,73 +346,13 @@ public class ReporteActivity extends AppCompatActivity  {
     }
 
     private void showLoading() {
-        final CardView loading = (CardView) findViewById(R.id.loading);
-        loading.setVisibility(View.VISIBLE);
         View modal = findViewById(R.id.modal);
         modal.setVisibility(View.VISIBLE);
-
-        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
-        final int actualHeight = 0;
-        int targetHeight = (int) (50 * scale + 0.5f);
-        int targetPadding = (int) (16 * scale + 0.5f);
-        ValueAnimator va = ValueAnimator.ofInt(actualHeight, targetHeight);
-        ValueAnimator va2 = ValueAnimator.ofInt(0, targetPadding);
-
-        va.setDuration(200);
-        va2.setDuration(200);
-        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer value = (Integer) animation.getAnimatedValue();
-                loading.getLayoutParams().height = value;
-                loading.getLayoutParams().width = value;
-                loading.requestLayout();
-            }
-        });
-        va2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer value = (Integer) animation.getAnimatedValue();
-                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) loading.getLayoutParams();
-                layoutParams.setMargins(value, value, value, value);
-                loading.requestLayout();
-            }
-        });
-        va.start();
-        va2.start();
     }
 
     private void hideLoading() {
-        final CardView loading = (CardView) findViewById(R.id.loading);
-        loading.setVisibility(View.VISIBLE);
         View modal = findViewById(R.id.modal);
         modal.setVisibility(View.GONE);
-
-        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
-        final int targetHeight = 0;
-        int actualHeight = (int) (50 * scale + 0.5f);
-        int actualPadding = (int) (16 * scale + 0.5f);
-        ValueAnimator va = ValueAnimator.ofInt(actualHeight, targetHeight);
-        ValueAnimator va2 = ValueAnimator.ofInt(actualPadding, 0);
-
-        va.setDuration(200);
-        va2.setDuration(200);
-        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer value = (Integer) animation.getAnimatedValue();
-                loading.getLayoutParams().height = value;
-                loading.getLayoutParams().width = value;
-                loading.requestLayout();
-            }
-        });
-        va2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer value = (Integer) animation.getAnimatedValue();
-                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) loading.getLayoutParams();
-                layoutParams.setMargins(value, value, value, value);
-                loading.requestLayout();
-            }
-        });
-        va.start();
-        va2.start();
     }
 
     private void initGPS() {

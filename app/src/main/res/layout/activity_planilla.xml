@@ -24,6 +24,22 @@
 
     <include layout="@layout/content_planilla" />
 
+    <RelativeLayout
+        android:id="@+id/modal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:background="#ffffff">
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/progress_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cpv_animAutostart="true"
+            app:cpv_indeterminate="true"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
