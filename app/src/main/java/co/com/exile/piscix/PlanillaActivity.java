@@ -40,6 +40,7 @@ import static java.lang.String.format;
 public class PlanillaActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
+
     LocationManager locationManager;
 
     private int piscina;
@@ -128,7 +129,9 @@ public class PlanillaActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(PlanillaActivity.this, "Enviando con exito", Toast.LENGTH_SHORT).show();
+                        Intent data = new Intent();
+                        data.putExtra("response", response);
+                        setResult(RESULT_OK, data);
                         finish();
                     }
                 },
@@ -136,9 +139,14 @@ public class PlanillaActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String err = new String(error.networkResponse.data);
+                        Intent data = new Intent();
+                        data.putExtra("response", err);
+                        data.putExtra("status", error.networkResponse.statusCode);
+                        setResult(RESULT_OK, data);
                         for (String r : err.split("\n")) {
                             Log.e("solucion", r);
                         }
+                        finish();
                     }
                 }) {
             @Override

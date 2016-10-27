@@ -109,6 +109,7 @@ public class RutaActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
+        private static final int PLANILLA_RESULT = 1;
         private static final String ARG_SECTION_NUMBER = "section_number";
         private InfiniteListView infiniteListView;
         private ArrayList<Planilla> itemList;
@@ -135,6 +136,18 @@ public class RutaActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_ruta, container, false);
             setInfiniteList(rootView);
             return rootView;
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            Log.i("result", requestCode + "");
+            if (requestCode == PLANILLA_RESULT && resultCode == RESULT_OK) {
+                int status = data.getIntExtra("status", -1);
+                String response = data.getStringExtra("response");
+                Log.i("status", status + "");
+                Log.i("response", response);
+            }
+            super.onActivityResult(requestCode, resultCode, data);
         }
 
         void setInfiniteList(View fragment) {
@@ -195,11 +208,11 @@ public class RutaActivity extends AppCompatActivity {
                         holder.cliente.setText(planilla.getNombreCF() + " " + planilla.getNombreCL());
                         holder.medidas.setText(planilla.getProfundidad() + "m alto, " + planilla.getAncho() + "m ancho, " + planilla.getLargo() + "m largo");
 
-                        if (planilla.getPlanilla() != null && (planilla.getSalida() != null && planilla.getSalida()) && (planilla.getEspera() == null || !planilla.getEspera())) {
+                        if (planilla.getPlanilla() != null && (planilla.getSalida() != null && planilla.getSalida()) && (planilla.getEspera() == null)) {
                             holder.action_image.setImageResource(R.drawable.ic_done_all_24dp);
-                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() == null || !planilla.getEspera())) {
+                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() == null)) {
                             holder.action_image.setImageResource(R.drawable.ic_done_24dp);
-                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() != null && planilla.getEspera())) {
+                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() != null)) {
                             holder.action_image.setImageResource(R.drawable.ic_edit_24dp);
                         } else if (planilla.getPlanilla() == null) {
                             holder.action_image.setImageResource(R.drawable.ic_content_paste_24dp);
@@ -209,7 +222,7 @@ public class RutaActivity extends AppCompatActivity {
                                     Log.i("piscina", planilla.getPiscina() + "");
                                     Intent intent = new Intent(getActivity(), PlanillaActivity.class);
                                     intent.putExtra("piscina", planilla.getPiscina());
-                                    getActivity().startActivity(intent);
+                                    getActivity().startActivityForResult(intent, PLANILLA_RESULT);
                                 }
                             });
                         }
@@ -243,7 +256,10 @@ public class RutaActivity extends AppCompatActivity {
                         for (int i = 0; i < object_list.length(); i++) {
                             JSONObject campo = object_list.getJSONObject(i);
                             double ancho = campo.getDouble("ancho");
-                            Boolean espera = campo.get("espera").equals(null) ? null : campo.getBoolean("espera");
+                            Integer espera = null;
+                            if (campo.has("orden")) {
+                                espera = campo.get("espera").equals(null) ? null : campo.getInt("espera");
+                            }
                             double largo = campo.getDouble("largo");
                             String nombreCF = campo.getString("nombreCF");
                             String nombreCL = campo.getString("nombreCL");
