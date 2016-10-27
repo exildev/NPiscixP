@@ -45,7 +45,7 @@ public class Planilla {
         return ancho;
     }
 
-    public boolean isEspera() {
+    public Boolean getEspera() {
         return espera;
     }
 
@@ -73,7 +73,7 @@ public class Planilla {
         return piscinero_id;
     }
 
-    public int getPlanilla() {
+    public Integer getPlanilla() {
         return planilla;
     }
 
@@ -81,11 +81,27 @@ public class Planilla {
         return profundidad;
     }
 
-    public boolean isSalida() {
+    public Boolean getSalida() {
         return salida;
     }
 
     public String getTipo() {
         return tipo;
+    }
+
+    public Integer getOrden() {
+        return orden;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
     }
 }

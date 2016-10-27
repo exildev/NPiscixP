@@ -51,6 +51,11 @@
             android:name=".RutaActivity"
             android:label="@string/title_activity_ruta"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".PlanillaActivity"
+            android:label="@string/title_activity_planilla"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
