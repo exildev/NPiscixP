@@ -46,6 +46,11 @@
         <activity android:name=".GalleryActivity"
             android:label="@string/title_activity_gallery"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".RutaActivity"
+            android:label="@string/title_activity_ruta"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

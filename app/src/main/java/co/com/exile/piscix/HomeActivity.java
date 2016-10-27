@@ -1,10 +1,11 @@
 package co.com.exile.piscix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -119,8 +120,8 @@ public class HomeActivity extends AppCompatActivity
                     .commit();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setTitle("Clientes");
-        } else if (id == R.id.nav_rutas) {
-
+        } else if (id == R.id.nav_rutas || id == R.id.rutas_btn) {
+            startActivity(new Intent(this, RutaActivity.class));
         } else if (id == R.id.nav_actividades) {
 
         } else if (id == R.id.nav_reportes || id == R.id.reporte_btn) {

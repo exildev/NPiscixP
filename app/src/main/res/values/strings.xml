@@ -110,5 +110,7 @@
     <string name="title_activity_gallery">Galeria</string>
     <string name="estado_abierto">Abierto</string>
     <string name="estado_cerrado">Cerrado</string>
+    <string name="section_format">Hola %d</string>
     <string name="no_photos">Opps parece que no hay fotos</string>
+    <string name="title_activity_ruta">Mi ruta</string>
 </resources>
