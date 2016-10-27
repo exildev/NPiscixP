@@ -53,7 +53,7 @@ import java.util.ArrayList;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 
 public class ReporteActivity extends AppCompatActivity  {
@@ -229,12 +229,6 @@ public class ReporteActivity extends AppCompatActivity  {
         }
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkGPS();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

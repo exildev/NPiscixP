@@ -60,6 +60,12 @@ public class RutaActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -183,7 +189,7 @@ public class RutaActivity extends AppCompatActivity {
                         holder = (ViewHolder) convertView.getTag();
                     }
 
-                    Planilla planilla = itemList.get(position);
+                    final Planilla planilla = itemList.get(position);
                     if (planilla != null) {
                         holder.title.setText("Piscina " + planilla.getNombreP() + ", tipo " + planilla.getTipo());
                         holder.cliente.setText(planilla.getNombreCF() + " " + planilla.getNombreCL());
@@ -200,7 +206,9 @@ public class RutaActivity extends AppCompatActivity {
                             holder.info_btn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    Log.i("piscina", planilla.getPiscina() + "");
                                     Intent intent = new Intent(getActivity(), PlanillaActivity.class);
+                                    intent.putExtra("piscina", planilla.getPiscina());
                                     getActivity().startActivity(intent);
                                 }
                             });
@@ -245,7 +253,7 @@ public class RutaActivity extends AppCompatActivity {
                             Integer planilla = campo.get("planilla").equals(null) ? null : campo.getInt("planilla");
                             double profundidad = campo.getDouble("profundidad");
                             Boolean salida = campo.get("salida").equals(null) ? null : campo.getBoolean("salida");
-                            ;
+
                             String tipo = campo.getString("tipo");
                             Integer orden = null;
                             if (campo.has("orden")) {

@@ -109,11 +109,13 @@
             android:orientation="horizontal">
 
             <RadioButton
+                android:id="@+id/disminucion_ph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Disminución de PH" />
 
             <RadioButton
+                android:id="@+id/aumento_ph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -126,11 +128,24 @@
             android:layout_marginTop="16dp">
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/nivel_cloro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nivel PH"
+                android:inputType="numberDecimal" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/nivel_ph"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nivel PH"
-                android:inputType="textAutoComplete" />
+                android:inputType="numberDecimal" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
