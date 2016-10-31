@@ -30,12 +30,15 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.lang.String.format;
 
 public class PlanillaActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -44,6 +47,9 @@ public class PlanillaActivity extends AppCompatActivity {
     LocationManager locationManager;
 
     private int piscina;
+    private int planilla;
+    private double lat;
+    private double lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +63,16 @@ public class PlanillaActivity extends AppCompatActivity {
                 finish();
             }
         });
+        hideLoading();
 
         piscina = getIntent().getIntExtra("piscina", -1);
 
-        hideLoading();
+        if (getIntent().hasExtra("planilla")) {
+            planilla = getIntent().getIntExtra("planilla", -1);
+            getData();
+        } else {
+            planilla = -1;
+        }
 
         validPermissions();
     }
@@ -121,10 +133,13 @@ public class PlanillaActivity extends AppCompatActivity {
         final TextInputEditText nivel_ph = (TextInputEditText) findViewById(R.id.nivel_ph);
         final TextInputEditText nivel_cloro = (TextInputEditText) findViewById(R.id.nivel_cloro);
         final TextInputEditText observaciones = (TextInputEditText) findViewById(R.id.observaciones);
-        final String latitud = format("%s", getLastBestLocation().getLatitude());
-        final String longitud = format("%s", getLastBestLocation().getLongitude());
+        final String latitud = planilla == -1 ? String.valueOf(getLastBestLocation().getLatitude()) : String.valueOf(lat);
+        final String longitud = planilla == -1 ? String.valueOf(getLastBestLocation().getLongitude()) : String.valueOf(lng);
 
         String url = "http://104.236.33.228:8050/actividades/planilladiaria/form/";
+        if (planilla != -1) {
+            url = "http://104.236.33.228:8050/actividades/planilladiaria/edit/form/" + planilla + "/";
+        }
         final StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -194,6 +209,65 @@ public class PlanillaActivity extends AppCompatActivity {
         };
         loginRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(this).addToRequestQueue(loginRequest);
+    }
+
+    void getData() {
+        showLoading();
+        String url = "http://104.236.33.228:8050/actividades/planilladiaria/list/?pk=" + planilla;
+        JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    hideLoading();
+                    JSONArray object_list = response.getJSONArray("object_list");
+
+                    if (object_list.length() > 0) {
+                        JSONObject campo = object_list.getJSONObject(0);
+
+                        CheckBox cepillado = (CheckBox) findViewById(R.id.cepillado);
+                        CheckBox aspirado = (CheckBox) findViewById(R.id.aspirado);
+                        CheckBox retrolavado = (CheckBox) findViewById(R.id.retrolavado);
+                        CheckBox aumento_agua = (CheckBox) findViewById(R.id.aumento_agua);
+                        CheckBox aplicacion_cloro = (CheckBox) findViewById(R.id.aplicacion_cloro);
+                        CheckBox aplicacion_sulfato_al = (CheckBox) findViewById(R.id.aplicacion_sulfato_al);
+                        CheckBox clasificador_alg = (CheckBox) findViewById(R.id.clasificador_agl);
+                        CheckBox espera = (CheckBox) findViewById(R.id.espera);
+                        RadioButton disminucion_ph = (RadioButton) findViewById(R.id.disminucion_ph);
+                        RadioButton aumento_ph = (RadioButton) findViewById(R.id.aumento_ph);
+                        TextInputEditText nivel_ph = (TextInputEditText) findViewById(R.id.nivel_ph);
+                        TextInputEditText nivel_cloro = (TextInputEditText) findViewById(R.id.nivel_cloro);
+                        TextInputEditText observaciones = (TextInputEditText) findViewById(R.id.observaciones);
+
+                        cepillado.setChecked(campo.getBoolean("cepillado"));
+                        aspirado.setChecked(campo.getBoolean("aspirado"));
+                        retrolavado.setChecked(campo.getBoolean("retrolavado"));
+                        aumento_agua.setChecked(campo.getBoolean("aumento_agua"));
+                        aplicacion_cloro.setChecked(campo.getBoolean("aplicacion_cloro"));
+                        aplicacion_sulfato_al.setChecked(campo.getBoolean("aplicacion_sulfato_al"));
+                        clasificador_alg.setChecked(campo.getBoolean("clasificador_alg"));
+                        espera.setChecked(campo.getBoolean("espera"));
+                        disminucion_ph.setChecked(campo.getBoolean("disminucion_ph"));
+                        aumento_ph.setChecked(campo.getBoolean("aumento_ph"));
+                        nivel_ph.setText(String.valueOf(campo.getDouble("nivel_ph")));
+                        nivel_cloro.setText(String.valueOf(campo.getDouble("nivel_cloro")));
+                        observaciones.setText(campo.getString("observaciones"));
+
+                        lat = campo.getDouble("latitud");
+                        lng = campo.getDouble("longitud");
+                        Log.i("json", campo.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Activities", error.toString());
+            }
+        });
+
+        VolleySingleton.getInstance(this).addToRequestQueue(reportesRequest);
     }
 
     private void showLoading() {

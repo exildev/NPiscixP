@@ -6,7 +6,7 @@ package co.com.exile.piscix.models;
 
 public class Planilla {
     private double ancho;
-    private Integer espera;
+    private Boolean espera;
     private double largo;
     private String nombreCF;
     private String nombreCL;
@@ -22,7 +22,7 @@ public class Planilla {
     private Double latitud;
     private Double longitud;
 
-    public Planilla(double ancho, Integer espera, double largo, String nombreCF, String nombreCL, String nombreP, int piscina, int piscinero_id, Integer planilla, double profundidad, Boolean salida, String tipo, Integer orden, Integer id, Double latitud, Double longitud) {
+    public Planilla(double ancho, Boolean espera, double largo, String nombreCF, String nombreCL, String nombreP, int piscina, int piscinero_id, Integer planilla, double profundidad, Boolean salida, String tipo, Integer orden, Integer id, Double latitud, Double longitud) {
         this.ancho = ancho;
         this.espera = espera;
         this.largo = largo;
@@ -45,7 +45,7 @@ public class Planilla {
         return ancho;
     }
 
-    public Integer getEspera() {
+    public Boolean getEspera() {
         return espera;
     }
 

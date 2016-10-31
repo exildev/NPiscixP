@@ -211,16 +211,28 @@ public class RutaActivity extends AppCompatActivity {
 
                     final Planilla planilla = itemList.get(position);
                     if (planilla != null) {
+                        Log.i("espera", planilla.getEspera() + "");
                         holder.title.setText("Piscina " + planilla.getNombreP() + ", tipo " + planilla.getTipo());
                         holder.cliente.setText(planilla.getNombreCF() + " " + planilla.getNombreCL());
                         holder.medidas.setText(planilla.getProfundidad() + "m alto, " + planilla.getAncho() + "m ancho, " + planilla.getLargo() + "m largo");
 
-                        if (planilla.getPlanilla() != null && (planilla.getSalida() != null && planilla.getSalida()) && (planilla.getEspera() == null)) {
+                        if (planilla.getPlanilla() != null && (planilla.getSalida() != null && planilla.getSalida()) && (planilla.getEspera() == null || !planilla.getEspera())) {
                             holder.action_image.setImageResource(R.drawable.ic_done_all_24dp);
-                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() == null)) {
+                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() == null || !planilla.getEspera())) {
                             holder.action_image.setImageResource(R.drawable.ic_done_24dp);
-                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() != null)) {
+                        } else if (planilla.getPlanilla() != null && (planilla.getSalida() == null || !planilla.getSalida()) && (planilla.getEspera() != null && planilla.getEspera())) {
                             holder.action_image.setImageResource(R.drawable.ic_edit_24dp);
+                            holder.info_btn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Log.i("piscina", planilla.getPiscina() + "");
+                                    Log.i("planilla", planilla.getPlanilla() + "");
+                                    Intent intent = new Intent(getActivity(), PlanillaActivity.class);
+                                    intent.putExtra("piscina", planilla.getPiscina());
+                                    intent.putExtra("planilla", planilla.getPlanilla());
+                                    PlaceholderFragment.this.startActivityForResult(intent, PLANILLA_RESULT);
+                                }
+                            });
                         } else if (planilla.getPlanilla() == null) {
                             holder.action_image.setImageResource(R.drawable.ic_content_paste_24dp);
                             holder.info_btn.setOnClickListener(new View.OnClickListener() {
@@ -263,9 +275,9 @@ public class RutaActivity extends AppCompatActivity {
                         for (int i = 0; i < object_list.length(); i++) {
                             JSONObject campo = object_list.getJSONObject(i);
                             double ancho = campo.getDouble("ancho");
-                            Integer espera = null;
-                            if (campo.has("orden")) {
-                                espera = campo.get("espera").equals(null) ? null : campo.getInt("espera");
+                            Boolean espera = null;
+                            if (campo.has("espera")) {
+                                espera = campo.get("espera").equals(null) ? null : campo.getBoolean("espera");
                             }
                             double largo = campo.getDouble("largo");
                             String nombreCF = campo.getString("nombreCF");
