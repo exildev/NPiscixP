@@ -207,6 +207,13 @@ public class ListReporteFragment extends Fragment {
                             initGallery(position);
                         }
                     });
+
+                    holder.chat_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(ListReporteFragment.this.getActivity(), ChatActivity.class));
+                        }
+                    });
                 }
 
                 final View action = convertView.findViewById(R.id.action);
