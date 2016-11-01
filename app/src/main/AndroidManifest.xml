@@ -43,19 +43,22 @@
             android:name=".ListReporteActivity"
             android:label="@string/title_activity_list_reporte"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".GalleryActivity"
+        <activity
+            android:name=".GalleryActivity"
             android:label="@string/title_activity_gallery"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".RutaActivity"
             android:label="@string/title_activity_ruta"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".PlanillaActivity"
             android:label="@string/title_activity_planilla"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ChatActivity"
+            android:label="@string/title_activity_chat"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

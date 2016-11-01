@@ -114,4 +114,5 @@
     <string name="no_photos">Opps parece que no hay fotos</string>
     <string name="title_activity_ruta">Mi ruta</string>
     <string name="title_activity_planilla">Planilla</string>
+    <string name="title_activity_chat">ChatActivity</string>
 </resources>
