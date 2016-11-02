@@ -9,15 +9,13 @@
     tools:context="co.com.exile.piscix.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
-    <com.softw4re.views.InfiniteListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/content_chat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#EEEEEE"
-        app:scrollbarVisible="true"
-        app:dividerVisible="false"
-        app:swipeRefreshIndicatorColor="@color/colorAccent" />
+        app:scrollbarVisible="true" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
