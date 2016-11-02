@@ -2,77 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#EEEEEE"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="co.com.exile.piscix.ChatActivity"
     tools:showIn="@layout/activity_chat">
 
+    <com.softw4re.views.InfiniteListView
+        android:id="@+id/content_chat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#EEEEEE"
+        app:scrollbarVisible="true"
+        app:dividerVisible="false"
+        app:swipeRefreshIndicatorColor="@color/colorAccent" />
 
     <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="72dp"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="@color/colorPrimary"
-        app:cardElevation="0dp">
+        android:layout_gravity="bottom|end">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/fab_margin"
-            android:orientation="vertical">
+            android:padding="8dp"
+            android:gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/white"
-                android:text="Yamid Pico"
-                android:textStyle="bold" />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Escribe algo..."
+                android:background="@android:color/transparent" />
 
-            <TextView
+            <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:layout_marginTop="8dp"
-                android:text="@string/appbar_scrolling_view_behavior" />
+                android:src="@drawable/ic_send_24dp"
+                android:layout_marginStart="8dp"
+                app:elevation="0dp"
+                app:fabSize="mini" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="end"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/fab_margin"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/white"
-                android:text="Yamid Pico"
-                android:visibility="gone"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/appbar_scrolling_view_behavior" />
-        </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

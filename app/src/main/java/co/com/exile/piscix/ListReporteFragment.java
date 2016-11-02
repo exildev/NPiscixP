@@ -166,7 +166,7 @@ public class ListReporteFragment extends Fragment {
                     holder = (ListReporteActivity.ViewHolder) convertView.getTag();
                 }
 
-                Reporte reporte = itemList.get(position);
+                final Reporte reporte = itemList.get(position);
                 if (reporte != null) {
                     holder.nombre.setText(reporte.getNombre());
                     holder.cierre.setText(reporte.getCierre());
@@ -211,7 +211,9 @@ public class ListReporteFragment extends Fragment {
                     holder.chat_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            startActivity(new Intent(ListReporteFragment.this.getActivity(), ChatActivity.class));
+                            Intent intent = new Intent(ListReporteFragment.this.getActivity(), ChatActivity.class);
+                            intent.putExtra("reporte", reporte.getId());
+                            startActivity(intent);
                         }
                     });
                 }
