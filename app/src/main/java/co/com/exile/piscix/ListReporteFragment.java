@@ -213,6 +213,9 @@ public class ListReporteFragment extends Fragment {
                         public void onClick(View view) {
                             Intent intent = new Intent(ListReporteFragment.this.getActivity(), ChatActivity.class);
                             intent.putExtra("reporte", reporte.getId());
+                            intent.putExtra("reporte_title", reporte.getNombre());
+                            intent.putExtra("reporte_fecha", reporte.getFecha());
+                            intent.putExtra("reporte_cliente", reporte.getCliente());
                             startActivity(intent);
                         }
                     });

@@ -115,4 +115,5 @@
     <string name="title_activity_ruta">Mi ruta</string>
     <string name="title_activity_planilla">Planilla</string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
 </resources>

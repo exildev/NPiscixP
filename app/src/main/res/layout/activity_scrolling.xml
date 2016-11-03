@@ -2,11 +2,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="co.com.exile.piscix.ChatActivity">
+    tools:context="co.com.exile.piscix.ScrollingActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -14,7 +13,7 @@
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:expanded="false">
+        app:expanded="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
@@ -29,7 +28,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="?attr/actionBarSize"
-                app:layout_collapseMode="parallax"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -43,6 +41,7 @@
                         android:clickable="true">
 
                         <android.support.v7.widget.CardView
+                            android:id="@+id/pedido_icon_card"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerInParent="true"
@@ -72,14 +71,12 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/reporte_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Title reporte"
                             style="@style/Base.TextAppearance.AppCompat.Title" />
 
                         <TextView
-                            android:id="@+id/reporte_fecha"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="May 26, 2015"
@@ -111,7 +108,6 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/reporte_cliente"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Pepito Perez"
@@ -130,5 +126,15 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_chat" />
+    <include layout="@layout/content_scrolling" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+
 </android.support.design.widget.CoordinatorLayout>
