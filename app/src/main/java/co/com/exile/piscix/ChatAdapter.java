@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ContactoViewHo
         TextView mensaje;
         TextView user;
         CardView bubble;
+        ImageView status;
 
 
         ContactoViewHolder(View itemView) {
@@ -39,6 +41,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ContactoViewHo
             user = (TextView) itemView.findViewById(R.id.user);
             mensaje = (TextView) itemView.findViewById(R.id.message);
             bubble = (CardView) itemView.findViewById(R.id.bubble);
+            status = (ImageView) itemView.findViewById(R.id.status);
         }
     }
 
@@ -82,12 +85,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ContactoViewHo
             } else {
                 contactoViewHolder.user.setVisibility(View.VISIBLE);
             }
+            contactoViewHolder.status.setVisibility(View.GONE);
             contactoViewHolder.bubble.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
             layoutParams.setMargins(min_margin, top_margin, max_margin, bottom_margin);
         } else {
             contactoViewHolder.user.setVisibility(View.GONE);
             contactoViewHolder.bubble.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
             contactoViewHolder.mensaje.setTextColor(ContextCompat.getColor(context, R.color.grey));
+            contactoViewHolder.status.setVisibility(View.VISIBLE);
+            if (mensaje.isStatus()) {
+                contactoViewHolder.status.setImageResource(R.drawable.ic_done_24dp);
+            } else {
+                contactoViewHolder.status.setImageResource(R.drawable.ic_schedule_black_24_grey);
+            }
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
             layoutParams.setMargins(max_margin, top_margin, min_margin, bottom_margin);
         }

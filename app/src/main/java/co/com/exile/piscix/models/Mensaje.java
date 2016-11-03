@@ -5,12 +5,14 @@ public class Mensaje {
     private String mensaje;
     private boolean tu;
     private String user;
+    private boolean status;
 
-    public Mensaje(String fecha, String mensaje, boolean tu, String user) {
+    public Mensaje(String fecha, String mensaje, boolean tu, String user, boolean status) {
         this.fecha = fecha;
         this.mensaje = mensaje;
         this.tu = tu;
         this.user = user;
+        this.status = status;
     }
 
     public String getFecha() {
@@ -27,5 +29,13 @@ public class Mensaje {
 
     public String getUser() {
         return user;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
