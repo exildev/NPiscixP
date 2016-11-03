@@ -133,7 +133,6 @@ public class ListReporteFragment extends Fragment {
 
             @Override
             public void onItemLongClick(int i) {
-                Toast.makeText(getContext(), "long click", Toast.LENGTH_LONG).show();
             }
 
             @NonNull
@@ -431,7 +430,6 @@ public class ListReporteFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK && data != null) {
             images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
-            Toast.makeText(this.getContext(), "Hola", Toast.LENGTH_SHORT).show();
         }
     }
 

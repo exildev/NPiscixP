@@ -1,16 +1,26 @@
 package co.com.exile.piscix;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
@@ -27,7 +37,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -62,6 +71,10 @@ import co.com.exile.piscix.models.Reporte;
 import static java.lang.String.format;
 
 public class ListReporteActivity extends AppCompatActivity {
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
+    LocationManager locationManager;
 
     private static final int REQUEST_CODE_PICKER = 2;
     private ArrayList<Image> images;
@@ -98,6 +111,8 @@ public class ListReporteActivity extends AppCompatActivity {
         if (getIntent().hasExtra("send")){
             Snackbar.make(fab, "Registro guardado con exito", 1000).show();
         }
+
+        validPermissions();
     }
 
     @Override
@@ -121,7 +136,7 @@ public class ListReporteActivity extends AppCompatActivity {
                 search = s;
                 infiniteListView.clearList();
                 page = 1;
-                getClientes();
+                getReportes();
                 return false;
             }
         });
@@ -135,37 +150,33 @@ public class ListReporteActivity extends AppCompatActivity {
         final InfiniteListAdapter adapter = new InfiniteListAdapter<Reporte>(this, R.layout.reporte, itemList) {
             @Override
             public void onNewLoadRequired() {
-                getClientes();
+                getReportes();
             }
 
             @Override
             public void onRefresh() {
                 infiniteListView.clearList();
                 page = 1;
-                getClientes();
+                getReportes();
             }
 
             @Override
             public void onItemClick(int i) {
-                int id = itemList.get(i).getId();
-                Toast.makeText(getContext(), "click", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onItemLongClick(int i) {
-                Toast.makeText(getContext(), "long click", Toast.LENGTH_LONG).show();
             }
 
             @NonNull
             @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
-                final int i = position;
-                ViewHolder holder;
+                ListReporteActivity.ViewHolder holder;
 
                 if (convertView == null) {
                     convertView = getLayoutInflater().inflate(R.layout.reporte, parent, false);
-                    holder = new ViewHolder();
+                    holder = new ListReporteActivity.ViewHolder();
                     holder.nombre = (TextView) convertView.findViewById(R.id.nombre);
                     holder.subtitle = (TextView) convertView.findViewById(R.id.subtitle);
                     holder.cierre = (TextView) convertView.findViewById(R.id.cierre);
@@ -177,15 +188,17 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.tipo = (TextView) convertView.findViewById(R.id.tipo);
                     holder.solution_button = (Button) convertView.findViewById(R.id.solution_button);
                     holder.chat_button = (Button) convertView.findViewById(R.id.chat_button);
+                    holder.photos_button = (Button) convertView.findViewById(R.id.photos_button);
                     holder.icon = (CardView) convertView.findViewById(R.id.pedido_icon_card);
                     holder.numero = (TextView) convertView.findViewById(R.id.numero);
+
                     convertView.setTag(holder);
 
                 } else {
-                    holder = (ViewHolder) convertView.getTag();
+                    holder = (ListReporteActivity.ViewHolder) convertView.getTag();
                 }
 
-                Reporte reporte = itemList.get(position);
+                final Reporte reporte = itemList.get(position);
                 if (reporte != null) {
                     holder.nombre.setText(reporte.getNombre());
                     holder.cierre.setText(reporte.getCierre());
@@ -217,7 +230,25 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.solution_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            solucion(i);
+                            solucion(view, position);
+                        }
+                    });
+                    holder.photos_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            initGallery(position);
+                        }
+                    });
+
+                    holder.chat_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(ListReporteActivity.this, ChatActivity.class);
+                            intent.putExtra("reporte", reporte.getId());
+                            intent.putExtra("reporte_title", reporte.getNombre());
+                            intent.putExtra("reporte_fecha", reporte.getFecha());
+                            intent.putExtra("reporte_cliente", reporte.getCliente());
+                            startActivity(intent);
                         }
                     });
                 }
@@ -235,10 +266,18 @@ public class ListReporteActivity extends AppCompatActivity {
         };
 
         infiniteListView.setAdapter(adapter);
-        getClientes();
+        getReportes();
     }
 
-    void getClientes() {
+    private void initGallery(int position) {
+        int id = itemList.get(position).getId();
+        Intent intent = new Intent(this, GalleryActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("url", "http://104.236.33.228:8050/reportes/fotoreporte/list/?reporte=");
+        startActivity(intent);
+    }
+
+    void getReportes() {
         int id = getIntent().getIntExtra("id", -1);
         infiniteListView.startLoading();
         String url = "http://104.236.33.228:8050/reportes/reporte/list/?piscina__casa__cliente="+id+"&page=" + page + "&search=" + search;
@@ -351,7 +390,7 @@ public class ListReporteActivity extends AppCompatActivity {
         va.start();
     }
 
-    private void solucion(final int position) {
+    private void solucion(final View view, final int position) {
         new MaterialDialog.Builder(this)
                 .title("Solución")
                 .customView(R.layout.solucion, true)
@@ -401,6 +440,33 @@ public class ListReporteActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                validPermissions();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Para que esta aplicación funcione correctamente usted debe dar permisos de acceso al GPS ¿Desea hacerlo ahora?")
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                validPermissions();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ListReporteActivity.this.finish();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+    }
+
     public void openPicker() {
         Intent intent = new Intent(this, ImagePickerActivity.class);
 
@@ -418,12 +484,14 @@ public class ListReporteActivity extends AppCompatActivity {
 
     private void send(final MaterialDialog dialog, int position) {
 
-        View view = dialog.getCustomView();
         dialog.dismiss();
+        View view = dialog.getCustomView();
 
         String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
         String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
         String reporte = String.valueOf(itemList.get(position).getId());
+        String latitud = format("%s", getLastBestLocation().getLatitude());
+        String longitud = format("%s", getLastBestLocation().getLongitude());
 
         if (nombre.equals("")) {
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
@@ -444,12 +512,12 @@ public class ListReporteActivity extends AppCompatActivity {
         }
 
         if (images.size() < 1) {
-            send(nombre, descripcion, reporte);
+            send(nombre, descripcion, reporte, latitud, longitud);
             return;
         }
 
         final MaterialDialog loading = new MaterialDialog.Builder(this)
-                .title("Guardando la solución")
+                .title("Subiendo reporte")
                 .content("Por favor espere")
                 .progress(true, 0)
                 .show();
@@ -470,7 +538,9 @@ public class ListReporteActivity extends AppCompatActivity {
                             .addParameter("nombre", nombre)
                             .addParameter("descripcion", descripcion)
                             .addParameter("reporte", reporte)
-                            .addParameter("fotosolucion_set-TOTAL_FORMS", format("%d", images.size()))
+                            .addParameter("latitud", latitud)
+                            .addParameter("longitud", longitud)
+                            .addParameter("fotosolucion_set-TOTAL_FORMS", String.valueOf(images.size()))
                             .addParameter("fotosolucion_set-INITIAL_FORMS", "0")
                             .addParameter("fotosolucion_set-MIN_NUM_FORMS", "0")
                             .addParameter("fotosolucion_set-MAX_NUM_FORMS", "5");
@@ -496,7 +566,7 @@ public class ListReporteActivity extends AppCompatActivity {
                     loading.dismiss();
                     infiniteListView.clearList();
                     page = 1;
-                    getClientes();
+                    getReportes();
                     Log.e("send", "code: " + serverResponse.getHttpCode());
                     Log.e("send", serverResponse.getBodyAsString());
                 }
@@ -510,9 +580,9 @@ public class ListReporteActivity extends AppCompatActivity {
         }
     }
 
-    public void send(final String nombre, final String descripcion, final String reporte){
+    public void send(final String nombre, final String descripcion, final String reporte, final String latitud, final String longitud) {
         final MaterialDialog loading = new MaterialDialog.Builder(this)
-                .title("Guardando solución")
+                .title("Guardando solucion")
                 .content("Por favor espere")
                 .progress(true, 0)
                 .show();
@@ -525,7 +595,7 @@ public class ListReporteActivity extends AppCompatActivity {
                         loading.dismiss();
                         infiniteListView.clearList();
                         page = 1;
-                        getClientes();
+                        getReportes();
                         loading.dismiss();
                     }
                 },
@@ -541,6 +611,8 @@ public class ListReporteActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("nombre", nombre);
                 params.put("descripcion", descripcion);
+                params.put("latitud", latitud);
+                params.put("longitud", longitud);
                 params.put("reporte", reporte);
                 params.put("fotosolucion_set-TOTAL_FORMS", "0");
                 params.put("fotosolucion_set-INITIAL_FORMS", "0");
@@ -568,5 +640,102 @@ public class ListReporteActivity extends AppCompatActivity {
         Button chat_button;
         Button solution_button;
         Button photos_button;
+    }
+
+
+    private void validPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            } else if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            } else {
+                checkGPS();
+            }
+        } else {
+            checkGPS();
+        }
+    }
+
+    private void checkGPS() {
+        LocationManager L = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!L.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Para que esta aplicación funcione correctamente debe estar atcivado el GPS\n¿Desea activarlo ahora?")
+                    .setCancelable(false)
+                    .setPositiveButton("Activar GPS", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent I = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(I);
+                        }
+                    })
+                    .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ListReporteActivity.this.finish();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            initGPS();
+        }
+    }
+
+    private void initGPS() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            validPermissions();
+            return;
+        }
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+    }
+
+    @Nullable
+    private Location getLastBestLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            validPermissions();
+            return null;
+        }
+        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        long GPSLocationTime = 0;
+        if (null != locationGPS) {
+            GPSLocationTime = locationGPS.getTime();
+        }
+
+        long NetLocationTime = 0;
+
+        if (null != locationNet) {
+            NetLocationTime = locationNet.getTime();
+        }
+
+        if (0 < GPSLocationTime - NetLocationTime) {
+            return locationGPS;
+        } else {
+            return locationNet;
+        }
     }
 }
