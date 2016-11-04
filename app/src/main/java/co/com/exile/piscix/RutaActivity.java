@@ -411,7 +411,7 @@ public class RutaActivity extends AppCompatActivity {
 
         void salida(final Planilla planilla) {
             final String nombre = "Salida de piscina " + planilla.getNombreP();
-            final String descripcion = "Actividad de mantenimiento finalizada en la piscina " + planilla.getNombreP() + " del cliente " + planilla.getNombreCF() + " " + planilla.getNombreCL();
+            final String descripcion = "actividad de mantenimiento finalizada en la piscina " + planilla.getNombreP() + " del cliente " + planilla.getNombreCF() + " " + planilla.getNombreCL();
             final String latitud = String.valueOf(getLastBestLocation().getLatitude());
             final String longitud = String.valueOf(getLastBestLocation().getLongitude());
 

@@ -122,8 +122,8 @@ public class HomeActivity extends AppCompatActivity
             toolbar.setTitle("Clientes");
         } else if (id == R.id.nav_rutas || id == R.id.rutas_btn) {
             startActivity(new Intent(this, RutaActivity.class));
-        } else if (id == R.id.nav_actividades) {
-
+        } else if (id == R.id.nav_actividades || id == R.id.actividades_btn) {
+            startActivity(new Intent(this, CalendarActivity.class));
         } else if (id == R.id.nav_reportes || id == R.id.reporte_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);

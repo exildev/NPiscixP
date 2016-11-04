@@ -127,8 +127,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mSocket
-                .disconnect()
+        mSocket.disconnect()
                 .close();
         super.onDestroy();
     }

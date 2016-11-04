@@ -39,5 +39,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.afollestad.material-dialogs:core:0.9.0.2'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
+    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
     testCompile 'junit:junit:4.12'
 }

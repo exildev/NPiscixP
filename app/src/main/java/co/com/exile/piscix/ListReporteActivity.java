@@ -642,7 +642,6 @@ public class ListReporteActivity extends AppCompatActivity {
         Button photos_button;
     }
 
-
     private void validPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
