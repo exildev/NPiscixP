@@ -164,7 +164,7 @@ public class HomeActivity extends AppCompatActivity
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setTitle("Informativos");
         } else if (id == R.id.nav_about) {
-
+            startActivity(new Intent(this, AboutActivity.class));
         } else if (id == R.id.nav_logout) {
             User.delete(this);
             String url = "http://104.236.33.228:8050/usuarios/logout/";
