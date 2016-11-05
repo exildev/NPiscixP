@@ -20,7 +20,7 @@
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginTop="@dimen/text_margin"
             android:textColor="@color/colorAccent"
-            android:text="Piscix" />
+            android:text="@string/about_title" />
 
         <TextView
             android:layout_width="wrap_content"

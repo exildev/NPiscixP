@@ -27,7 +27,7 @@
                 android:id="@+id/cepillado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cepillado" />
+                android:text="@string/cepillado" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -39,7 +39,7 @@
                 android:id="@+id/aspirado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Aspirado" />
+                android:text="@string/aspirado" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -51,7 +51,7 @@
                 android:id="@+id/retrolavado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Retrolavado" />
+                android:text="@string/retrolavado" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -63,7 +63,7 @@
                 android:id="@+id/aumento_agua"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Aumento de agua" />
+                android:text="@string/aumento_de_agua" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -75,7 +75,7 @@
                 android:id="@+id/aplicacion_cloro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Aplicación cloro" />
+                android:text="@string/aplicaci_n_cloro" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -87,7 +87,7 @@
                 android:id="@+id/aplicacion_sulfato_al"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Aplicación Sulfato Al" />
+                android:text="@string/aplicaci_n_sulfato_al" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -99,7 +99,7 @@
                 android:id="@+id/clasificador_agl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Clasificador AGL" />
+                android:text="@string/clasificador_agl" />
         </android.support.design.widget.TextInputLayout>
 
         <RadioGroup
@@ -112,14 +112,14 @@
                 android:id="@+id/disminucion_ph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Disminución de PH" />
+                android:text="@string/disminuci_n_de_ph" />
 
             <RadioButton
                 android:id="@+id/aumento_ph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Aumento de PH" />
+                android:text="@string/aumento_de_ph" />
         </RadioGroup>
 
         <android.support.design.widget.TextInputLayout
@@ -131,7 +131,7 @@
                 android:id="@+id/nivel_cloro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nivel PH"
+                android:hint="@string/nivel_cloro"
                 android:inputType="numberDecimal" />
         </android.support.design.widget.TextInputLayout>
 
@@ -144,7 +144,7 @@
                 android:id="@+id/nivel_ph"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nivel PH"
+                android:hint="@string/nivel_ph"
                 android:inputType="numberDecimal" />
         </android.support.design.widget.TextInputLayout>
 
@@ -157,7 +157,7 @@
                 android:id="@+id/observaciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Observaciones"
+                android:hint="@string/observaciones"
                 android:inputType="textMultiLine" />
         </android.support.design.widget.TextInputLayout>
 
@@ -170,7 +170,7 @@
                 android:id="@+id/espera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Poner en espera" />
+                android:text="@string/poner_en_espera" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 

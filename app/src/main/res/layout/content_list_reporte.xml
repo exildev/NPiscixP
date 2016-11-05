@@ -11,6 +11,4 @@
     app:dividerVisible="false"
     app:swipeRefreshIndicatorColor="@color/colorAccent"
     tools:context="co.com.exile.piscix.ListReporteActivity"
-    tools:showIn="@layout/activity_list_reporte">
-
-</com.softw4re.views.InfiniteListView>
+    tools:showIn="@layout/activity_list_reporte" />

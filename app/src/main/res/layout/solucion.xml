@@ -13,7 +13,7 @@
             android:id="@+id/nombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre"
+            android:hint="@string/nombre"
             android:inputType="textAutoComplete" />
     </android.support.design.widget.TextInputLayout>
 
@@ -27,7 +27,7 @@
             android:id="@+id/descripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripcion"
+            android:hint="@string/descripcion"
             android:inputType="textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 

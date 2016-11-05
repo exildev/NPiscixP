@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/buttonBarButtonStyle"
-                android:text="10/10/2016"
+                android:text="@string/date_format"
                 android:textColor="@color/white"
                 android:drawableStart="@drawable/ic_date_range_24dp"
                 android:onClick="setDate" />
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/buttonBarButtonStyle"
-                android:text="10/10/2016"
+                android:text="@string/date_format"
                 android:textColor="@color/white"
                 android:drawableStart="@drawable/ic_date_range_24dp"
                 android:onClick="setDate" />

@@ -3,21 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-tools:context="co.com.exile.piscix.InformativoFragment">
-<com.softw4re.views.InfiniteListView
-    android:id="@+id/content_informativo"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="8dp"
-    app:dividerVisible="false"
-    app:scrollbarVisible="true"
-    app:swipeRefreshIndicatorColor="@color/colorAccent" />
-<android.support.design.widget.FloatingActionButton
-    android:id="@+id/add_fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentBottom="true"
-    android:src="@drawable/ic_add_24dp"
-    android:layout_margin="@dimen/fab_margin" />
+    tools:context="co.com.exile.piscix.InformativoFragment">
+
+    <com.softw4re.views.InfiniteListView
+        android:id="@+id/content_informativo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        app:dividerVisible="false"
+        app:scrollbarVisible="true"
+        app:swipeRefreshIndicatorColor="@color/colorAccent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_24dp" />
 </RelativeLayout>

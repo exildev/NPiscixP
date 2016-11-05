@@ -10,4 +10,4 @@
     app:swipeRefreshIndicatorColor="@color/colorAccent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="co.com.exile.piscix.CalendarActivity"
-    tools:showIn="@layout/activity_calendar"></com.softw4re.views.InfiniteListView>
+    tools:showIn="@layout/activity_calendar" />

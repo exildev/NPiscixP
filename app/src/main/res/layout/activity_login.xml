@@ -1,82 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="co.com.exile.piscix.LoginActivity">
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/progress"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:visibility="invisible"
+            app:cpv_animAutostart="true"
+            app:cpv_indeterminate="true" />
+
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/icono"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon" />
+    </RelativeLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/username_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true"
-        android:padding="16dp">
+        android:layout_marginTop="8dp">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-            <com.github.rahatarmanahmed.cpv.CircularProgressView
-                android:id="@+id/progress"
-                android:layout_width="190dp"
-                android:layout_height="190dp"
-                app:cpv_animAutostart="true"
-                app:cpv_indeterminate="true"
-                android:visibility="invisible"/>
-            <ImageView
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:scaleType="centerInside"
-                android:layout_centerInParent="true"
-                android:src="@drawable/icon" />
-        </RelativeLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/username_container"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:hint="@string/username_hint"
+            android:inputType="text" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Usuario"
-                android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/password_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/password_container"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:hint="@string/password_hint"
+            android:inputType="textPassword" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Contraseña"
-                android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <Button
+        android:id="@+id/send_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="login"
+        android:text="@string/send_button"
+        android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/send_button"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:onClick="login"
-            android:text="Enviar"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
