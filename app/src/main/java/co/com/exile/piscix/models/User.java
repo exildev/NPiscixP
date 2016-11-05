@@ -47,6 +47,18 @@ public class User implements Serializable {
         }
     }
 
+    public static void delete(Context context) {
+        try {
+            FileOutputStream fos = context.openFileOutput("user", Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(null);
+            os.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static User get(Context context){
         try {
             FileInputStream fis = context.openFileInput("user");

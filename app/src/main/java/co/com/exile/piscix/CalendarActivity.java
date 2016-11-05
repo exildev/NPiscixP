@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import co.com.exile.piscix.models.Actividad;
 
@@ -163,7 +164,7 @@ public class CalendarActivity extends AppCompatActivity {
 
     private void loadActivities() {
         infiniteListView.startLoading();
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String s = formater.format(start.getTime());
         String e = formater.format(end.getTime());
         String url = "http://104.236.33.228:8050/notificaciones/calendar/?start=" + s + "&end=" + e;
