@@ -188,10 +188,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getCliente() {
-
-        int id = getIntent().getIntExtra("id", -1);
         showLoading();
-        String url = "http://104.236.33.228:8050/usuarios/single/cliente/" + id + "/";
+        int id = getIntent().getIntExtra("id", -1);
+        String serviceUrl = getString(R.string.get_cliente, id);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest formRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

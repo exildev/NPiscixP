@@ -26,8 +26,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -96,29 +94,6 @@ public class RutaActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ruta, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -287,11 +262,12 @@ public class RutaActivity extends AppCompatActivity {
 
         void getReportes() {
             infiniteListView.startLoading();
-            String url = "http://104.236.33.228:8050/actividades/planilladiaria/pendiente/list/?page=" + page;
+            String serviceUrl = getString(R.string.planillas_pendientes, page);
             int section = getArguments().getInt(ARG_SECTION_NUMBER);
             if (section == 1) {
-                url = "http://104.236.33.228:8050/usuarios/service/list/asignaciones/?asigna=True&page=" + page;
+                serviceUrl = getString(R.string.asignaciones, page);
             }
+            String url = getString(R.string.url, serviceUrl);
             JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -378,7 +354,8 @@ public class RutaActivity extends AppCompatActivity {
         }
 
         void salida(int planillaId, final MaterialDialog loading) {
-            String url = "http://104.236.33.228:8050/actividades/planilladiaria/form/" + planillaId + "/";
+            String serviceUrl = getString(R.string.salida_planilla, planillaId);
+            String url = getString(R.string.url, serviceUrl);
             StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override
@@ -410,18 +387,19 @@ public class RutaActivity extends AppCompatActivity {
         }
 
         void salida(final Planilla planilla) {
-            final String nombre = "Salida de piscina " + planilla.getNombreP();
-            final String descripcion = "actividad de mantenimiento finalizada en la piscina " + planilla.getNombreP() + " del cliente " + planilla.getNombreCF() + " " + planilla.getNombreCL();
+            final String nombre = getString(R.string.salida_planilla_nombre, planilla.getNombreP());
+            final String descripcion = getString(R.string.salida_planilla_desc, planilla.getNombreP(), planilla.getNombreCF(), planilla.getNombreCL());
             final String latitud = String.valueOf(getLastBestLocation().getLatitude());
             final String longitud = String.valueOf(getLastBestLocation().getLongitude());
 
             final MaterialDialog loading = new MaterialDialog.Builder(this.getContext())
-                    .title("Guardando cambios")
-                    .content("Por favor espere")
+                    .title(R.string.loadin_modal_title)
+                    .content(R.string.loadin_modal_content)
                     .progress(true, 0)
                     .show();
 
-            String url = "http://104.236.33.228:8050/reportes/reporte/informativo/form/";
+            String serviceUrl = getString(R.string.reporte_informativo_form);
+            String url = getString(R.string.url, serviceUrl);
             StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override
@@ -490,7 +468,6 @@ public class RutaActivity extends AppCompatActivity {
         }
 
         private void initGPS() {
-            Toast.makeText(this.getContext(), "pidiendo el gps ", Toast.LENGTH_SHORT).show();
             if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 validPermissions();
                 return;

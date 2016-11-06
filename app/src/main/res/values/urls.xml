@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="url">http://104.236.33.228:8050%1$s</string>
+    <string name="login">/usuarios/login/</string>
+    <string name="get_cliente">/usuarios/single/cliente/%1$d/</string>
+    <string name="get_clientes">/usuarios/service/list/cliente/?page=%1$d&amp;search=%2$s</string>
+    <string name="planillas_pendientes">/actividades/planilladiaria/pendiente/list/?page=%1$d</string>
+    <string name="asignaciones">/usuarios/service/list/asignaciones/?asigna=True&amp;page=%1$d</string>
+    <string name="salida_planilla">/actividades/planilladiaria/form/%1$d/</string>
+    <string name="reporte_informativo_form">/reportes/reporte/informativo/form/</string>
+    <string name="planilla_form">/actividades/planilladiaria/form/</string>
+    <string name="planilla_edit">/actividades/planilladiaria/edit/form/%1$d/</string>
+    <string name="planilla_info">/actividades/planilladiaria/list/?pk=%1$d</string>
+    <string name="get_reporte_tipo">/reportes/tiporeporte/list/</string>
+    <string name="reporte_form">/reportes/reporte/form/</string>
+    <string name="foto_reporte">/reportes/fotoreporte/list/?reporte=</string>
+    <string name="list_reporte">/reportes/reporte/list/?piscina__casa__cliente=%1$d&amp;page=%2$d&amp;search=%3$s</string>
+    <string name="list_reporte_no_cliente">/reportes/reporte/list/?page=%1$d&amp;search=%2$s</string>
+    <string name="solucion_form">/mantenimiento/service/mantanimiento/form/</string>
+</resources>

@@ -238,15 +238,19 @@ public class ListReporteFragment extends Fragment {
 
     private void initGallery(int position){
         int id = itemList.get(position).getId();
+        String serviceUrl = getString(R.string.foto_reporte);
+        String url = getString(R.string.url, serviceUrl);
+
         Intent intent = new Intent(this.getActivity(), GalleryActivity.class);
         intent.putExtra("id", id);
-        intent.putExtra("url", "http://104.236.33.228:8050/reportes/fotoreporte/list/?reporte=");
+        intent.putExtra("url", url);
         startActivity(intent);
     }
 
     void getReportes() {
         infiniteListView.startLoading();
-        String url = "http://104.236.33.228:8050/reportes/reporte/list/?page=" + page + "&search=" + search;
+        String serviceUrl = getString(R.string.list_reporte_no_cliente, page, search);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -524,8 +528,10 @@ public class ListReporteFragment extends Fragment {
                     .setCompletedMessage("Subida completada exitosamente en [[ELAPSED_TIME]]")
                     .setAutoClearOnSuccess(true);
 
+            String serviceUrl = getString(R.string.solucion_form);
+            String url = getString(R.string.url, serviceUrl);
             MultipartUploadRequest upload =
-                    new MultipartUploadRequest(this.getContext(), "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/")
+                    new MultipartUploadRequest(this.getContext(), url)
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
                             .setMaxRetries(1)
@@ -581,7 +587,8 @@ public class ListReporteFragment extends Fragment {
                 .progress(true, 0)
                 .show();
 
-        String url = "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/";
+        String serviceUrl = getString(R.string.solucion_form);
+        String url = getString(R.string.url, serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

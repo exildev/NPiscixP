@@ -209,7 +209,7 @@ public class ListReporteActivity extends AppCompatActivity {
                     holder.tipo.setText(reporte.getTipo_de_reporte());
                     holder.subtitle.setText(reporte.getNombre());
                     if (reporte.getNumero().equals("") || reporte.getNumero().equals("null")){
-                        holder.numero.setText("Sin numero");
+                        holder.numero.setText(R.string.sin_numero);
                     }else {
                         holder.numero.setText(reporte.getNumero());
                     }
@@ -270,17 +270,22 @@ public class ListReporteActivity extends AppCompatActivity {
     }
 
     private void initGallery(int position) {
+        String serviceUrl = getString(R.string.foto_reporte);
+        String url = getString(R.string.url, serviceUrl);
         int id = itemList.get(position).getId();
+
         Intent intent = new Intent(this, GalleryActivity.class);
         intent.putExtra("id", id);
-        intent.putExtra("url", "http://104.236.33.228:8050/reportes/fotoreporte/list/?reporte=");
+        intent.putExtra("url", url);
         startActivity(intent);
     }
 
     void getReportes() {
         int id = getIntent().getIntExtra("id", -1);
         infiniteListView.startLoading();
-        String url = "http://104.236.33.228:8050/reportes/reporte/list/?piscina__casa__cliente="+id+"&page=" + page + "&search=" + search;
+
+        String serviceUrl = getString(R.string.list_reporte, id, page, search);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -530,8 +535,10 @@ public class ListReporteActivity extends AppCompatActivity {
                     .setCompletedMessage("Subida completada exitosamente en [[ELAPSED_TIME]]")
                     .setAutoClearOnSuccess(true);
 
+            String serviceUrl = getString(R.string.solucion_form);
+            String url = getString(R.string.url, serviceUrl);
             MultipartUploadRequest upload =
-                    new MultipartUploadRequest(this, "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/")
+                    new MultipartUploadRequest(this, url)
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
                             .setMaxRetries(1)
@@ -587,7 +594,8 @@ public class ListReporteActivity extends AppCompatActivity {
                 .progress(true, 0)
                 .show();
 
-        String url = "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/form/";
+        String serviceUrl = getString(R.string.solucion_form);
+        String url = getString(R.string.url, serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

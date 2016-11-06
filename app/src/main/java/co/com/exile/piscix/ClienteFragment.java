@@ -157,7 +157,8 @@ public class ClienteFragment extends Fragment {
 
     void getClientes(){
         infiniteListView.startLoading();
-        String url = "http://104.236.33.228:8050/usuarios/service/list/cliente/?page="+page+"&search="+search;
+        String serviceUrl = getString(R.string.get_clientes, page, search);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest clientesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

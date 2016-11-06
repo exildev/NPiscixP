@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -136,10 +135,12 @@ public class PlanillaActivity extends AppCompatActivity {
         final String latitud = planilla == -1 ? String.valueOf(getLastBestLocation().getLatitude()) : String.valueOf(lat);
         final String longitud = planilla == -1 ? String.valueOf(getLastBestLocation().getLongitude()) : String.valueOf(lng);
 
-        String url = "http://104.236.33.228:8050/actividades/planilladiaria/form/";
+        String serviceUrl = getString(R.string.planilla_form);
+
         if (planilla != -1) {
-            url = "http://104.236.33.228:8050/actividades/planilladiaria/edit/form/" + planilla + "/";
+            serviceUrl = getString(R.string.planilla_edit, planilla);
         }
+        String url = getString(R.string.url, serviceUrl);
         final StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -213,7 +214,8 @@ public class PlanillaActivity extends AppCompatActivity {
 
     void getData() {
         showLoading();
-        String url = "http://104.236.33.228:8050/actividades/planilladiaria/list/?pk=" + planilla;
+        String serviceUrl = getString(R.string.planilla_info, planilla);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -223,7 +225,7 @@ public class PlanillaActivity extends AppCompatActivity {
 
                     if (object_list.length() > 0) {
                         JSONObject campo = object_list.getJSONObject(0);
-
+                        Log.i("json", campo.toString());
                         CheckBox cepillado = (CheckBox) findViewById(R.id.cepillado);
                         CheckBox aspirado = (CheckBox) findViewById(R.id.aspirado);
                         CheckBox retrolavado = (CheckBox) findViewById(R.id.retrolavado);
@@ -248,10 +250,15 @@ public class PlanillaActivity extends AppCompatActivity {
                         espera.setChecked(campo.getBoolean("espera"));
                         disminucion_ph.setChecked(campo.getBoolean("disminucion_ph"));
                         aumento_ph.setChecked(campo.getBoolean("aumento_ph"));
-                        nivel_ph.setText(String.valueOf(campo.getDouble("nivel_ph")));
-                        nivel_cloro.setText(String.valueOf(campo.getDouble("nivel_cloro")));
-                        observaciones.setText(campo.getString("observaciones"));
-
+                        if (campo.has("nivel_ph") && !campo.get("nivel_ph").equals(null)) {
+                            nivel_ph.setText(String.valueOf(campo.getDouble("nivel_ph")));
+                        }
+                        if (campo.has("nivel_cloro") && !campo.get("nivel_cloro").equals(null)) {
+                            nivel_cloro.setText(String.valueOf(campo.getDouble("nivel_cloro")));
+                        }
+                        if (campo.has("observaciones") && !campo.get("observaciones").equals(nivel_cloro)) {
+                            observaciones.setText(campo.getString("observaciones"));
+                        }
                         lat = campo.getDouble("latitud");
                         lng = campo.getDouble("longitud");
                         Log.i("json", campo.toString());
@@ -320,7 +327,6 @@ public class PlanillaActivity extends AppCompatActivity {
     }
 
     private void initGPS() {
-        Toast.makeText(this, "pidiendo el gps ", Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             validPermissions();
             return;

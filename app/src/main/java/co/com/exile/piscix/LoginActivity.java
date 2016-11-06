@@ -1,11 +1,11 @@
 package co.com.exile.piscix;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,7 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(final String username, final String password){
-        String url = "http://104.236.33.228:8050/usuarios/login/";
+        String serviceUrl = getString(R.string.login);
+        String url = getString(R.string.url, serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

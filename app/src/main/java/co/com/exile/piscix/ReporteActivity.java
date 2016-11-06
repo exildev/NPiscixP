@@ -139,7 +139,8 @@ public class ReporteActivity extends AppCompatActivity  {
 
     private void setTypeSpinner() {
         showLoading();
-        String url = "http://104.236.33.228:8050/reportes/tiporeporte/list/";
+        String serviceUrl = getString(R.string.get_reporte_tipo);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -292,8 +293,10 @@ public class ReporteActivity extends AppCompatActivity  {
                     .setCompletedMessage("Subida completada exitosamente en [[ELAPSED_TIME]]")
                     .setAutoClearOnSuccess(true);
 
+            String serviceUrl = getString(R.string.reporte_form);
+            String url = getString(R.string.url, serviceUrl);
             MultipartUploadRequest upload =
-                    new MultipartUploadRequest(getBaseContext(), "http://104.236.33.228:8050/reportes/reporte/form/")
+                    new MultipartUploadRequest(getBaseContext(), url)
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
                             .setMaxRetries(1)
@@ -303,7 +306,7 @@ public class ReporteActivity extends AppCompatActivity  {
                             .addParameter("piscina", piscina)
                             .addParameter("latitud", latitud)
                             .addParameter("longitud", longitud)
-                            .addParameter("fotoreporte_set-TOTAL_FORMS", format("%d", images.size()))
+                            .addParameter("fotoreporte_set-TOTAL_FORMS", String.valueOf(images.size()))
                             .addParameter("fotoreporte_set-INITIAL_FORMS", "0")
                             .addParameter("fotoreporte_set-MIN_NUM_FORMS", "0")
                             .addParameter("fotoreporte_set-MAX_NUM_FORMS", "5");

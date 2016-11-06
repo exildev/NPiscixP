@@ -182,4 +182,12 @@
     <string name="respuestas">Respuestas</string>
     <string name="solucion">Solucion</string>
     <string name="reporte">Reporte:</string>
+
+
+    <string name="salida_planilla_nombre">Salida de piscina %1$s</string>
+    <string name="salida_planilla_desc">actividad de mantenimiento finalizada en la piscina %1$s del cliente %2$s %3$s</string>
+
+    <string name="loadin_modal_title">Guardando cambios</string>
+    <string name="loadin_modal_content">Por favor espere</string>
+    <string name="sin_numero">Sin numero</string>
 </resources>
