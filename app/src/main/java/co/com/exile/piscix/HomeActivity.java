@@ -69,7 +69,7 @@ public class HomeActivity extends AppCompatActivity
         } else if(!inHome){
             mMenu.findItem(R.id.action_search).setVisible(false);
             inHome = true;
-            Fragment fragment = new HomeFragment();
+            Fragment fragment = HomeFragment.newInstance(getIntent().getBooleanExtra("piscinero", false));
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
@@ -129,6 +129,18 @@ public class HomeActivity extends AppCompatActivity
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
             Fragment fragment = ClienteFragment.ClienteFragmentInstance(searchView);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_frame, fragment)
+                    .commit();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Clientes");
+        } else if (id == R.id.piscieros_btn) {
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+            Log.e("menu item", myActionMenuItem.toString());
+            myActionMenuItem.setVisible(true);
+            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+            Fragment fragment = PiscineroFragment.newInstance(searchView);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
