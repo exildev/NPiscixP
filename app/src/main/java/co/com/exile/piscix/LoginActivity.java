@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -33,27 +34,33 @@ public class LoginActivity extends AppCompatActivity {
     private void autoSession(){
         User user = User.get(this);
         if(user != null){
-            login(user.getUsername(), user.getPassword());
+            login(user.getUsername(), user.getPassword(), user.isPiscinero());
         }
     }
 
     public void login(View view){
-        final TextInputEditText username = (TextInputEditText) findViewById(R.id.username);
-        final TextInputEditText password = (TextInputEditText) findViewById(R.id.password);
-        login(username.getText().toString(), password.getText().toString());
+        TextInputEditText username = (TextInputEditText) findViewById(R.id.username);
+        TextInputEditText password = (TextInputEditText) findViewById(R.id.password);
+        RadioButton piscinero = (RadioButton) findViewById(R.id.piscinero);
+        login(username.getText().toString(), password.getText().toString(), piscinero.isChecked());
     }
 
-    public void login(final String username, final String password){
-        String serviceUrl = getString(R.string.login);
+    public void login(final String username, final String password, final boolean piscinero) {
+        String serviceUrl = getString(R.string.login_supervisor);
+
+        if (piscinero) {
+            serviceUrl = getString(R.string.login_piscinero);
+        }
+
         String url = getString(R.string.url, serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.i("login", response);
-                        User user = new User(username, password);
+                        User user = new User(username, password, piscinero);
                         user.save(LoginActivity.this);
-                        initHome(response);
+                        initHome(response, piscinero);
                     }
                 },
                 new Response.ErrorListener() {
@@ -77,9 +84,10 @@ public class LoginActivity extends AppCompatActivity {
         showLoading();
     }
 
-    private void initHome(String user){
+    private void initHome(String user, boolean piscinero) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("piscinero", piscinero);
         startActivity(intent);
     }
 

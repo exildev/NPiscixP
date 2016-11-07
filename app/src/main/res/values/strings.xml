@@ -190,4 +190,6 @@
     <string name="loadin_modal_title">Guardando cambios</string>
     <string name="loadin_modal_content">Por favor espere</string>
     <string name="sin_numero">Sin numero</string>
+    <string name="piscinero">Piscinero</string>
+    <string name="supervisor">Supervisor</string>
 </resources>

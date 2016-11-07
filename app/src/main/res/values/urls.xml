@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="url">http://104.236.33.228:8050%1$s</string>
-    <string name="login">/usuarios/login/</string>
+    <string name="login_piscinero">/usuarios/login/piscinero/</string>
+    <string name="login_supervisor">/usuarios/login/supervisor/</string>
     <string name="get_cliente">/usuarios/single/cliente/%1$d/</string>
     <string name="get_clientes">/usuarios/service/list/cliente/?page=%1$d&amp;search=%2$s</string>
     <string name="planillas_pendientes">/actividades/planilladiaria/pendiente/list/?page=%1$d</string>
