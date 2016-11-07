@@ -192,4 +192,5 @@
     <string name="sin_numero">Sin numero</string>
     <string name="piscinero">Piscinero</string>
     <string name="supervisor">Supervisor</string>
+    <string name="nav_piscineros">Piscineros</string>
 </resources>

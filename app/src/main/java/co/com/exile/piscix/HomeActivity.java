@@ -45,11 +45,20 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Fragment fragment = new HomeFragment();
+        Fragment fragment = HomeFragment.newInstance(getIntent().getBooleanExtra("piscinero", false));
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_frame, fragment)
                 .commit();
+
+        setMenu();
+    }
+
+    private void setMenu() {
+        boolean isPiscinero = getIntent().getBooleanExtra("piscinero", false);
+        if (isPiscinero) {
+
+        }
     }
 
     @Override

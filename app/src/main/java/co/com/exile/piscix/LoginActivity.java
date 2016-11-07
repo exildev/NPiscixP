@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -94,20 +95,24 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoading() {
         final TextInputLayout username = (TextInputLayout) findViewById(R.id.username_container);
         final TextInputLayout password = (TextInputLayout) findViewById(R.id.password_container);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
         Button send = (Button) findViewById(R.id.send_button);
         username.setVisibility(View.GONE);
         password.setVisibility(View.GONE);
         send.setVisibility(View.GONE);
+        radioGroup.setVisibility(View.GONE);
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
 
     private void returnToLogin(){
-        final TextInputLayout username = (TextInputLayout) findViewById(R.id.username_container);
-        final TextInputLayout password = (TextInputLayout) findViewById(R.id.password_container);
+        TextInputLayout username = (TextInputLayout) findViewById(R.id.username_container);
+        TextInputLayout password = (TextInputLayout) findViewById(R.id.password_container);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
         findViewById(R.id.progress).setVisibility(View.INVISIBLE);
         Button send = (Button) findViewById(R.id.send_button);
         username.setVisibility(View.VISIBLE);
         password.setVisibility(View.VISIBLE);
         send.setVisibility(View.VISIBLE);
+        radioGroup.setVisibility(View.VISIBLE);
     }
 }
