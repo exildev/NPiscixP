@@ -143,6 +143,14 @@ public class PiscineroFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
+                    holder.green_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(PiscineroFragment.this.getActivity(), RutaPActivity.class);
+                            intent.putExtra("piscinero", piscinero.getId());
+                            startActivity(intent);
+                        }
+                    });
 
 
                     View phone = convertView.findViewById(R.id.button_numero);

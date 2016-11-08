@@ -149,7 +149,7 @@ public class PiscinasActivity extends AppCompatActivity {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                             if (b != piscina.isAsignacion()) {
-                                send(piscina.getId(), b, compoundButton);
+                                send(piscina, b, compoundButton);
                             }
                         }
                     });
@@ -218,7 +218,7 @@ public class PiscinasActivity extends AppCompatActivity {
         Switch asignacion;
     }
 
-    void send(final int piscina, final boolean estado, final CompoundButton compoundButton) {
+    void send(final PiscinaAsignacion piscina, final boolean estado, final CompoundButton compoundButton) {
         final MaterialDialog loading = new MaterialDialog.Builder(this)
                 .title(R.string.loadin_modal_title)
                 .content(R.string.loadin_modal_content)
@@ -231,6 +231,7 @@ public class PiscinasActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         loading.dismiss();
+                        piscina.setAsignacion(estado);
                         Snackbar.make(findViewById(R.id.content_piscinas), R.string.success_response, 800).show();
                     }
                 },
@@ -247,7 +248,7 @@ public class PiscinasActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("piscinero", String.valueOf(piscinero));
-                params.put("piscina", String.valueOf(piscina));
+                params.put("piscina", String.valueOf(piscina.getId()));
                 if (estado) {
                     params.put("asigna", "True");
                 } else {

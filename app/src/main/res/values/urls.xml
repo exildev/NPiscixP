@@ -20,5 +20,7 @@
     <string name="solucion_form">/mantenimiento/service/mantanimiento/form/</string>
     <string name="list_piscineros">/usuarios/service/list/piscinero/?page=%1$d&amp;search=%2$s</string>
     <string name="list_piscinas">/usuarios/service/asignacion/piscinero/%1$d/?page=%2$d&amp;search=%3$s</string>
+    <string name="list_asignaciones_piscinero">/usuarios/service/list/asignaciones/?piscinero=%1$d&amp;page=%2$d&amp;asigna=True</string>
     <string name="asigancion_form">/usuarios/service/asignacion/form/piscinero/</string>
+    <string name="asigancion_form_orden">/usuarios/service/asignacion/form/piscinero/%1$d/</string>
 </resources>

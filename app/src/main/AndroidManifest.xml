@@ -75,6 +75,10 @@
             android:name=".PiscinasActivity"
             android:label="@string/title_activity_piscinas"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".RutaPActivity"
+            android:label="@string/title_activity_ruta_p"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
