@@ -194,4 +194,9 @@
     <string name="supervisor">Supervisor</string>
     <string name="nav_piscineros">Piscineros</string>
     <string name="piscinas">Piscinas</string>
+    <string name="title_activity_piscinas">Asignacion de piscinas</string>
+
+    <string name="piscina_title">Piscina %1$s, Tipo %2$s</string>
+    <string name="piscina_medidas">%1$.1fm ancho, %2$.1fm largo, %3$.1fm alto</string>
+    <string name="success_response">operación realizada con exito</string>
 </resources>

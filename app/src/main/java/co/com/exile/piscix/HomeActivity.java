@@ -74,6 +74,8 @@ public class HomeActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
                     .commit();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Piscix");
         }else {
             super.onBackPressed();
         }
@@ -146,7 +148,7 @@ public class HomeActivity extends AppCompatActivity
                     .replace(R.id.main_frame, fragment)
                     .commit();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle("Clientes");
+            toolbar.setTitle("Piscineros");
         } else if (id == R.id.nav_rutas || id == R.id.rutas_btn) {
             startActivity(new Intent(this, RutaActivity.class));
         } else if (id == R.id.nav_actividades || id == R.id.actividades_btn) {

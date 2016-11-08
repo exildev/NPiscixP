@@ -19,4 +19,6 @@
     <string name="list_reporte_no_cliente">/reportes/reporte/list/?page=%1$d&amp;search=%2$s</string>
     <string name="solucion_form">/mantenimiento/service/mantanimiento/form/</string>
     <string name="list_piscineros">/usuarios/service/list/piscinero/?page=%1$d&amp;search=%2$s</string>
+    <string name="list_piscinas">/usuarios/service/asignacion/piscinero/%1$d/?page=%2$d&amp;search=%3$s</string>
+    <string name="asigancion_form">/usuarios/service/asignacion/form/piscinero/</string>
 </resources>

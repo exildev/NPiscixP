@@ -118,7 +118,8 @@ public class PiscineroFragment extends Fragment {
                     holder.cumple = (TextView) convertView.findViewById(R.id.cumple);
                     holder.direccion = (TextView) convertView.findViewById(R.id.direccion);
                     holder.icon = (ImageView) convertView.findViewById(R.id.icon);
-
+                    holder.green_button = (Button) convertView.findViewById(R.id.green_button);
+                    holder.teal_button = (Button) convertView.findViewById(R.id.teal_button);
 
                     convertView.setTag(holder);
 
@@ -134,6 +135,15 @@ public class PiscineroFragment extends Fragment {
                     holder.email.setText(piscinero.getEmail());
                     holder.cumple.setText(piscinero.getFecha_nacimiento());
                     holder.direccion.setText(piscinero.getDireccion());
+                    holder.teal_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(PiscineroFragment.this.getActivity(), PiscinasActivity.class);
+                            intent.putExtra("piscinero", piscinero.getId());
+                            startActivity(intent);
+                        }
+                    });
+
 
                     View phone = convertView.findViewById(R.id.button_numero);
 
