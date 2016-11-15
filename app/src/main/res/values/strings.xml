@@ -200,4 +200,5 @@
     <string name="piscina_medidas">%1$.1fm ancho, %2$.1fm largo, %3$.1fm alto</string>
     <string name="success_response">operación realizada con exito</string>
     <string name="title_activity_ruta_p">Ruta Piscinero</string>
+    <string name="title_activity_map_ruta">Mapa de ruta</string>
 </resources>

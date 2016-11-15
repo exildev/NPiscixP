@@ -239,6 +239,7 @@ public class PiscinasActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("login", error.toString());
+                        Log.e("error", new String(error.networkResponse.data));
                         loading.dismiss();
                         compoundButton.setChecked(!estado);
                         Snackbar.make(findViewById(R.id.content_piscinas), "Hubo un error al realizar la operacion", 800).show();

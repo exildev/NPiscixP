@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/icono"
-                android:src="@drawable/ic_account_circle" />
+                app:srcCompat="@drawable/ic_account_circle" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -78,7 +78,7 @@
                     android:layout_centerInParent="true"
                     android:contentDescription="@string/icono"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_keyboard_arrow_down" />
+                    app:srcCompat="@drawable/ic_keyboard_arrow_down" />
             </RelativeLayout>
 
             <LinearLayout

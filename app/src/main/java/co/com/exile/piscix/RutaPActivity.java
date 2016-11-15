@@ -1,5 +1,6 @@
 package co.com.exile.piscix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -15,6 +19,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
@@ -22,8 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 import co.com.exile.piscix.helper.SimpleItemTouchHelperCallback;
 import co.com.exile.piscix.models.Asignacion;
@@ -44,6 +48,12 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
         setContentView(R.layout.activity_ruta_p);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         piscinero = getIntent().getIntExtra("piscinero", -1);
 
@@ -59,6 +69,23 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
         loadItems();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.ruta_p, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_map) {
+            Intent intent = new Intent(this, MapRutaActivity.class);
+            intent.putExtras(getIntent());
+            startActivity(intent);
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -132,6 +159,7 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
                     @Override
                     public void onResponse(String response) {
                         ItemAdapter.itemList.clear();
+                        itemAdapter.notifyDataSetChanged();
                         page = 1;
                         loadItems();
                         loading.dismiss();
@@ -151,10 +179,20 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
                     }
                 }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("orden", String.valueOf(orden));
-                return params;
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    JSONObject obj = new JSONObject();
+                    obj.put("orden", orden);
+                    return obj == null ? null : obj.toString().getBytes("utf-8");
+                } catch (UnsupportedEncodingException | JSONException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", "", "utf-8");
+                    return null;
+                }
             }
         };
 

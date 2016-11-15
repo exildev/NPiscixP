@@ -4,12 +4,18 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
 
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
     defaultConfig {
         applicationId "co.com.exile.piscix"
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -41,5 +47,7 @@ dependencies {
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
     compile 'com.wdullaer:materialdatetimepicker:2.5.0'
     compile 'com.github.rubensousa:floatingtoolbar:1.2.1'
+    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.github.jd-alexander:library:1.1.0'
     testCompile 'junit:junit:4.12'
 }
