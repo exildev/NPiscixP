@@ -169,7 +169,6 @@ public class Notix {
                 if (data.has("data")) {
                     data = data.getJSONObject("data");
                     String tipo = data.getString("tipo");
-                    Log.i("tipo", tipo);
                     if (notixListener != null) {
                         notixListener.onNotix(data, tipo);
                     }

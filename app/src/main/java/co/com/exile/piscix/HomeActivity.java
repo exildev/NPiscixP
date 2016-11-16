@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity
         inHome = false;
 
         if (id == R.id.nav_clientes || id == R.id.clientes_btn) {
-          /*  MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             Log.e("menu item", myActionMenuItem.toString());
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
@@ -144,8 +144,7 @@ public class HomeActivity extends AppCompatActivity
                     .replace(R.id.main_frame, fragment)
                     .commit();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle("Clientes");*/
-            Log.i("notix", "conected " + notix.isConnected());
+            toolbar.setTitle("Clientes");
         } else if (id == R.id.piscieros_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             Log.e("menu item", myActionMenuItem.toString());
@@ -220,5 +219,6 @@ public class HomeActivity extends AppCompatActivity
     public void onNotix(JSONObject data, String tipo) {
         Log.i("notix home", tipo);
         Log.i("notix home", data + "");
+        NotixFactory.buildNotification(this);
     }
 }

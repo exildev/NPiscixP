@@ -8,13 +8,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication">
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
@@ -31,6 +31,7 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ProfileActivity"
@@ -94,8 +95,13 @@
 
         <activity
             android:name=".MapRutaActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/title_activity_map_ruta" />
+            android:label="@string/title_activity_map_ruta"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NotificationActivity"
+            android:label="@string/title_activity_notification"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
