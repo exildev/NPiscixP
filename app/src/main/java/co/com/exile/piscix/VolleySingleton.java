@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 
-class VolleySingleton {
+public class VolleySingleton {
     private static VolleySingleton mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
@@ -25,7 +25,7 @@ class VolleySingleton {
         mRequestQueue = getRequestQueue();
     }
 
-    static synchronized VolleySingleton getInstance(Context context) {
+    public static synchronized VolleySingleton getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new VolleySingleton(context);
         }
@@ -42,7 +42,7 @@ class VolleySingleton {
         return mRequestQueue;
     }
 
-    <T> void addToRequestQueue(Request<T> req) {
+    public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
 

@@ -21,13 +21,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONObject;
+
 import co.com.exile.piscix.models.User;
+import co.com.exile.piscix.notix.Notix;
+import co.com.exile.piscix.notix.NotixFactory;
+import co.com.exile.piscix.notix.onNotixListener;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, onNotixListener {
 
     private boolean inHome = true;
     private Menu mMenu;
+    private Notix notix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,8 @@ public class HomeActivity extends AppCompatActivity
                 .commit();
 
         setMenu();
+        notix = NotixFactory.buildNotix(this);
+        notix.setNotixListener(this);
     }
 
     private void setMenu() {
@@ -126,7 +134,7 @@ public class HomeActivity extends AppCompatActivity
         inHome = false;
 
         if (id == R.id.nav_clientes || id == R.id.clientes_btn) {
-            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+          /*  MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             Log.e("menu item", myActionMenuItem.toString());
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
@@ -136,7 +144,8 @@ public class HomeActivity extends AppCompatActivity
                     .replace(R.id.main_frame, fragment)
                     .commit();
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle("Clientes");
+            toolbar.setTitle("Clientes");*/
+            Log.i("notix", "conected " + notix.isConnected());
         } else if (id == R.id.piscieros_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             Log.e("menu item", myActionMenuItem.toString());
@@ -205,5 +214,11 @@ public class HomeActivity extends AppCompatActivity
             });
             VolleySingleton.getInstance(this).addToRequestQueue(request);
         }
+    }
+
+    @Override
+    public void onNotix(JSONObject data, String tipo) {
+        Log.i("notix home", tipo);
+        Log.i("notix home", data + "");
     }
 }
