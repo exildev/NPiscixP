@@ -62,6 +62,12 @@ public class HomeActivity extends AppCompatActivity
         notix.setNotixListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notix.setNotixListener(this);
+    }
+
     private void setMenu() {
         boolean isPiscinero = getIntent().getBooleanExtra("piscinero", false);
         if (isPiscinero) {
@@ -216,9 +222,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
-    public void onNotix(JSONObject data, String tipo) {
-        Log.i("notix home", tipo);
-        Log.i("notix home", data + "");
-        NotixFactory.buildNotification(this);
+    public void onNotix(JSONObject data) {
+        NotixFactory.buildNotification(this, data);
     }
 }

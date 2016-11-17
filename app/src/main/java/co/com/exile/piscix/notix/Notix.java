@@ -81,10 +81,7 @@ public class Notix {
                     django_id = response.getString("session");
                     username = response.getString("username");
                     type = response.getString("type");
-                    JSONObject msg = new JSONObject();
-                    msg.put("webuser", username);
-                    msg.put("type", type);
-                    emitMessage("messages", msg);
+                    getMessages();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -101,6 +98,17 @@ public class Notix {
 
     boolean hasUser() {
         return !(username == null || type == null || django_id == null);
+    }
+
+    public void getMessages() {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("webuser", username);
+            msg.put("type", type);
+            emitMessage("messages", msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void login() {
@@ -167,10 +175,8 @@ public class Notix {
                 JSONObject message = (JSONObject) args[0];
                 JSONObject data = message.getJSONObject("data");
                 if (data.has("data")) {
-                    data = data.getJSONObject("data");
-                    String tipo = data.getString("tipo");
                     if (notixListener != null) {
-                        notixListener.onNotix(data, tipo);
+                        notixListener.onNotix(data);
                     }
                 }
             } catch (JSONException e) {

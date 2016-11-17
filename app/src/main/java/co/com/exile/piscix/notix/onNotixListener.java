@@ -8,5 +8,5 @@ import org.json.JSONObject;
 
 public interface onNotixListener {
 
-    public void onNotix(JSONObject data, String tipo);
+    public void onNotix(JSONObject data);
 }

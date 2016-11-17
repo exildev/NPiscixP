@@ -30,14 +30,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.com.exile.piscix.models.Mensaje;
+import co.com.exile.piscix.notix.Notix;
+import co.com.exile.piscix.notix.NotixFactory;
+import co.com.exile.piscix.notix.onNotixListener;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements onNotixListener {
 
     private RecyclerView infiniteListView;
     private ArrayList<Mensaje> itemList;
 
 
     private int reporte;
+    private Notix notix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +64,18 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        notix = NotixFactory.buildNotix(this);
+        notix.setNotixListener(this);
+
         setReporte();
 
         setInfiniteList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notix.setNotixListener(this);
     }
 
     public void send(View view) {
@@ -142,13 +155,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     void getMensajes() {
-        //infiniteListView.startLoading();
         String url = "http://104.236.33.228:8050/reportes/respuesta/list/?reporte=" + reporte;
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    //infiniteListView.stopLoading();
                     JSONArray object_list = response.getJSONArray("object_list");
                     for (int i = 0; i < object_list.length(); i++) {
                         JSONObject campo = object_list.getJSONObject(i);
@@ -173,6 +184,35 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         VolleySingleton.getInstance(this).addToRequestQueue(reportesRequest);
+    }
+
+    @Override
+    public void onNotix(JSONObject data) {
+        try {
+            JSONObject d = data.getJSONObject("data");
+            String tipo = d.getString("tipo");
+            if (tipo.equals("Respuesta")) {
+                int reporte_id = d.getInt("reporte_id");
+                if (reporte_id == reporte) {
+                    final String mensaje = d.getString("mensaje");
+                    final String user = d.getString("usuario");
+                    final String fecha = d.getString("fecha");
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            itemList.add(new Mensaje(fecha, mensaje, false, user, true));
+                            RecyclerView.Adapter chatAdapter = new ChatAdapter(itemList, ChatActivity.this);
+                            infiniteListView.swapAdapter(chatAdapter, false);
+                            infiniteListView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                        }
+                    });
+                    return;
+                }
+            }
+            NotixFactory.buildNotification(this, data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     static class ViewHolder {
