@@ -50,8 +50,9 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
 
             @Override
             public void onRefresh() {
-                setInfiniteList();
-                infiniteListView.stopLoading();
+                infiniteListView.clearList();
+                notix.getMessages();
+
             }
 
             @Override
@@ -178,16 +179,24 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
     protected void onResume() {
         super.onResume();
         notix.setNotixListener(this);
+        setInfiniteList();
     }
 
     @Override
     public void onNotix(final JSONObject data) {
+        Log.i("notix", data.toString());
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 infiniteListView.addNewItem(data);
+                infiniteListView.stopLoading();
             }
         });
+    }
+
+    @Override
+    public void onVisited(JSONObject data) {
+
     }
 
     static class ViewHolder {

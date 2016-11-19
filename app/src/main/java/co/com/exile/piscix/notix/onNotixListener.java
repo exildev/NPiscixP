@@ -9,4 +9,6 @@ import org.json.JSONObject;
 public interface onNotixListener {
 
     public void onNotix(JSONObject data);
+
+    public void onVisited(JSONObject data);
 }

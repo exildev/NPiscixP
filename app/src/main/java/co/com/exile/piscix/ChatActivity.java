@@ -70,6 +70,8 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
         setReporte();
 
         setInfiniteList();
+
+        visitMessages();
     }
 
     @Override
@@ -186,6 +188,26 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
         VolleySingleton.getInstance(this).addToRequestQueue(reportesRequest);
     }
 
+    private void visitMessages() {
+        ArrayList<String> messages = new ArrayList<>();
+        for (JSONObject notification : NotixFactory.notifications) {
+            try {
+                JSONObject data = notification.getJSONObject("data");
+                String tipo = data.getString("tipo");
+                if (tipo.equals("Respuesta")) {
+                    int reporte_id = data.getInt("reporte_id");
+                    if (reporte_id == reporte) {
+                        String id = notification.getString("_id");
+                        messages.add(id);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        notix.visitMessages(messages);
+    }
+
     @Override
     public void onNotix(JSONObject data) {
         try {
@@ -213,6 +235,28 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onVisited(JSONObject data) {
+        Log.i("notifications", NotixFactory.notifications.size() + "");
+        try {
+            JSONArray messages_id = data.getJSONArray("messages_id");
+            for (int i = 0; i < messages_id.length(); i++) {
+                String id = messages_id.getString(i);
+                for (JSONObject notification : NotixFactory.notifications) {
+                    String _id = notification.getString("_id");
+                    if (id.equals(_id)) {
+                        NotixFactory.notifications.remove(notification);
+                        break;
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("notifications", NotixFactory.notifications.size() + "");
     }
 
     static class ViewHolder {

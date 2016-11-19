@@ -13,6 +13,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +66,7 @@ public class Notix {
             mSocket.on("success-login", onSuccesLogin);
             mSocket.on("error-login", onErrorLogin);
             mSocket.on("notix", onNotix);
+            mSocket.on("visited", onVisited);
             mSocket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -111,11 +113,26 @@ public class Notix {
         }
     }
 
+    public void visitMessages(ArrayList<String> messages) {
+        JSONArray messages_id = new JSONArray(messages);
+        Log.i("visit", messages_id.toString());
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("webuser", username);
+            msg.put("type", type);
+            msg.put("messages_id", messages_id);
+            emitMessage("visited", msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void login() {
         try {
             JSONObject msg = new JSONObject();
             msg.put("django_id", django_id);
             msg.put("usertype", "WEB");
+            msg.put("webuser", username);
             msg.put("password", SOCKET_PASSWORD);
             msg.put("username", SOCKET_USERNAME);
             mSocket.emit("login", msg);
@@ -125,11 +142,13 @@ public class Notix {
     }
 
     private void sendMessages() {
+        Log.i("sendMessages", messages.size() + "");
         if (messages == null) {
             messages = new ArrayList<>();
             return;
         }
         for (Message message : messages) {
+            Log.i("sendMessage", message.toString());
             try {
                 JSONObject msg = message.getMessage();
                 msg.put("django_id", django_id);
@@ -149,7 +168,6 @@ public class Notix {
             msg.put("django_id", django_id);
             msg.put("usertype", "WEB");
             mSocket.emit("identify", msg);
-            Log.i("notix", "identify " + mSocket.connected());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -159,6 +177,8 @@ public class Notix {
         @Override
         public void call(Object... args) {
             final JSONObject message = (JSONObject) args[0];
+            Log.i("onidentify", message.toString());
+            Log.i("onidentify", messages.size() + "");
             if (!message.has("ID")) {
                 login();
             } else {
@@ -170,16 +190,30 @@ public class Notix {
     private Emitter.Listener onNotix = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Log.i("notix", "Triggered");
             try {
                 JSONObject message = (JSONObject) args[0];
+                String id = message.getString("_id");
                 JSONObject data = message.getJSONObject("data");
+                data.put("_id", id);
                 if (data.has("data")) {
                     if (notixListener != null) {
                         notixListener.onNotix(data);
                     }
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Emitter.Listener onVisited = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i("visited", "tiggered");
+            try {
+                JSONObject message = (JSONObject) args[0];
+                notixListener.onVisited(message);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

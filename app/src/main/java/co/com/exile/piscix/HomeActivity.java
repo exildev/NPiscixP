@@ -28,8 +28,7 @@ import co.com.exile.piscix.notix.Notix;
 import co.com.exile.piscix.notix.NotixFactory;
 import co.com.exile.piscix.notix.onNotixListener;
 
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, onNotixListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, onNotixListener {
 
     private boolean inHome = true;
     private Menu mMenu;
@@ -224,5 +223,10 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onNotix(JSONObject data) {
         NotixFactory.buildNotification(this, data);
+    }
+
+    @Override
+    public void onVisited(JSONObject data) {
+
     }
 }
