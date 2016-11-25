@@ -216,6 +216,10 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
             if (tipo.equals("Respuesta")) {
                 int reporte_id = d.getInt("reporte_id");
                 if (reporte_id == reporte) {
+                    ArrayList<String> messages = new ArrayList<>();
+                    String id = data.getString("_id");
+                    messages.add(id);
+                    notix.visitMessages(messages);
                     final String mensaje = d.getString("mensaje");
                     final String user = d.getString("usuario");
                     final String fecha = d.getString("fecha");
