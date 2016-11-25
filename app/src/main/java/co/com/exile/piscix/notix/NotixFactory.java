@@ -64,6 +64,7 @@ public class NotixFactory {
         mBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
 
         Intent resultIntent = new Intent(context, NotificationActivity.class);
+        resultIntent.putExtra("notification", true);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         // Adds the Intent that starts the Activity to the top of the stack

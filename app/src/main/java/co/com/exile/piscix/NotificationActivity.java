@@ -33,6 +33,15 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
         setContentView(R.layout.activity_notification);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getIntent().getBooleanExtra("notification", false)) {
+                    startActivity(new Intent(NotificationActivity.this, HomeActivity.class));
+                }
+                finish();
+            }
+        });
 
         notix = NotixFactory.buildNotix(this);
         notix.setNotixListener(this);
@@ -173,6 +182,14 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getBooleanExtra("notification", false)) {
+            startActivity(new Intent(NotificationActivity.this, HomeActivity.class));
+        }
+        super.onBackPressed();
     }
 
     @Override

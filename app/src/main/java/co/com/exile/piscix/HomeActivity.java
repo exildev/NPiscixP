@@ -140,7 +140,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_clientes || id == R.id.clientes_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
-            Log.e("menu item", myActionMenuItem.toString());
             myActionMenuItem.setVisible(true);
             SearchView searchView = (SearchView) myActionMenuItem.getActionView();
             Fragment fragment = ClienteFragment.ClienteFragmentInstance(searchView);
@@ -217,6 +216,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
             VolleySingleton.getInstance(this).addToRequestQueue(request);
+        } else if (id == R.id.nav_notificaciones) {
+            startActivity(new Intent(this, NotificationActivity.class));
         }
     }
 
