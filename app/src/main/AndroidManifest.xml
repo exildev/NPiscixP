@@ -60,6 +60,8 @@
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ScrollingActivity"

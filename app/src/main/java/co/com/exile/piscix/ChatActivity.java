@@ -1,6 +1,7 @@
 package co.com.exile.piscix;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -63,6 +64,36 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
                 appBarLayout.setExpanded(true);
             }
         });
+
+        final View text = findViewById(R.id.message_text);
+        text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView.Adapter chatAdapter = new ChatAdapter(itemList, ChatActivity.this);
+                        infiniteListView.swapAdapter(chatAdapter, false);
+                        infiniteListView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                    }
+                }, 400);
+            }
+        });
+
+        text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView.Adapter chatAdapter = new ChatAdapter(itemList, ChatActivity.this);
+                        infiniteListView.swapAdapter(chatAdapter, false);
+                        infiniteListView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                    }
+                }, 400);
+            }
+        });
+
 
         notix = NotixFactory.buildNotix(this);
         notix.setNotixListener(this);
