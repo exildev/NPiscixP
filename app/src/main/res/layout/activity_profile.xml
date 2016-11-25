@@ -36,8 +36,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_arrow_back"
-                    android:contentDescription="@string/icono" />
+                    android:contentDescription="@string/icono"
+                    app:srcCompat="@drawable/ic_arrow_back" />
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -55,8 +55,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_more_vert_24dp"
-                    android:contentDescription="@string/icono" />
+                    android:contentDescription="@string/icono"
+                    app:srcCompat="@drawable/ic_more_vert_24dp" />
             </android.support.v7.widget.CardView>
 
             <LinearLayout
@@ -70,14 +70,15 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    app:cardCornerRadius="50dp"
                     app:cardBackgroundColor="?android:colorBackground"
+                    app:cardCornerRadius="50dp"
                     app:cardElevation="0dp">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_account_circle_100dp"
-                        android:contentDescription="@string/icono" />
+                        android:contentDescription="@string/icono"
+                        app:srcCompat="@drawable/ic_account_circle_100dp" />
                 </android.support.v7.widget.CardView>
 
                 <TextView
@@ -136,8 +137,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp" />
 
                 <TextView
                     android:id="@+id/piscina_title"
@@ -153,8 +154,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp" />
 
                 <TextView
                     android:id="@+id/casa_title"
@@ -170,8 +171,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
@@ -180,21 +181,21 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_report_24dp"
-        app:layout_anchorGravity="bottom|right"
-        app:layout_anchor="@+id/bottom_sheet"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="#F44336"
         android:onClick="launchCliente"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:backgroundTint="#F44336"
+        app:layout_anchor="@+id/bottom_sheet"
+        app:layout_anchorGravity="bottom|right"
+        app:srcCompat="@drawable/ic_report_24dp" />
 
     <View
         android:id="@+id/modal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:background="#ffffff"
-        />
+        android:visibility="gone" />
+
     <android.support.v7.widget.CardView
         android:id="@+id/loading"
         android:layout_width="50dp"
@@ -202,8 +203,8 @@
         android:layout_gravity="center"
         android:layout_margin="16dp"
         android:padding="8dp"
-        app:cardElevation="0dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:cardElevation="0dp">
 
         <com.github.rahatarmanahmed.cpv.CircularProgressView
             android:id="@+id/progress_view"
@@ -220,12 +221,13 @@
         android:clickable="true"
         android:onClick="closeSheet"
         android:visibility="gone" />
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:clipToPadding="true"
         android:background="?android:colorBackground"
+        android:clipToPadding="true"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <FrameLayout

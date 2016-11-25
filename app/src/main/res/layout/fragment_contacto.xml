@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,7 +23,7 @@
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/icono"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_account_circle" />
+                app:srcCompat="@drawable/ic_account_circle" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -67,7 +68,7 @@
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/icono"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_phone" />
+                app:srcCompat="@drawable/ic_phone" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -111,7 +112,7 @@
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/icono"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_email" />
+                app:srcCompat="@drawable/ic_email" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -154,7 +155,7 @@
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/icono"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_people" />
+                app:srcCompat="@drawable/ic_people" />
         </RelativeLayout>
 
         <RelativeLayout
