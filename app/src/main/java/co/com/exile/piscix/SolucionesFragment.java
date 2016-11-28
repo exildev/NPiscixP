@@ -35,8 +35,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import co.com.exile.piscix.models.Reporte;
 import co.com.exile.piscix.models.Solucion;
+import co.com.exile.piscix.notix.Notix;
+import co.com.exile.piscix.notix.NotixFactory;
 
 
 /**
@@ -49,11 +50,15 @@ public class SolucionesFragment extends Fragment {
     private SearchView searchView;
     private ArrayList<Solucion> itemList;
     private int page;
+    private Notix notix;
+
+    private ArrayList<Integer> newItems;
 
 
     public SolucionesFragment() {
         page = 1;
         // Required empty public constructor
+        notix = NotixFactory.buildNotix(this.getContext());
     }
 
 
@@ -62,6 +67,7 @@ public class SolucionesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_soluciones, container, false);
+        visitMessages();
         setInfiniteList(fragment);
         setSearchView();
         return fragment;
@@ -138,6 +144,13 @@ public class SolucionesFragment extends Fragment {
                             initGallery(position);
                         }
                     });
+
+                    if (newItems.indexOf(solucion.getId()) > -1) {
+                        holder.nombre.setTextColor(ContextCompat.getColor(this.getContext(), R.color.colorAccent));
+                        newItems.remove(newItems.indexOf(solucion.getId()));
+                    } else {
+                        holder.nombre.setTextColor(Color.parseColor("#000000"));
+                    }
                 }
 
                 final View action = convertView.findViewById(R.id.action);
@@ -311,5 +324,26 @@ public class SolucionesFragment extends Fragment {
         TextView descripcion;
         TextView user;
         Button photos_button;
+    }
+
+    private void visitMessages() {
+        ArrayList<String> messages = new ArrayList<>();
+        newItems = new ArrayList<>();
+
+        for (JSONObject notification : NotixFactory.notifications) {
+            try {
+                JSONObject data = notification.getJSONObject("data");
+                String tipo = data.getString("tipo");
+                if (tipo.equals("Solucion")) {
+                    int solucion_id = data.getInt("solucion_id");
+                    newItems.add(solucion_id);
+                    String id = notification.getString("_id");
+                    messages.add(id);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        notix.visitMessages(messages);
     }
 }

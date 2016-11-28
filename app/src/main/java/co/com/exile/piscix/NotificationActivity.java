@@ -179,12 +179,14 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra("action", "Solucion");
         startActivity(intent);
+        finish();
     }
 
     private void visitInformativo() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra("action", "informativo");
         startActivity(intent);
+        finish();
     }
 
     private void visitRespuesta(JSONObject notification) {

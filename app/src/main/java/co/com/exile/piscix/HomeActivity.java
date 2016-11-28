@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void moveTo(String action) {
-        Log.i("moveTo", action);
+        inHome = false;
         if (action.equals("Solucion")) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
