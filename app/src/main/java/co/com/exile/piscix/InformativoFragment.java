@@ -21,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,15 +43,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.nguyenhoanglam.imagepicker.model.Image;
 import com.softw4re.views.InfiniteListAdapter;
 import com.softw4re.views.InfiniteListView;
-
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadStatusDelegate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +55,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.com.exile.piscix.models.Informativo;
-import co.com.exile.piscix.models.Reporte;
+import co.com.exile.piscix.notix.Notix;
+import co.com.exile.piscix.notix.NotixFactory;
 
 import static java.lang.String.format;
 
@@ -82,10 +74,14 @@ public class InformativoFragment extends Fragment {
     private int page;
     private String search = "";
     private SearchView searchView;
+    private Notix notix;
+
+    private ArrayList<Integer> newItems;
 
 
     public InformativoFragment() {
         page = 1;
+        notix = NotixFactory.buildNotix(this.getContext());
     }
 
     public static InformativoFragment InformativoFragmentInstance(SearchView searchView) {
@@ -101,6 +97,7 @@ public class InformativoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_informativo, container, false);
+        visitMessages();
         setInfiniteList(fragment);
         setSearchView();
         validPermissions();
@@ -160,6 +157,13 @@ public class InformativoFragment extends Fragment {
                     holder.descripcion.setText(informativo.getDescripcion());
                     holder.fecha.setText(informativo.getFecha());
                     holder.subtitle.setText(informativo.getFecha());
+
+                    if (newItems.indexOf(informativo.getId()) > -1) {
+                        holder.nombre.setTextColor(ContextCompat.getColor(this.getContext(), R.color.colorAccent));
+                        newItems.remove(newItems.indexOf(informativo.getId()));
+                    } else {
+                        holder.nombre.setTextColor(Color.parseColor("#000000"));
+                    }
                 }
 
                 final View action = convertView.findViewById(R.id.action);
@@ -542,5 +546,26 @@ public class InformativoFragment extends Fragment {
                 alert.show();
             }
         }
+    }
+
+    private void visitMessages() {
+        ArrayList<String> messages = new ArrayList<>();
+        newItems = new ArrayList<>();
+
+        for (JSONObject notification : NotixFactory.notifications) {
+            try {
+                JSONObject data = notification.getJSONObject("data");
+                String tipo = data.getString("tipo");
+                if (tipo.equals("Reporte informativo")) {
+                    int solucion_id = data.getInt("reporte_id");
+                    newItems.add(solucion_id);
+                    String id = notification.getString("_id");
+                    messages.add(id);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        notix.visitMessages(messages);
     }
 }
