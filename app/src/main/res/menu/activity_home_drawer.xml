@@ -26,10 +26,6 @@
             android:id="@+id/nav_informativos"
             android:icon="@drawable/ic_info"
             android:title="Reportes informativos" />
-        <item
-            android:id="@+id/nav_notificaciones"
-            android:icon="@drawable/ic_notification"
-            android:title="Notificaciones" />
     </group>
 
     <group>

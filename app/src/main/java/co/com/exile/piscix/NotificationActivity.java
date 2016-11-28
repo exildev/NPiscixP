@@ -84,12 +84,14 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
                             break;
                         case "Solucion":
                             Log.i("notif", "Solución de Reporte");
+                            visitSolucion();
                             break;
                         case "Asignacion":
                             Log.i("notif", "Asignación");
                             break;
                         case "Reporte informativo":
                             Log.i("notif", "Reporte informativo");
+                            visitInformativo();
                             break;
                     }
 
@@ -171,6 +173,18 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
         };
 
         infiniteListView.setAdapter(adapter);
+    }
+
+    private void visitSolucion() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("action", "Solucion");
+        startActivity(intent);
+    }
+
+    private void visitInformativo() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("action", "informativo");
+        startActivity(intent);
     }
 
     private void visitRespuesta(JSONObject notification) {

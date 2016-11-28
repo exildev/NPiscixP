@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="false"
     app:layout_behavior="co.com.exile.piscix.PatchedScrollingViewBehavior"
     tools:context="co.com.exile.piscix.ChatActivity"
     tools:showIn="@layout/activity_chat">

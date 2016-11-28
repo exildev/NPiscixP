@@ -56,22 +56,43 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.main_frame, fragment)
                 .commit();
 
-        setMenu();
         notix = NotixFactory.buildNotix(this);
         notix.setNotixListener(this);
+
+        Log.i("oncreate", "create");
+    }
+
+    private void moveTo(String action) {
+        Log.i("moveTo", action);
+        if (action.equals("Solucion")) {
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+            myActionMenuItem.setVisible(true);
+            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+            Fragment fragment = SolucionesFragment.SolucionesFragmentInstance(searchView);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_frame, fragment)
+                    .commit();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Soluciones");
+        } else if (action.equals("informativo")) {
+            MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+            myActionMenuItem.setVisible(true);
+            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+            Fragment fragment = InformativoFragment.InformativoFragmentInstance(searchView);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_frame, fragment)
+                    .commit();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Informativos");
+        }
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         notix.setNotixListener(this);
-    }
-
-    private void setMenu() {
-        boolean isPiscinero = getIntent().getBooleanExtra("piscinero", false);
-        if (isPiscinero) {
-
-        }
+        super.onResume();
     }
 
     @Override
@@ -99,6 +120,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         mMenu = menu;
+        if (getIntent().hasExtra("action")) {
+            moveTo(getIntent().getStringExtra("action"));
+            getIntent().removeExtra("action");
+        }
         return true;
     }
 
@@ -111,6 +136,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
+            return true;
+        } else if (id == R.id.nav_notificaciones) {
+            menuSelected(id);
             return true;
         }
 
