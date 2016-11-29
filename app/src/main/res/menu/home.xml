@@ -14,5 +14,6 @@
         android:id="@+id/nav_notificaciones"
         android:icon="@drawable/ic_notification_24dp"
         app:showAsAction="ifRoom"
+        android:visible="false"
         android:title="Notificaciones" />
 </menu>

@@ -1,11 +1,13 @@
 package co.com.exile.piscix;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,12 +23,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import co.com.exile.piscix.models.User;
 import co.com.exile.piscix.notix.Notix;
 import co.com.exile.piscix.notix.NotixFactory;
 import co.com.exile.piscix.notix.onNotixListener;
+import tarek360.animated.icons.NotificationAlertIcon;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, onNotixListener {
 
@@ -59,7 +64,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         notix = NotixFactory.buildNotix(this);
         notix.setNotixListener(this);
 
-        Log.i("oncreate", "create");
+        NotificationAlertIcon toolbarIcon = (NotificationAlertIcon) findViewById(R.id.toolbarIcon);
+        toolbarIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
+            }
+        });
+        toolbarIcon.setNotificationCount(NotixFactory.notifications.size());
+        toolbarIcon.setColors(Color.WHITE, Color.WHITE, ContextCompat.getColor(this, R.color.colorReport));
+        toolbarIcon.startAnimation();
     }
 
     private void moveTo(String action) {
@@ -92,6 +106,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         notix.setNotixListener(this);
+        NotificationAlertIcon toolbarIcon = (NotificationAlertIcon) findViewById(R.id.toolbarIcon);
+        toolbarIcon.setNotificationCount(NotixFactory.notifications.size());
+        toolbarIcon.setColors(Color.WHITE, Color.WHITE, ContextCompat.getColor(this, R.color.colorReport));
+        toolbarIcon.startAnimation();
         super.onResume();
     }
 
@@ -136,9 +154,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-            return true;
-        } else if (id == R.id.nav_notificaciones) {
-            menuSelected(id);
             return true;
         }
 
@@ -244,18 +259,50 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
             VolleySingleton.getInstance(this).addToRequestQueue(request);
-        } else if (id == R.id.nav_notificaciones) {
-            startActivity(new Intent(this, NotificationActivity.class));
         }
     }
 
     @Override
     public void onNotix(JSONObject data) {
         NotixFactory.buildNotification(this, data);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NotificationAlertIcon toolbarIcon = (NotificationAlertIcon) findViewById(R.id.toolbarIcon);
+                toolbarIcon.setNotificationCount(NotixFactory.notifications.size());
+                toolbarIcon.startAnimation();
+            }
+        });
     }
 
     @Override
     public void onVisited(JSONObject data) {
+        Log.i("notifications", NotixFactory.notifications.size() + "");
+        try {
+            JSONArray messages_id = data.getJSONArray("messages_id");
+            for (int i = 0; i < messages_id.length(); i++) {
+                String id = messages_id.getString(i);
+                for (JSONObject notification : NotixFactory.notifications) {
+                    String _id = notification.getString("_id");
+                    if (id.equals(_id)) {
+                        NotixFactory.notifications.remove(notification);
+                        break;
+                    }
+                }
+            }
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("notifications", NotixFactory.notifications.size() + "");
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NotificationAlertIcon toolbarIcon = (NotificationAlertIcon) findViewById(R.id.toolbarIcon);
+                toolbarIcon.setNotificationCount(NotixFactory.notifications.size());
+                toolbarIcon.setColors(Color.WHITE, Color.WHITE, ContextCompat.getColor(HomeActivity.this, R.color.colorReport));
+                toolbarIcon.startAnimation();
+            }
+        });
     }
 }
