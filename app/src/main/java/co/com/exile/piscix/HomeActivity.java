@@ -206,6 +206,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             toolbar.setTitle("Piscineros");
         } else if (id == R.id.nav_rutas || id == R.id.rutas_btn) {
             startActivity(new Intent(this, RutaActivity.class));
+        } else if (id == R.id.nav_recordatorio) {
+            startActivity(new Intent(this, AlarmActivity.class));
         } else if (id == R.id.nav_actividades || id == R.id.actividades_btn) {
             startActivity(new Intent(this, CalendarActivity.class));
         } else if (id == R.id.nav_reportes || id == R.id.reporte_btn) {

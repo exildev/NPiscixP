@@ -79,9 +79,6 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
                             Log.i("notif", "Respuesta");
                             visitRespuesta(data);
                             break;
-                        case "Recordatorio":
-                            Log.i("notif", "Respuesta");
-                            break;
                         case "Solucion":
                             Log.i("notif", "Solución de Reporte");
                             visitSolucion();

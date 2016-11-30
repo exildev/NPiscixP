@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group>
         <item
             android:id="@+id/nav_clientes"
             android:icon="@drawable/ic_account_circle"
             android:title="Clientes" />
+        <item
+            android:id="@+id/nav_recordatorio"
+            android:icon="@drawable/ic_alarm_24dp"
+            android:title="Recordatorios" />
         <item
             android:id="@+id/nav_rutas"
             android:icon="@drawable/ic_direction"

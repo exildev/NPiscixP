@@ -59,10 +59,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatActivity"
-            android:label="@string/title_activity_chat"
-            android:windowSoftInputMode="adjustResize"
             android:configChanges="keyboardHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_chat"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"
@@ -103,6 +103,10 @@
             android:name=".NotificationActivity"
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AlarmActivity"
+            android:label="@string/title_activity_alarm"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

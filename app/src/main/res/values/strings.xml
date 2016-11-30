@@ -202,4 +202,5 @@
     <string name="title_activity_ruta_p">Ruta Piscinero</string>
     <string name="title_activity_map_ruta">Mapa de ruta</string>
     <string name="title_activity_notification">Notificaciones</string>
+    <string name="title_activity_alarm">Recordatorios</string>
 </resources>

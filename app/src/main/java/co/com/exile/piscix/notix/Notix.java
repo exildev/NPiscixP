@@ -36,6 +36,7 @@ public class Notix {
     private String type;
     private static Notix instance;
     private onNotixListener notixListener;
+    private AlarmListener alarmListener;
 
     private Notix() {
         initSocket();
@@ -53,6 +54,10 @@ public class Notix {
         this.notixListener = notixListener;
     }
 
+    public void setAlarmListener(AlarmListener alarmListener) {
+        this.alarmListener = alarmListener;
+    }
+
     public boolean isConnected() {
         return mSocket.connected();
     }
@@ -67,6 +72,7 @@ public class Notix {
             mSocket.on("error-login", onErrorLogin);
             mSocket.on("notix", onNotix);
             mSocket.on("visited", onVisited);
+            mSocket.on("alarm", onAlarm);
             mSocket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -108,6 +114,18 @@ public class Notix {
             msg.put("webuser", username);
             msg.put("type", type);
             emitMessage("messages", msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addAlarm(String message, String hora, String time) {
+        try {
+            JSONObject alarm = new JSONObject();
+            alarm.put("message", message);
+            alarm.put("hora", hora);
+            alarm.put("time", time);
+            emitMessage("alarm", alarm);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -216,6 +234,15 @@ public class Notix {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Emitter.Listener onAlarm = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i("alarm", "triggered");
+            final JSONObject alarm = (JSONObject) args[0];
+            alarmListener.onAlarm(alarm);
         }
     };
 
