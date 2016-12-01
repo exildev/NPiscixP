@@ -73,6 +73,7 @@ public class Notix {
             mSocket.on("notix", onNotix);
             mSocket.on("visited", onVisited);
             mSocket.on("alarm", onAlarm);
+            mSocket.on("list-alarms", onShowAlarm);
             mSocket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -171,12 +172,24 @@ public class Notix {
                 JSONObject msg = message.getMessage();
                 msg.put("django_id", django_id);
                 msg.put("usertype", "WEB");
+                msg.put("webuser", username);
                 mSocket.emit(message.getEmit(), msg);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         messages = new ArrayList<>();
+    }
+
+    public void getAlarms() {
+        try {
+            JSONObject msg = new JSONObject();
+            msg.put("webuser", username);
+            msg.put("usertype", type);
+            emitMessage("show-alarm", msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void emitMessage(String emit, JSONObject message) {
@@ -234,6 +247,15 @@ public class Notix {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    };
+
+    private Emitter.Listener onShowAlarm = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i("alarms", "triggered");
+            final JSONArray alarms = (JSONArray) args[0];
+            alarmListener.onShowAlarm(alarms);
         }
     };
 

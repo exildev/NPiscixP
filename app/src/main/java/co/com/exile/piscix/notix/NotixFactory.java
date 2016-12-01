@@ -82,4 +82,24 @@ public class NotixFactory {
         // mId allows you to update the notification later on.
         mNotificationManager.notify(12, mBuilder.build());
     }
+
+    public static void buildAlarm(Context context, String content) {
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_alarm_24dp)
+                .setLargeIcon(largeIcon)
+                .setContentTitle("Recordatorio Piscix")
+                .setContentText(content);
+
+        mBuilder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        mBuilder.setVibrate(new long[]{0, 800, 100, 800});
+        mBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+        mBuilder.setAutoCancel(true);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(13, mBuilder.build());
+    }
 }
