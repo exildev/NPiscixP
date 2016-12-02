@@ -106,7 +106,11 @@
         <activity
             android:name=".AlarmActivity"
             android:label="@string/title_activity_alarm"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MapCasaActivity"
+            android:label="@string/title_activity_map_casa"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

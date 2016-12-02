@@ -49,6 +49,7 @@ dependencies {
     compile 'com.github.rubensousa:floatingtoolbar:1.2.1'
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     compile 'com.github.jd-alexander:library:1.1.0'
-    compile "com.github.tarek360:Animated-Icons:1.0.1"
+    compile 'com.github.tarek360:Animated-Icons:1.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
     testCompile 'junit:junit:4.12'
 }

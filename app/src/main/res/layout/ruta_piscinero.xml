@@ -10,15 +10,16 @@
 
     <RelativeLayout
         android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:clickable="true"
-        android:padding="16dp">
+        android:layout_height="72dp">
 
         <android.support.v7.widget.CardView
             android:id="@+id/icon_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="16dp"
             android:layout_centerInParent="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardBackgroundColor="@color/colorPrimary"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp">
@@ -35,6 +36,34 @@
                     android:scaleType="centerInside"
                     android:contentDescription="@string/icono"
                     app:srcCompat="@drawable/ic_pool_24dp" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/have_gps_card"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignEnd="@id/icon_card"
+            android:layout_alignBottom="@id/icon_card"
+            android:layout_marginEnd="-4dp"
+            android:layout_marginBottom="-4dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/colorAccent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/have_gps_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@string/icono"
+                    app:srcCompat="@drawable/ic_place_24dp" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </RelativeLayout>
@@ -60,7 +89,7 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Piscina B10, Tipo T1"
+                android:text="@string/piscina_title"
                 android:textColor="#000"
                 android:textSize="16sp" />
 
@@ -83,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="JORGE CARRILLO"
+                    android:text="@string/name_template"
                     android:paddingBottom="4dp" />
             </LinearLayout>
 
@@ -93,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="4dp"
-                android:text="1m ancho, 1m largo, 1m alto"
+                android:text="@string/piscina_medidas"
                 android:paddingTop="4dp" />
         </LinearLayout>
 

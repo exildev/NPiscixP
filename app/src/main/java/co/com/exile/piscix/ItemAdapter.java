@@ -80,14 +80,25 @@ class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> imple
     }
 
     @Override
-    public void onBindViewHolder(final ItemViewHolder itemViewHolder, final int position) {
-
+    public void onBindViewHolder(final ItemViewHolder itemViewHolder, int position) {
+        final int i = position;
         final Asignacion piscina = itemList.get(position);
 
         itemViewHolder.title.setText(context.getString(R.string.piscina_title, piscina.getNombre(), piscina.getTipo()));
         itemViewHolder.cliente.setText(piscina.getCliente());
         String medidas = context.getString(R.string.piscina_medidas, piscina.getAncho(), piscina.getLargo(), piscina.getProfundidad());
         itemViewHolder.medidas.setText(piscina.getOrden() + " " + medidas);
+        if (piscina.isHaveGPS()) {
+            itemViewHolder.have_gps_card.setVisibility(View.VISIBLE);
+        } else {
+            itemViewHolder.have_gps_card.setVisibility(View.GONE);
+        }
+        itemViewHolder.iconCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dragStartListener.setGPS(i);
+            }
+        });
         itemViewHolder.relativeReorder.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -116,7 +127,8 @@ class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> imple
         ImageView ivReorder;
         RelativeLayout relativeReorder;
         CardView iconCard;
-        protected ImageView icon;
+        ImageView icon;
+        CardView have_gps_card;
 
 
         ItemViewHolder(final View v) {
@@ -130,6 +142,7 @@ class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> imple
             relativeReorder = (RelativeLayout) v.findViewById(R.id.relativeReorder);
             iconCard = (CardView) v.findViewById(R.id.icon_card);
             icon = (ImageView) v.findViewById(R.id.icon);
+            have_gps_card = (CardView) v.findViewById(R.id.have_gps_card);
         }
 
         @Override

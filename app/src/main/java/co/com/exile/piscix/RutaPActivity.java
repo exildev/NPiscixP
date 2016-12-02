@@ -114,7 +114,7 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
                     }
                     for (int i = 0; i < object_list.length(); i++) {
                         JSONObject campo = object_list.getJSONObject(i);
-
+                        Log.i("campo", campo.toString());
                         int id = campo.getInt("id");
                         int piscina_id = campo.getInt("piscina");
                         String nombre = campo.getString("nombreP");
@@ -125,7 +125,9 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
                         String cliente = campo.getString("nombreCF") + " " + campo.getString("nombreCL");
                         int orden = campo.getInt("orden");
 
-                        ItemAdapter.itemList.add((itemAdapter.getItemCount()), new Asignacion(id, piscina_id, nombre, ancho, largo, profundidad, tipo, cliente, orden));
+                        boolean haveGPS = !campo.get("latitud").equals(null) && !campo.get("longitud").equals(null);
+
+                        ItemAdapter.itemList.add((itemAdapter.getItemCount()), new Asignacion(id, piscina_id, nombre, ancho, largo, profundidad, tipo, cliente, orden, haveGPS));
                         itemAdapter.notifyDataSetChanged();
                     }
                     if (itemAdapter.getItemCount() < count) {
@@ -197,6 +199,16 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
         };
 
         VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    void setGPS(int position) {
+        Asignacion casa = ItemAdapter.itemList.get(position);
+        Log.i("piscina", casa.toString());
+        if (!casa.isHaveGPS()) {
+            Intent intent = new Intent(this, MapCasaActivity.class);
+            intent.putExtra("casa", casa.getId());
+            startActivity(intent);
+        }
     }
 
 }
