@@ -23,4 +23,5 @@
     <string name="list_asignaciones_piscinero">/usuarios/service/list/asignaciones/?piscinero=%1$d&amp;page=%2$d&amp;asigna=True</string>
     <string name="asigancion_form">/usuarios/service/asignacion/form/piscinero/</string>
     <string name="asigancion_form_orden">/usuarios/service/asignacion/form/piscinero/%1$d/</string>
+    <string name="gps_casa">/usuarios/service/asignacion/gps/%1$d/</string>
 </resources>

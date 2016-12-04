@@ -13,14 +13,60 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_arrow_back"
+                android:tint="@color/grey"
+                android:layout_gravity="center"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:contentDescription="@string/icono" />
+
+            <AutoCompleteTextView
+                android:id="@+id/buscar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:hint="@string/buscar"
+                android:padding="16dp" />
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/fab_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_my_location_24dp"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@color/grey"
-        app:backgroundTint="@color/white" />
+        android:layout_gravity="bottom|end"
+        android:orientation="vertical">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:tint="@color/grey"
+            app:backgroundTint="@color/white"
+            app:srcCompat="@drawable/ic_my_location_24dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="send"
+            app:srcCompat="@drawable/ic_send_24dp" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

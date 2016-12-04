@@ -204,4 +204,6 @@
     <string name="title_activity_notification">Notificaciones</string>
     <string name="title_activity_alarm">Recordatorios</string>
     <string name="title_activity_map_casa">Ubicacion piscina</string>
+    <string name="buscar">Buscar aquí</string>
+    <string name="error_response">Error al enviar los datos</string>
 </resources>
