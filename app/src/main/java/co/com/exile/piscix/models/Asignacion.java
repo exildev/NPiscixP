@@ -15,8 +15,9 @@ public class Asignacion {
     private String cliente;
     private int orden;
     private boolean haveGPS;
+    private int casa;
 
-    public Asignacion(int id, int piscina_id, String nombre, double ancho, double largo, double profundidad, String tipo, String cliente, int orden, boolean haveGPS) {
+    public Asignacion(int id, int piscina_id, String nombre, double ancho, double largo, double profundidad, String tipo, String cliente, int orden, boolean haveGPS, int casa) {
         this.id = id;
         this.piscina_id = piscina_id;
         this.nombre = nombre;
@@ -27,6 +28,7 @@ public class Asignacion {
         this.cliente = cliente;
         this.orden = orden;
         this.haveGPS = haveGPS;
+        this.casa = casa;
     }
 
     public int getId() {
@@ -67,6 +69,10 @@ public class Asignacion {
 
     public boolean isHaveGPS() {
         return haveGPS;
+    }
+
+    public int getCasa() {
+        return casa;
     }
 
     @Override

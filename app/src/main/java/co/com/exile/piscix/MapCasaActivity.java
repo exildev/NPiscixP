@@ -1,6 +1,7 @@
 package co.com.exile.piscix;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
@@ -9,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -226,14 +226,22 @@ public class MapCasaActivity extends AppCompatActivity implements OnMapReadyCall
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Snackbar.make(findViewById(R.id.fab_container), R.string.success_response, 800).show();
+                        Intent data = new Intent();
+                        data.putExtra("response", response);
+                        data.putExtra("status", 200);
+                        setResult(RESULT_OK, data);
+                        finish();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("gps", error.toString());
-                        Snackbar.make(findViewById(R.id.fab_container), R.string.error_response, 800).show();
+                        String err = new String(error.networkResponse.data);
+                        Intent data = new Intent();
+                        data.putExtra("response", err);
+                        data.putExtra("status", error.networkResponse.statusCode);
+                        setResult(RESULT_OK, data);
+                        finish();
                     }
                 }) {
             @Override

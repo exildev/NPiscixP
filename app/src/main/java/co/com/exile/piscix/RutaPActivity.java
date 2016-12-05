@@ -34,6 +34,7 @@ import co.com.exile.piscix.models.Asignacion;
 
 public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnStartDragListener {
 
+    private static final int MAP_SAVE = 1;
     private ItemTouchHelper mItemTouchHelper;
     private int nu = 0;
     TextView tvNumber;
@@ -100,6 +101,23 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
 
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("result", requestCode + "");
+        if (requestCode == MAP_SAVE && resultCode == RESULT_OK) {
+            int status = data.getIntExtra("status", -1);
+            String response = data.getStringExtra("response");
+            if (status == 200) {
+                Snackbar.make(findViewById(R.id.content_ruta_p).findViewById(R.id.container), R.string.gps_success, 800).show();
+                page = 1;
+                ItemAdapter.itemList.clear();
+                loadItems();
+            }
+            Log.i("status", status + "");
+            Log.i("response", response);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void loadItems() {
         String serviceUrl = getString(R.string.list_asignaciones_piscinero, piscinero, page);
         String url = getString(R.string.url, serviceUrl);
@@ -124,10 +142,11 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
                         double profundidad = campo.getDouble("profundidad");
                         String cliente = campo.getString("nombreCF") + " " + campo.getString("nombreCL");
                         int orden = campo.getInt("orden");
+                        int casa = campo.getInt("casa");
 
                         boolean haveGPS = !campo.get("latitud").equals(null) && !campo.get("longitud").equals(null);
 
-                        ItemAdapter.itemList.add((itemAdapter.getItemCount()), new Asignacion(id, piscina_id, nombre, ancho, largo, profundidad, tipo, cliente, orden, haveGPS));
+                        ItemAdapter.itemList.add((itemAdapter.getItemCount()), new Asignacion(id, piscina_id, nombre, ancho, largo, profundidad, tipo, cliente, orden, haveGPS, casa));
                         itemAdapter.notifyDataSetChanged();
                     }
                     if (itemAdapter.getItemCount() < count) {
@@ -202,12 +221,12 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
     }
 
     void setGPS(int position) {
-        Asignacion casa = ItemAdapter.itemList.get(position);
-        Log.i("piscina", casa.toString());
-        if (!casa.isHaveGPS()) {
+        Asignacion asignacion = ItemAdapter.itemList.get(position);
+        Log.i("asignacion", asignacion.toString());
+        if (!asignacion.isHaveGPS()) {
             Intent intent = new Intent(this, MapCasaActivity.class);
-            intent.putExtra("casa", casa.getId());
-            startActivity(intent);
+            intent.putExtra("casa", asignacion.getCasa());
+            startActivityForResult(intent, MAP_SAVE);
         }
     }
 

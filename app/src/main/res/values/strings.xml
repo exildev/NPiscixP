@@ -206,4 +206,5 @@
     <string name="title_activity_map_casa">Ubicacion piscina</string>
     <string name="buscar">Buscar aquí</string>
     <string name="error_response">Error al enviar los datos</string>
+    <string name="gps_success">Ubicación registrada con exito</string>
 </resources>
