@@ -85,6 +85,7 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
                             break;
                         case "Asignacion":
                             Log.i("notif", "Asignación");
+                            visitAsignacion();
                             break;
                         case "Reporte informativo":
                             Log.i("notif", "Reporte informativo");
@@ -170,6 +171,12 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
         };
 
         infiniteListView.setAdapter(adapter);
+    }
+
+    private void visitAsignacion() {
+        Intent intent = new Intent(this, RutaActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void visitSolucion() {

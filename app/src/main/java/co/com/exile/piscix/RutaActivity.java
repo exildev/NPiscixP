@@ -53,8 +53,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.com.exile.piscix.models.Planilla;
+import co.com.exile.piscix.notix.Notix;
+import co.com.exile.piscix.notix.NotixFactory;
+import co.com.exile.piscix.notix.onNotixListener;
 
-public class RutaActivity extends AppCompatActivity {
+public class RutaActivity extends AppCompatActivity implements onNotixListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -65,6 +68,7 @@ public class RutaActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private Notix notix;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -94,6 +98,10 @@ public class RutaActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        notix = NotixFactory.buildNotix(this);
+        notix.setNotixListener(this);
+        visitMessages();
     }
 
     /**
@@ -566,5 +574,50 @@ public class RutaActivity extends AppCompatActivity {
         TextView medidas;
         CardView info_btn;
         ImageView action_image;
+    }
+
+    private void visitMessages() {
+        ArrayList<String> messages = new ArrayList<>();
+
+        for (JSONObject notification : NotixFactory.notifications) {
+            try {
+                JSONObject data = notification.getJSONObject("data");
+                String tipo = data.getString("tipo");
+                if (tipo.equals("Asignacion")) {
+                    String id = notification.getString("_id");
+                    messages.add(id);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        notix.visitMessages(messages);
+    }
+
+    @Override
+    public void onNotix(JSONObject data) {
+        NotixFactory.buildNotification(this, data);
+    }
+
+    @Override
+    public void onVisited(JSONObject data) {
+        Log.i("notifications", NotixFactory.notifications.size() + "");
+        try {
+            JSONArray messages_id = data.getJSONArray("messages_id");
+            for (int i = 0; i < messages_id.length(); i++) {
+                String id = messages_id.getString(i);
+                for (JSONObject notification : NotixFactory.notifications) {
+                    String _id = notification.getString("_id");
+                    if (id.equals(_id)) {
+                        NotixFactory.notifications.remove(notification);
+                        break;
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("notifications", NotixFactory.notifications.size() + "");
     }
 }
