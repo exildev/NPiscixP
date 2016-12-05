@@ -32,9 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.nguyenhoanglam.imagepicker.activity.ImagePicker;
-import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
-import com.nguyenhoanglam.imagepicker.model.Image;
+import com.liuguangqiang.ipicker.IPicker;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -47,15 +45,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 import static java.lang.String.format;
 
 
-public class ReporteActivity extends AppCompatActivity  {
-
-    private static final int REQUEST_CODE_PICKER = 2;
+public class ReporteActivity extends AppCompatActivity implements IPicker.OnSelectedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
@@ -65,7 +62,7 @@ public class ReporteActivity extends AppCompatActivity  {
 
     Field[] piscinas;
     int selectedPiscina = 0;
-    private ArrayList<Image> images;
+    private List<String> images;
 
     LocationManager locationManager;
 
@@ -102,6 +99,8 @@ public class ReporteActivity extends AppCompatActivity  {
             TextView n = (TextView) findViewById(R.id.cliente_title);
             n.setText(name);
         }
+
+        IPicker.setOnSelectedListener(this);
 
         setTypeSpinner();
         validPermissions();
@@ -189,16 +188,8 @@ public class ReporteActivity extends AppCompatActivity  {
     }
 
     public void openPicker() {
-        ImagePicker.create(this)
-                .folderMode(true) // folder mode (false by default)
-                .folderTitle("Carpetas") // folder selection title
-                .imageTitle("Toque para seleccionar") // image selection title
-                .multi() // multi mode (default mode)
-                .limit(5) // max images can be selected (99 by default)
-                .showCamera(true) // show camera or not (true by default)
-                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
-                .origin(images) // original selected images, used in multi mode
-                .start(REQUEST_CODE_PICKER);
+        IPicker.setLimit(5);
+        IPicker.open(this);
     }
 
     @Override
@@ -219,14 +210,6 @@ public class ReporteActivity extends AppCompatActivity  {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_PICKER && resultCode == RESULT_OK && data != null) {
-            images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
-        }
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -311,8 +294,8 @@ public class ReporteActivity extends AppCompatActivity  {
                             .addParameter("fotoreporte_set-MIN_NUM_FORMS", "0")
                             .addParameter("fotoreporte_set-MAX_NUM_FORMS", "5");
             for (int i = 0; i < images.size(); i++) {
-                Image image = images.get(i);
-                upload.addFileToUpload(image.getPath(), "fotoreporte_set-" + i + "-url");
+                String image = images.get(i);
+                upload.addFileToUpload(image, "fotoreporte_set-" + i + "-url");
             }
 
             upload.setDelegate(new UploadStatusDelegate() {
@@ -454,4 +437,8 @@ public class ReporteActivity extends AppCompatActivity  {
         }
     }
 
+    @Override
+    public void onSelected(List<String> paths) {
+        images = paths;
+    }
 }

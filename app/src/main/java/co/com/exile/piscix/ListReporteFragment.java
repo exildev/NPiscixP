@@ -3,7 +3,6 @@ package co.com.exile.piscix;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,8 +44,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
-import com.nguyenhoanglam.imagepicker.model.Image;
+import com.liuguangqiang.ipicker.IPicker;
 import com.softw4re.views.InfiniteListAdapter;
 import com.softw4re.views.InfiniteListView;
 
@@ -62,6 +60,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import co.com.exile.piscix.models.Reporte;
@@ -72,14 +71,14 @@ import static java.lang.String.format;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListReporteFragment extends Fragment {
+public class ListReporteFragment extends Fragment implements IPicker.OnSelectedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
     LocationManager locationManager;
 
     private static final int REQUEST_CODE_PICKER = 2;
-    private ArrayList<Image> images;
+    private List<String> images;
 
     private InfiniteListView infiniteListView;
     private ArrayList<Reporte> itemList;
@@ -107,6 +106,7 @@ public class ListReporteFragment extends Fragment {
         setInfiniteList(fragment);
         setSearchView();
         validPermissions();
+        IPicker.setOnSelectedListener(this);
         return fragment;
     }
 
@@ -431,13 +431,6 @@ public class ListReporteFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK && data != null) {
-            images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
@@ -466,18 +459,8 @@ public class ListReporteFragment extends Fragment {
     }
 
     public void openPicker() {
-        Intent intent = new Intent(this.getActivity(), ImagePickerActivity.class);
-
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_FOLDER_MODE, true);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_MODE, ImagePickerActivity.MODE_MULTIPLE);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_LIMIT, 5);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SHOW_CAMERA, true);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES, images);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_FOLDER_TITLE, "Carpetas");
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_IMAGE_TITLE, "Toque para seleccionar");
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_IMAGE_DIRECTORY, "Camera");
-
-        startActivityForResult(intent, REQUEST_CODE_PICKER);
+        IPicker.setLimit(5);
+        IPicker.open(this.getContext());
     }
 
     private void send(final MaterialDialog dialog, int position) {
@@ -545,8 +528,8 @@ public class ListReporteFragment extends Fragment {
                             .addParameter("fotosolucion_set-MIN_NUM_FORMS", "0")
                             .addParameter("fotosolucion_set-MAX_NUM_FORMS", "5");
             for (int i = 0; i < images.size(); i++) {
-                Image image = images.get(i);
-                upload.addFileToUpload(image.getPath(), "fotosolucion_set-" + i + "-url");
+                String image = images.get(i);
+                upload.addFileToUpload(image, "fotosolucion_set-" + i + "-url");
             }
 
             upload.setDelegate(new UploadStatusDelegate() {
@@ -722,4 +705,8 @@ public class ListReporteFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSelected(List<String> paths) {
+        images = paths;
+    }
 }

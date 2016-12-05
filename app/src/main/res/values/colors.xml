@@ -10,4 +10,6 @@
     <color name="colorReportAccent">#263238</color>
     <color name="tealPrimary">#009688</color>
     <color name="greenPrimary">#66BB6A</color>
+    <color name="grey">#BDBDBD</color>
+    <color name="black">#000000</color>
 </resources>

@@ -14,7 +14,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.softw4re.views.InfiniteListAdapter;
 import com.softw4re.views.InfiniteListView;
-import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.json.JSONArray;
@@ -86,7 +85,7 @@ public class AlarmActivity extends AppCompatActivity implements AlarmListener {
         TimePickerDialog picker = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
-                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
                         Calendar now = Calendar.getInstance();
                         Calendar hora = Calendar.getInstance();
 

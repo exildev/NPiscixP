@@ -111,6 +111,11 @@
             android:name=".MapCasaActivity"
             android:label="@string/title_activity_map_casa"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="com.liuguangqiang.ipicker.IPickerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
