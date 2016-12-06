@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Piscix</string>
+
+    <string name="title_act_picker">Todos</string>
+    <string name="action_done">HECHO</string>
+
+    <string name="btn_setting">Ir a configuración</string>
+    <string name="no_permission_camera">No hay permisos para tomar fotos</string>
+    <string name="no_permission_gallery">No hay permisos para acceder a las fotos</string>
+    <string name="format_max_size">Solo se puede seleccionar %1$d imagen.</string>
+
+    <!--crop-->
+    <string name="crop__title">Recorte de imagen</string>
+    <string name="crop__saving">Guardando…</string>
+    <string name="crop__wait">Por favor espere…</string>
+    <string name="crop__pick_error">No existe ninguna imagen</string>
+    <string name="crop__done">HECHO</string>
+    <string name="crop__cancel" tools:ignore="ButtonCase">CANCELAR</string>
+</resources>

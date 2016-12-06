@@ -3,14 +3,13 @@ package co.com.exile.piscix;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
-import android.content.Context;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,10 +17,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -44,6 +44,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.places.Places;
 import com.liuguangqiang.ipicker.IPicker;
 import com.softw4re.views.InfiniteListAdapter;
 import com.softw4re.views.InfiniteListView;
@@ -71,13 +82,12 @@ import static java.lang.String.format;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListReporteFragment extends Fragment implements IPicker.OnSelectedListener {
+public class ListReporteFragment extends Fragment implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
-    LocationManager locationManager;
+    private static final int REQUEST_LOCATION_SETTINGS = 12;
 
-    private static final int REQUEST_CODE_PICKER = 2;
     private List<String> images;
 
     private InfiniteListView infiniteListView;
@@ -85,6 +95,10 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
     private int page;
     private String search = "";
     private SearchView searchView;
+
+    private GoogleApiClient mGoogleClient;
+    private LocationRequest mLocationRequest;
+    private Location myLocation;
 
     public ListReporteFragment() {
         page = 1;
@@ -105,8 +119,16 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         View fragment = inflater.inflate(R.layout.fragment_list_reporte, container, false);
         setInfiniteList(fragment);
         setSearchView();
-        validPermissions();
         IPicker.setOnSelectedListener(this);
+
+        mGoogleClient = new GoogleApiClient.Builder(this.getContext())
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).build();
+        mGoogleClient.connect();
+
         return fragment;
     }
 
@@ -176,7 +198,7 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
                     holder.tipo.setText(reporte.getTipo_de_reporte());
                     holder.subtitle.setText(reporte.getNombre());
                     if (reporte.getNumero().equals("") || reporte.getNumero().equals("null")){
-                        holder.numero.setText("Sin numero");
+                        holder.numero.setText(R.string.no_number);
                     }else {
                         holder.numero.setText(reporte.getNumero());
                     }
@@ -197,7 +219,7 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
                     holder.solution_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            solucion(view, position);
+                            solucion(position);
                         }
                     });
                     holder.photos_button.setOnClickListener(new View.OnClickListener() {
@@ -387,7 +409,7 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         });
     }
 
-    private void solucion(final View view, final int position) {
+    private void solucion(final int position) {
         new MaterialDialog.Builder(this.getContext())
                 .title("Solución")
                 .customView(R.layout.solucion, true)
@@ -468,17 +490,19 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         dialog.dismiss();
         View view = dialog.getCustomView();
 
-        String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
-        String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
+        String nombre = ((TextView) (view != null ? view.findViewById(R.id.nombre) : "")).getText().toString();
+        String descripcion = ((TextView) (view != null ? view.findViewById(R.id.descripcion) : "")).getText().toString();
         String reporte = String.valueOf(itemList.get(position).getId());
-        String latitud = format("%s", getLastBestLocation().getLatitude());
-        String longitud = format("%s", getLastBestLocation().getLongitude());
+        String latitud = format("%s", myLocation.getLatitude());
+        String longitud = format("%s", myLocation.getLongitude());
 
         if (nombre.equals("")) {
+            assert view != null;
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
             til.setError("Debe ingresar un nombre");
             return;
         } else {
+            assert view != null;
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
             til.setError("");
         }
@@ -523,7 +547,7 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
                             .addParameter("reporte", reporte)
                             .addParameter("latitud", latitud)
                             .addParameter("longitud", longitud)
-                            .addParameter("fotosolucion_set-TOTAL_FORMS", format("%d", images.size()))
+                            .addParameter("fotosolucion_set-TOTAL_FORMS", String.valueOf(images.size()))
                             .addParameter("fotosolucion_set-INITIAL_FORMS", "0")
                             .addParameter("fotosolucion_set-MIN_NUM_FORMS", "0")
                             .addParameter("fotosolucion_set-MAX_NUM_FORMS", "5");
@@ -616,97 +640,121 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
             }else if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
             }else {
-                checkGPS();
+                createLocationRequest();
             }
         }else {
-            checkGPS();
+            createLocationRequest();
         }
     }
 
-    private void checkGPS(){
-        LocationManager L = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (!L.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Para que esta aplicación funcione correctamente debe estar atcivado el GPS\n¿Desea activarlo ahora?")
-                    .setCancelable(false)
-                    .setPositiveButton("Activar GPS", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent I = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(I);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleClient,
+                        builder.build());
+
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        Log.i("settings", "si tal");
+                        startLocationUpdates();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(ListReporteFragment.this.getActivity(), REQUEST_LOCATION_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
                         }
-                    })
-                    .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            ListReporteFragment.this.getActivity().finish();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }else {
-            initGPS();
-        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+                        Log.i("settings", "no tal");
+                        break;
+                }
+            }
+        });
     }
 
-    private void initGPS() {
-        Toast.makeText(this.getContext(), "pidiendo el gps ", Toast.LENGTH_SHORT).show();
+    protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             validPermissions();
             return;
         }
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleClient, mLocationRequest, this);
     }
 
-    @Nullable
-    private Location getLastBestLocation() {
-        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            validPermissions();
-            return null;
-        }
-        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location locationNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleClient, this);
+    }
 
-        long GPSLocationTime = 0;
-        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
-
-        long NetLocationTime = 0;
-
-        if (null != locationNet) {
-            NetLocationTime = locationNet.getTime();
-        }
-
-        if ( 0 < GPSLocationTime - NetLocationTime ) {
-            return locationGPS;
-        }
-        else {
-            return locationNet;
-        }
+    @Override
+    public void onDestroy() {
+        stopLocationUpdates();
+        super.onDestroy();
     }
 
     @Override
     public void onSelected(List<String> paths) {
         images = paths;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        createLocationRequest();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        myLocation = location;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_LOCATION_SETTINGS) {
+            Log.i("GPS", "" + (resultCode == Activity.RESULT_OK));
+            if (resultCode == Activity.RESULT_OK) {
+                startLocationUpdates();
+            } else {
+                Fragment fragment = HomeFragment.newInstance(this.getActivity().getIntent().getBooleanExtra("piscinero", false));
+                FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.main_frame, fragment)
+                        .commit();
+                Toolbar toolbar = (Toolbar) this.getActivity().findViewById(R.id.toolbar);
+                toolbar.setTitle("Piscix");
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

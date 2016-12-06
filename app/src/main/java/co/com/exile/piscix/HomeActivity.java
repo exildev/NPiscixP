@@ -104,6 +104,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_frame);
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onResume() {
         notix.setNotixListener(this);
         NotificationAlertIcon toolbarIcon = (NotificationAlertIcon) findViewById(R.id.toolbarIcon);
