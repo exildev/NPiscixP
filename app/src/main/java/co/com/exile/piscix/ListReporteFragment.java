@@ -76,8 +76,6 @@ import java.util.Map;
 
 import co.com.exile.piscix.models.Reporte;
 
-import static java.lang.String.format;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -465,8 +463,8 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         String nombre = ((TextView) (view != null ? view.findViewById(R.id.nombre) : "")).getText().toString();
         String descripcion = ((TextView) (view != null ? view.findViewById(R.id.descripcion) : "")).getText().toString();
         String reporte = String.valueOf(itemList.get(position).getId());
-        String latitud = format("%s", myLocation.getLatitude());
-        String longitud = format("%s", myLocation.getLongitude());
+        final String latitud = String.valueOf(myLocation.getLatitude());
+        final String longitud = String.valueOf(myLocation.getLongitude());
 
         if (nombre.equals("")) {
             assert view != null;
