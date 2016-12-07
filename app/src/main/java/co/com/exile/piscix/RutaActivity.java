@@ -590,13 +590,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                             })
                             .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Fragment fragment = HomeFragment.newInstance(getActivity().getIntent().getBooleanExtra("piscinero", false));
-                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                    fragmentManager.beginTransaction()
-                                            .replace(R.id.main_frame, fragment)
-                                            .commit();
-                                    Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-                                    toolbar.setTitle("Piscix");
+                                    getActivity().finish();
                                 }
                             });
                     AlertDialog alert = builder.create();
@@ -677,6 +671,12 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
             }
         }
         notix.visitMessages(messages);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        fragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
