@@ -209,4 +209,5 @@
     <string name="gps_success">Ubicación registrada con exito</string>
     <string name="no_number">Sin numero</string>
     <string name="activate_gps_message">Para que esta aplicación funcione correctamente debe estar atcivado el GPS\n¿Desea activarlo ahora?</string>
+    <string name="gps_permissions_message">Para que esta aplicación funcione correctamente usted debe dar permisos de acceso al GPS ¿Desea hacerlo ahora?</string>
 </resources>

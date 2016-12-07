@@ -452,34 +452,6 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
                 .show();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to use camera
-                validPermissions();
-            }
-            else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-                builder.setMessage("Para que esta aplicación funcione correctamente usted debe dar permisos de acceso al GPS ¿Desea hacerlo ahora?")
-                        .setCancelable(false)
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                validPermissions();
-                            }
-                        })
-                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                ListReporteFragment.this.getActivity().finish();
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-        }
-    }
-
     public void openPicker() {
         IPicker.setLimit(5);
         IPicker.open(this.getContext());
@@ -709,14 +681,47 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
     }
 
     @Override
+    public void onSelected(List<String> paths) {
+        images = paths;
+    }
+
+    @Override
     public void onDestroy() {
         stopLocationUpdates();
         super.onDestroy();
     }
 
     @Override
-    public void onSelected(List<String> paths) {
-        images = paths;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                validPermissions();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+                builder.setMessage(R.string.gps_permissions_message)
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                validPermissions();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Fragment fragment = HomeFragment.newInstance(getActivity().getIntent().getBooleanExtra("piscinero", false));
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.main_frame, fragment)
+                                        .commit();
+                                Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+                                toolbar.setTitle("Piscix");
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
     }
 
     @Override

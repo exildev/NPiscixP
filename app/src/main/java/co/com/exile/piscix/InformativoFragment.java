@@ -3,14 +3,13 @@ package co.com.exile.piscix;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
-import android.content.Context;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,9 +18,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.places.Places;
 import com.softw4re.views.InfiniteListAdapter;
 import com.softw4re.views.InfiniteListView;
 
@@ -58,16 +70,14 @@ import co.com.exile.piscix.models.Informativo;
 import co.com.exile.piscix.notix.Notix;
 import co.com.exile.piscix.notix.NotixFactory;
 
-import static java.lang.String.format;
-
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InformativoFragment extends Fragment {
+public class InformativoFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
-    LocationManager locationManager;
+    private static final int REQUEST_LOCATION_SETTINGS = 12;
 
     private InfiniteListView infiniteListView;
     private ArrayList<Informativo> itemList;
@@ -77,6 +87,10 @@ public class InformativoFragment extends Fragment {
     private Notix notix;
 
     private ArrayList<Integer> newItems;
+
+    private GoogleApiClient mGoogleClient;
+    private LocationRequest mLocationRequest;
+    private Location myLocation;
 
 
     public InformativoFragment() {
@@ -100,8 +114,16 @@ public class InformativoFragment extends Fragment {
         visitMessages();
         setInfiniteList(fragment);
         setSearchView();
-        validPermissions();
         setFab(fragment);
+
+        mGoogleClient = new GoogleApiClient.Builder(this.getContext())
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).build();
+        mGoogleClient.connect();
+
         return fragment;
     }
 
@@ -221,10 +243,11 @@ public class InformativoFragment extends Fragment {
         dialog.dismiss();
         View view = dialog.getCustomView();
 
+        assert view != null;
         final String nombre = ((TextView) view.findViewById(R.id.nombre)).getText().toString();
         final String descripcion = ((TextView) view.findViewById(R.id.descripcion)).getText().toString();
-        final String latitud = format("%s", getLastBestLocation().getLatitude());
-        final String longitud = format("%s", getLastBestLocation().getLongitude());
+        final String latitud = String.valueOf(myLocation.getLatitude());
+        final String longitud = String.valueOf(myLocation.getLongitude());
 
         if (nombre.equals("")) {
             TextInputLayout til = (TextInputLayout) view.findViewById(R.id.nombre_container);
@@ -424,130 +447,6 @@ public class InformativoFragment extends Fragment {
         TextView descripcion;
     }
 
-    private void validPermissions(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }else if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-            }else {
-                checkGPS();
-            }
-        }else {
-            checkGPS();
-        }
-    }
-
-    private void checkGPS(){
-        LocationManager L = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        if (!L.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Para que esta aplicación funcione correctamente debe estar atcivado el GPS\n¿Desea activarlo ahora?")
-                    .setCancelable(false)
-                    .setPositiveButton("Activar GPS", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent I = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(I);
-                        }
-                    })
-                    .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            InformativoFragment.this.getActivity().finish();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }else {
-            initGPS();
-        }
-    }
-
-    private void initGPS() {
-        Toast.makeText(this.getContext(), "pidiendo el gps ", Toast.LENGTH_SHORT).show();
-        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            validPermissions();
-            return;
-        }
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-    }
-
-    @Nullable
-    private Location getLastBestLocation() {
-        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            validPermissions();
-            return null;
-        }
-        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location locationNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-        long GPSLocationTime = 0;
-        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
-
-        long NetLocationTime = 0;
-
-        if (null != locationNet) {
-            NetLocationTime = locationNet.getTime();
-        }
-
-        if ( 0 < GPSLocationTime - NetLocationTime ) {
-            return locationGPS;
-        }
-        else {
-            return locationNet;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to use camera
-                validPermissions();
-            }
-            else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-                builder.setMessage("Para que esta aplicación funcione correctamente usted debe dar permisos de acceso al GPS ¿Desea hacerlo ahora?")
-                        .setCancelable(false)
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                validPermissions();
-                            }
-                        })
-                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                InformativoFragment.this.getActivity().finish();
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-        }
-    }
-
     private void visitMessages() {
         ArrayList<String> messages = new ArrayList<>();
         newItems = new ArrayList<>();
@@ -567,5 +466,173 @@ public class InformativoFragment extends Fragment {
             }
         }
         notix.visitMessages(messages);
+    }
+
+    private void validPermissions(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            }else if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            }else {
+                createLocationRequest();
+            }
+        }else {
+            createLocationRequest();
+        }
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleClient,
+                        builder.build());
+
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        Log.i("settings", "si tal");
+                        startLocationUpdates();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(getActivity(), REQUEST_LOCATION_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+                        Log.i("settings", "no tal");
+                        break;
+                }
+            }
+        });
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            validPermissions();
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleClient, this);
+    }
+
+    @Override
+    public void onDestroy() {
+        stopLocationUpdates();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                validPermissions();
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+                builder.setMessage(R.string.gps_permissions_message)
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                validPermissions();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Fragment fragment = HomeFragment.newInstance(getActivity().getIntent().getBooleanExtra("piscinero", false));
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.main_frame, fragment)
+                                        .commit();
+                                Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+                                toolbar.setTitle("Piscix");
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        createLocationRequest();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        myLocation = location;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_LOCATION_SETTINGS) {
+            Log.i("GPS", "" + (resultCode == Activity.RESULT_OK));
+            if (resultCode == Activity.RESULT_OK) {
+                startLocationUpdates();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+                builder.setMessage(R.string.activate_gps_message)
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                createLocationRequest();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Fragment fragment = HomeFragment.newInstance(getActivity().getIntent().getBooleanExtra("piscinero", false));
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.main_frame, fragment)
+                                        .commit();
+                                Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+                                toolbar.setTitle("Piscix");
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
