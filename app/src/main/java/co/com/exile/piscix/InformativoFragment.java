@@ -204,7 +204,7 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
         getReportes();
     }
 
-    private void add(View view) {
+    private void add() {
         new MaterialDialog.Builder(this.getContext())
                 .title("Reporte informativo")
                 .customView(R.layout.solucion, true)
@@ -233,7 +233,7 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add(view);
+                add();
             }
         });
     }
