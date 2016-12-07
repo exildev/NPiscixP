@@ -208,4 +208,5 @@
     <string name="error_response">Error al enviar los datos</string>
     <string name="gps_success">Ubicación registrada con exito</string>
     <string name="no_number">Sin numero</string>
+    <string name="activate_gps_message">Para que esta aplicación funcione correctamente debe estar atcivado el GPS\n¿Desea activarlo ahora?</string>
 </resources>

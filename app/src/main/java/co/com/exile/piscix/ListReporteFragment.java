@@ -746,13 +746,27 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
             if (resultCode == Activity.RESULT_OK) {
                 startLocationUpdates();
             } else {
-                Fragment fragment = HomeFragment.newInstance(this.getActivity().getIntent().getBooleanExtra("piscinero", false));
-                FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_frame, fragment)
-                        .commit();
-                Toolbar toolbar = (Toolbar) this.getActivity().findViewById(R.id.toolbar);
-                toolbar.setTitle("Piscix");
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+                builder.setMessage(R.string.activate_gps_message)
+                        .setCancelable(false)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                createLocationRequest();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Fragment fragment = HomeFragment.newInstance(getActivity().getIntent().getBooleanExtra("piscinero", false));
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.main_frame, fragment)
+                                        .commit();
+                                Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+                                toolbar.setTitle("Piscix");
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
