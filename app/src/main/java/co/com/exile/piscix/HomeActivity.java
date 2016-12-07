@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -74,6 +75,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toolbarIcon.setNotificationCount(NotixFactory.notifications.size());
         toolbarIcon.setColors(Color.WHITE, Color.WHITE, ContextCompat.getColor(this, R.color.colorReport));
         toolbarIcon.startAnimation();
+
+        setUser();
+    }
+
+    private void setUser() {
+        if (getIntent().hasExtra("user")) {
+            try {
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                View headerLayout = navigationView.getHeaderView(0);
+                JSONObject user = new JSONObject(getIntent().getStringExtra("user"));
+                TextView username = (TextView) headerLayout.findViewById(R.id.username_header);
+                TextView email = (TextView) headerLayout.findViewById(R.id.email_header);
+                username.setText(user.getString("first_name") + " " + user.getString("last_name"));
+                email.setText(user.getString("email"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void moveTo(String action) {
