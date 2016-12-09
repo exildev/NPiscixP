@@ -22,6 +22,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="0dp" />
+
     <include layout="@layout/content_list_reporte" />
 
     <android.support.design.widget.FloatingActionButton
@@ -30,6 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_24dp" />
+        app:srcCompat="@drawable/ic_add_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

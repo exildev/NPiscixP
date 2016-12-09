@@ -4,6 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="co.com.exile.piscix.ClienteFragment">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="0dp" />
+
     <com.softw4re.views.InfiniteListView
         android:id="@+id/infiniteListView"
         android:layout_width="match_parent"

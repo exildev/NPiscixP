@@ -1,12 +1,25 @@
-<com.softw4re.views.InfiniteListView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_list_solucion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    app:dividerVisible="false"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:scrollbarVisible="true"
-    app:swipeRefreshIndicatorColor="@color/colorAccent"
-    tools:context="co.com.exile.piscix.SolucionesFragment" />
+    tools:context="co.com.exile.piscix.SolucionesFragment">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="0dp" />
+
+    <com.softw4re.views.InfiniteListView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/content_list_solucion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:dividerVisible="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:scrollbarVisible="true"
+        app:swipeRefreshIndicatorColor="@color/colorAccent" />
+</RelativeLayout>

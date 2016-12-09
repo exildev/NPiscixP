@@ -21,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -340,6 +341,16 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                infiniteListView.stopLoading();
+                View main = getView();
+                assert main != null;
+                CardView container = (CardView) main.findViewById(R.id.error_container);
+                VolleySingleton.manageError(getContext(), error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("rety", "rety");
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });
@@ -545,7 +556,9 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
 
     @Override
     public void onDestroy() {
-        stopLocationUpdates();
+        if (mGoogleClient.isConnected()) {
+            stopLocationUpdates();
+        }
         super.onDestroy();
     }
 

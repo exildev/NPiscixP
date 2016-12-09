@@ -2,9 +2,14 @@ package co.com.exile.piscix;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import java.net.CookieHandler;
@@ -64,5 +69,18 @@ public class VolleySingleton {
             }
         }
         return null;
+    }
+
+    public static void manageError(Context context, VolleyError error, ViewGroup container, View.OnClickListener retryListener) {
+        if (error.networkResponse == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View errorView = inflater.inflate(R.layout.no_network, container, false);
+            container.addView(errorView);
+            Button retry = (Button) errorView.findViewById(R.id.retry);
+            Log.i("retry", "hola " + retry.isClickable());
+            retry.setOnClickListener(retryListener);
+        } else {
+            Log.i("network", "" + error.networkResponse.statusCode);
+        }
     }
 }

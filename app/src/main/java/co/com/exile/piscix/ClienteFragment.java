@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -147,7 +148,9 @@ public class ClienteFragment extends Fragment {
                     int cliente = Integer.parseInt(result.getContents());
                     launchCliente(cliente);
                 }catch (NumberFormatException e){
-                    Snackbar.make(getView(), "Debe escanear un codigo QR valido", 1200).show();
+                    View view = getView();
+                    assert view != null;
+                    Snackbar.make(view, "Debe escanear un codigo QR valido", 1200).show();
                 }
             }
         } else {
@@ -190,10 +193,19 @@ public class ClienteFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                infiniteListView.stopLoading();
+                View main = getView();
+                assert main != null;
+                CardView container = (CardView) main.findViewById(R.id.error_container);
+                VolleySingleton.manageError(getContext(), error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("rety", "rety");
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });
-
         VolleySingleton.getInstance(this.getActivity()).addToRequestQueue(clientesRequest);
     }
 

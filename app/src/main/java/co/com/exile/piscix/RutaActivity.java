@@ -341,6 +341,16 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    infiniteListView.stopLoading();
+                    View main = getView();
+                    assert main != null;
+                    CardView container = (CardView) main.findViewById(R.id.error_container);
+                    VolleySingleton.manageError(getContext(), error, container, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.i("rety", "rety");
+                        }
+                    });
                     Log.e("Activities", error.toString());
                 }
             });
@@ -516,7 +526,9 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
 
         @Override
         public void onDestroy() {
-            stopLocationUpdates();
+            if (mGoogleClient.isConnected()) {
+                stopLocationUpdates();
+            }
             super.onDestroy();
         }
 
