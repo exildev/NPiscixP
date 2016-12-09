@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -159,6 +160,14 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                //infiniteListView.stopLoading();
+                CardView container = (CardView) findViewById(R.id.error_container);
+                VolleySingleton.manageError(RutaPActivity.this, error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("rety", "rety");
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });

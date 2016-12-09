@@ -211,7 +211,12 @@ public class ProfileActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("Activities", error.toString());
                 ProfileActivity.this.finish();
-                Toast.makeText(ProfileActivity.this, "El cliente no existe", Toast.LENGTH_SHORT).show();
+                if (error.networkResponse == null) {
+                    Toast.makeText(ProfileActivity.this, R.string.no_network, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfileActivity.this, "El cliente no existe", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         formRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

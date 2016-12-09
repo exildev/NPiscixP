@@ -191,6 +191,14 @@ public class CalendarActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                infiniteListView.stopLoading();
+                CardView container = (CardView) findViewById(R.id.error_container);
+                VolleySingleton.manageError(CalendarActivity.this, error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("rety", "rety");
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });

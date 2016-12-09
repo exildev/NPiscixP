@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -204,6 +205,14 @@ public class PiscinasActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                infiniteListView.stopLoading();
+                CardView container = (CardView) findViewById(R.id.error_container);
+                VolleySingleton.manageError(PiscinasActivity.this, error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("rety", "rety");
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });
