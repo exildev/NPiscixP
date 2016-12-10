@@ -701,7 +701,9 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
 
     @Override
     public void onDestroy() {
-        stopLocationUpdates();
+        if (mGoogleClient.isConnected()) {
+            stopLocationUpdates();
+        }
         super.onDestroy();
     }
 

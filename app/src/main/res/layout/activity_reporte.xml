@@ -25,12 +25,21 @@
 
     <include layout="@layout/content_reporte" />
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="0dp" />
 
     <RelativeLayout
         android:id="@+id/modal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="#ffffff">
 
         <com.github.rahatarmanahmed.cpv.CircularProgressView
