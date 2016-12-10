@@ -317,6 +317,7 @@ public class ReporteActivity extends AppCompatActivity implements IPicker.OnSele
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
                     hideLoading();
+                    Snackbar.make(findViewById(R.id.content_reporte), "Hubo un error al subir el reporte", 800).show();
                     Log.e("send", exception.getMessage());
                 }
 

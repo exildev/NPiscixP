@@ -1,9 +1,10 @@
 package co.com.exile.piscix;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,7 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     void getPhotos() {
+        findViewById(R.id.loading).setVisibility(View.VISIBLE);
         int id = getIntent().getIntExtra("id", -1);
         String url = getIntent().getStringExtra("url") + id;
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -66,6 +68,16 @@ public class GalleryActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                findViewById(R.id.loading).setVisibility(View.GONE);
+                final CardView container = (CardView) findViewById(R.id.error_container);
+                container.setVisibility(View.VISIBLE);
+                VolleySingleton.manageError(GalleryActivity.this, error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        container.setVisibility(View.GONE);
+                        getPhotos();
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });
