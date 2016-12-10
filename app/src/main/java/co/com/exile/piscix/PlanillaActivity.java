@@ -16,6 +16,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -155,15 +156,29 @@ public class PlanillaActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        String err = new String(error.networkResponse.data);
-                        Intent data = new Intent();
-                        data.putExtra("response", err);
-                        data.putExtra("status", error.networkResponse.statusCode);
-                        setResult(RESULT_OK, data);
-                        for (String r : err.split("\n")) {
-                            Log.e("solucion", r);
+                        if (error.networkResponse == null) {
+                            hideLoading();
+                            final CardView container = (CardView) findViewById(R.id.error_container);
+                            container.setVisibility(View.VISIBLE);
+                            VolleySingleton.manageError(PlanillaActivity.this, error, container, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    container.setVisibility(View.GONE);
+                                    getData();
+                                    Log.i("rety", "rety");
+                                }
+                            });
+                        } else {
+                            String err = new String(error.networkResponse.data);
+                            Intent data = new Intent();
+                            data.putExtra("response", err);
+                            data.putExtra("status", error.networkResponse.statusCode);
+                            setResult(RESULT_OK, data);
+                            for (String r : err.split("\n")) {
+                                Log.e("solucion", r);
+                            }
+                            finish();
                         }
-                        finish();
                     }
                 }) {
             @Override
@@ -270,6 +285,17 @@ public class PlanillaActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                hideLoading();
+                final CardView container = (CardView) findViewById(R.id.error_container);
+                container.setVisibility(View.VISIBLE);
+                VolleySingleton.manageError(PlanillaActivity.this, error, container, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        container.setVisibility(View.GONE);
+                        getData();
+                        Log.i("rety", "rety");
+                    }
+                });
                 Log.e("Activities", error.toString());
             }
         });
