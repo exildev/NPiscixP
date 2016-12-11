@@ -392,8 +392,18 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            loading.dismiss();
-                            Log.e("solucion", new String(error.networkResponse.data));
+                            if (error.networkResponse == null) {
+                                Snackbar.make(infiniteListView, R.string.no_network, Snackbar.LENGTH_LONG).setAction("refrescar", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        infiniteListView.clearList();
+                                        page = 1;
+                                        getReportes();
+                                    }
+                                }).show();
+                            } else {
+                                Log.e("solucion", new String(error.networkResponse.data));
+                            }
                         }
                     }) {
                 @Override
@@ -432,7 +442,18 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             loading.dismiss();
-                            Log.e("solucion", new String(error.networkResponse.data));
+                            if (error.networkResponse == null) {
+                                Snackbar.make(infiniteListView, R.string.no_network, Snackbar.LENGTH_LONG).setAction("refrescar", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        infiniteListView.clearList();
+                                        page = 1;
+                                        getReportes();
+                                    }
+                                }).show();
+                            } else {
+                                Log.e("solucion", new String(error.networkResponse.data));
+                            }
                         }
                     }) {
                 @Override
