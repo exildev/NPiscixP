@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -67,9 +68,20 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("login", error.toString());
-                        Snackbar.make(findViewById(R.id.main_container),"usuario y/o contraseña incorrecta", 800).show();
                         returnToLogin();
+                        if (error.networkResponse != null && (error.networkResponse.statusCode == 404 || error.networkResponse.statusCode == 400)) {
+                            Snackbar.make(findViewById(R.id.main_container), "usuario y/o contraseña incorrecta", 800).show();
+                        } else {
+                            final CardView container = (CardView) findViewById(R.id.error_container);
+                            container.setVisibility(View.VISIBLE);
+                            VolleySingleton.manageError(LoginActivity.this, error, container, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    container.setVisibility(View.GONE);
+                                    login(username, password, piscinero);
+                                }
+                            });
+                        }
                     }
                 }){
             @Override

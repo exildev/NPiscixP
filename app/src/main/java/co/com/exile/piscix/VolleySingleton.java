@@ -80,6 +80,7 @@ public class VolleySingleton {
             Log.i("retry", "hola " + retry.isClickable());
             retry.setOnClickListener(retryListener);
         } else {
+
             Log.i("network", "" + error.networkResponse.statusCode);
         }
     }
