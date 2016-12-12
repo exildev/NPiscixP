@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -72,15 +73,17 @@ public class VolleySingleton {
     }
 
     public static void manageError(Context context, VolleyError error, ViewGroup container, View.OnClickListener retryListener) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View errorView = inflater.inflate(R.layout.no_network, container, false);
+        container.addView(errorView);
+        Button retry = (Button) errorView.findViewById(R.id.retry);
         if (error.networkResponse == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            View errorView = inflater.inflate(R.layout.no_network, container, false);
-            container.addView(errorView);
-            Button retry = (Button) errorView.findViewById(R.id.retry);
             Log.i("retry", "hola " + retry.isClickable());
             retry.setOnClickListener(retryListener);
         } else {
-
+            TextView errorTV = (TextView) errorView.findViewById(R.id.error_text);
+            errorTV.setText(context.getString(R.string.server_error, error.networkResponse.statusCode));
+            retry.setVisibility(View.GONE);
             Log.i("network", "" + error.networkResponse.statusCode);
         }
     }
