@@ -132,8 +132,6 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
         mGoogleClient.connect();
-
-        validPermissions();
     }
 
     @Override

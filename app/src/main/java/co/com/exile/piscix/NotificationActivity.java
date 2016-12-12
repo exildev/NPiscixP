@@ -155,6 +155,11 @@ public class NotificationActivity extends AppCompatActivity implements onNotixLi
                                 title = "Reporte informativo";
                                 icon_res = R.drawable.ic_info_24dp;
                                 break;
+
+                            default:
+                                title = "Notificacíon";
+                                icon_res = R.drawable.ic_notification_24dp;
+                                break;
                         }
 
                         holder.content.setText(html);
