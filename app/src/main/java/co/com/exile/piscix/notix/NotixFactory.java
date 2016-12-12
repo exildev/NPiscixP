@@ -37,7 +37,7 @@ public class NotixFactory {
         notifications.add(notification);
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_logo_outline)
+                .setSmallIcon(R.drawable.ic_logo)
                 .setLargeIcon(largeIcon)
                 .setContentTitle("Piscix")
                 .setContentText(notifications.size() + " notificaciones sin leer");
