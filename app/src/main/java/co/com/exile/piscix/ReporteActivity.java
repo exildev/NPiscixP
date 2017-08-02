@@ -56,6 +56,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.com.exile.piscix.utils.ScalingUtilities;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 
@@ -293,6 +294,7 @@ public class ReporteActivity extends AppCompatActivity implements IPicker.OnSele
                             .addParameter("fotoreporte_set-MAX_NUM_FORMS", "5");
             for (int i = 0; i < images.size(); i++) {
                 String image = images.get(i);
+                image = ScalingUtilities.decodeFile(image, 1024, 1024);
                 upload.addFileToUpload(image, "fotoreporte_set-" + i + "-url");
             }
 

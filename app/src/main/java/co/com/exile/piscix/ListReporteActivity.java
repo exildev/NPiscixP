@@ -76,6 +76,7 @@ import java.util.List;
 import java.util.Map;
 
 import co.com.exile.piscix.models.Reporte;
+import co.com.exile.piscix.utils.ScalingUtilities;
 
 public class ListReporteActivity extends AppCompatActivity implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -537,6 +538,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
                             .addParameter("fotosolucion_set-MAX_NUM_FORMS", "5");
             for (int i = 0; i < images.size(); i++) {
                 String image = images.get(i);
+                image = ScalingUtilities.decodeFile(image, 1024, 1024);
                 upload.addFileToUpload(image, "fotosolucion_set-" + i + "-url");
             }
 
