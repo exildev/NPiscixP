@@ -524,6 +524,7 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
                             .setMaxRetries(1)
+                            .setUtf8Charset()
                             .addParameter("nombre", nombre)
                             .addParameter("descripcion", descripcion)
                             .addParameter("reporte", reporte)

@@ -281,6 +281,7 @@ public class ReporteActivity extends AppCompatActivity implements IPicker.OnSele
                     new MultipartUploadRequest(getBaseContext(), url)
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
+                            .setUtf8Charset()
                             .setMaxRetries(1)
                             .addParameter("nombre", nombre)
                             .addParameter("descripcion", descripcion)

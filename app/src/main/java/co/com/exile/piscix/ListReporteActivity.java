@@ -527,6 +527,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
                             .setNotificationConfig(notificationConfig)
                             .setAutoDeleteFilesAfterSuccessfulUpload(false)
                             .setMaxRetries(1)
+                            .setUtf8Charset()
                             .addParameter("nombre", nombre)
                             .addParameter("descripcion", descripcion)
                             .addParameter("reporte", reporte)
