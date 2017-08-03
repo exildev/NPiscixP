@@ -70,21 +70,8 @@ import co.com.exile.piscix.notix.onNotixListener;
 
 public class RutaActivity extends AppCompatActivity implements onNotixListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    ViewPager mViewPager;
     private Notix notix;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +88,20 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
         });
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        /*
+      The {@link android.support.v4.view.PagerAdapter} that will provide
+      fragments for each of the sections. We use a
+      {@link FragmentPagerAdapter} derivative, which will keep every
+      loaded fragment in memory. If this becomes too memory intensive, it
+      may be best to switch to a
+      {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
+        /*
+      The {@link ViewPager} that will host the section contents.
+     */
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -113,6 +111,57 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
         notix = NotixFactory.buildNotix(this);
         notix.setNotixListener(this);
         visitMessages();
+    }
+
+    private void visitMessages() {
+        ArrayList<String> messages = new ArrayList<>();
+
+        for (JSONObject notification : NotixFactory.notifications) {
+            try {
+                JSONObject data = notification.getJSONObject("data");
+                String tipo = data.getString("tipo");
+                if (tipo.equals("Asignacion")) {
+                    String id = notification.getString("_id");
+                    messages.add(id);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        notix.visitMessages(messages);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment fragment = (Fragment) mViewPager.getAdapter().instantiateItem(mViewPager, mViewPager.getCurrentItem());
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onNotix(JSONObject data) {
+        NotixFactory.buildNotification(this, data);
+    }
+
+    @Override
+    public void onVisited(JSONObject data) {
+        Log.i("notifications", NotixFactory.notifications.size() + "");
+        try {
+            JSONArray messages_id = data.getJSONArray("messages_id");
+            for (int i = 0; i < messages_id.length(); i++) {
+                String id = messages_id.getString(i);
+                for (JSONObject notification : NotixFactory.notifications) {
+                    String _id = notification.getString("_id");
+                    if (id.equals(_id)) {
+                        NotixFactory.notifications.remove(notification);
+                        break;
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("notifications", NotixFactory.notifications.size() + "");
     }
 
     /**
@@ -127,7 +176,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
         private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
         private static final int REQUEST_LOCATION_SETTINGS = 12;
 
-        private static final int PLANILLA_RESULT = 1;
+        private static final int PLANILLA_RESULT = 123;
         private static final String ARG_SECTION_NUMBER = "section_number";
         private InfiniteListView infiniteListView;
         private ArrayList<Planilla> itemList;
@@ -245,7 +294,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                                     Intent intent = new Intent(getActivity(), PlanillaActivity.class);
                                     intent.putExtra("piscina", planilla.getPiscina());
                                     intent.putExtra("planilla", planilla.getPlanilla());
-                                    PlaceholderFragment.this.startActivityForResult(intent, PLANILLA_RESULT);
+                                    PlaceholderFragment.this.startActivityForResult(intent, 123);
                                 }
                             });
                         } else if (planilla.getPlanilla() == null) {
@@ -256,7 +305,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                                     Log.i("piscina", planilla.getPiscina() + "");
                                     Intent intent = new Intent(getActivity(), PlanillaActivity.class);
                                     intent.putExtra("piscina", planilla.getPiscina());
-                                    PlaceholderFragment.this.startActivityForResult(intent, PLANILLA_RESULT);
+                                    PlaceholderFragment.this.startActivityForResult(intent, 123);
                                 }
                             });
                         }
@@ -279,6 +328,8 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                 serviceUrl = getString(R.string.asignaciones, page);
             }
             String url = getString(R.string.url, serviceUrl);
+            Log.i("url", url);
+
             JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -557,7 +608,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION || requestCode == PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Now user should be able to use camera
                     validPermissions();
                 } else {
@@ -629,7 +680,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                     AlertDialog alert = builder.create();
                     alert.show();
                 }
-            } else if (requestCode == PLANILLA_RESULT && resultCode == RESULT_OK) {
+            } else if (resultCode == RESULT_OK) {
                 int status = data.getIntExtra("status", -1);
                 String response = data.getStringExtra("response");
                 if (status == 200) {
@@ -645,13 +696,21 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
         }
     }
 
+    static class ViewHolder {
+        TextView title;
+        TextView cliente;
+        TextView medidas;
+        CardView info_btn;
+        ImageView action_image;
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -678,64 +737,5 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
             }
             return null;
         }
-    }
-
-    static class ViewHolder {
-        TextView title;
-        TextView cliente;
-        TextView medidas;
-        CardView info_btn;
-        ImageView action_image;
-    }
-
-    private void visitMessages() {
-        ArrayList<String> messages = new ArrayList<>();
-
-        for (JSONObject notification : NotixFactory.notifications) {
-            try {
-                JSONObject data = notification.getJSONObject("data");
-                String tipo = data.getString("tipo");
-                if (tipo.equals("Asignacion")) {
-                    String id = notification.getString("_id");
-                    messages.add(id);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        notix.visitMessages(messages);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        fragment.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onNotix(JSONObject data) {
-        NotixFactory.buildNotification(this, data);
-    }
-
-    @Override
-    public void onVisited(JSONObject data) {
-        Log.i("notifications", NotixFactory.notifications.size() + "");
-        try {
-            JSONArray messages_id = data.getJSONArray("messages_id");
-            for (int i = 0; i < messages_id.length(); i++) {
-                String id = messages_id.getString(i);
-                for (JSONObject notification : NotixFactory.notifications) {
-                    String _id = notification.getString("_id");
-                    if (id.equals(_id)) {
-                        NotixFactory.notifications.remove(notification);
-                        break;
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.i("notifications", NotixFactory.notifications.size() + "");
     }
 }
