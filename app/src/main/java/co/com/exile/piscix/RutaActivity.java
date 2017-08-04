@@ -168,16 +168,17 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+        private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
+        private static final int REQUEST_LOCATION_SETTINGS = 12;
+        private static final int PLANILLA_RESULT = 123;
+        private static final String ARG_SECTION_NUMBER = "section_number";
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-        private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
-        private static final int REQUEST_LOCATION_SETTINGS = 12;
 
-        private static final int PLANILLA_RESULT = 123;
-        private static final String ARG_SECTION_NUMBER = "section_number";
+        private static boolean GPS_IS_REQUESTED = false;
         private InfiniteListView infiniteListView;
         private ArrayList<Planilla> itemList;
         private int page = 1;
@@ -523,9 +524,11 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
 
         private void validPermissions() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && !GPS_IS_REQUESTED) {
+                    GPS_IS_REQUESTED = true;
                     requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-                } else if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                } else if (getActivity().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && !GPS_IS_REQUESTED) {
+                    GPS_IS_REQUESTED = true;
                     requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
                 } else {
                     createLocationRequest();
@@ -567,7 +570,10 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                             try {
                                 // Show the dialog by calling startResolutionForResult(),
                                 // and check the result in onActivityResult().
-                                status.startResolutionForResult(getActivity(), REQUEST_LOCATION_SETTINGS);
+                                if (!GPS_IS_REQUESTED) {
+                                    GPS_IS_REQUESTED = true;
+                                    status.startResolutionForResult(getActivity(), REQUEST_LOCATION_SETTINGS);
+                                }
                             } catch (IntentSender.SendIntentException e) {
                                 // Ignore the error.
                             }
