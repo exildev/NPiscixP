@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -108,14 +107,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
         page = 1;
         images = new ArrayList<>();
 
@@ -123,7 +115,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
 
         setInfiniteList();
         if (getIntent().hasExtra("send")){
-            Snackbar.make(fab, "Registro guardado con exito", 1000).show();
+            Snackbar.make(findViewById(R.id.content_list_reporte), "Registro guardado con exito", 1000).show();
         }
 
         mGoogleClient = new GoogleApiClient.Builder(this)
