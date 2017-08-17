@@ -214,4 +214,5 @@
     <string name="no_network">Parece no haber acceso a internet</string>
     <string name="reintentar">Reintentar</string>
     <string name="server_error">Hubo un error al procesar la peticion por favor contactese con el administrador codigo de error: %1$d</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
