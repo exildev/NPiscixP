@@ -118,6 +118,8 @@ public class ClienteFragment extends Fragment {
                     holder.title.setText(cliente.getFirst_name());
                     if (cliente.isTipo() == Cliente.ES_PROPIETARIO) {
                         holder.subtitle.setText(R.string.tipo_propietario);
+                    } else {
+                        holder.subtitle.setText(R.string.arrendatario);
                     }
                 }
 
