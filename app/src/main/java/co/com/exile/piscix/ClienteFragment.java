@@ -115,7 +115,7 @@ public class ClienteFragment extends Fragment {
 
                 Cliente cliente = itemList.get(position);
                 if (cliente != null) {
-                    holder.title.setText(cliente.getFirst_name());
+                    holder.title.setText(cliente.getFirst_name() + " " + cliente.getLast_name());
                     if (cliente.isTipo() == Cliente.ES_PROPIETARIO) {
                         holder.subtitle.setText(R.string.tipo_propietario);
                     } else {
