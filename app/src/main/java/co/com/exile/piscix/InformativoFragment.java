@@ -275,7 +275,8 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
                 .progress(true, 0)
                 .show();
 
-        String url = "http://104.236.33.228:8050/reportes/reporte/informativo/form/";
+        String serviceUrl = getString(R.string.reporte_informativo_form);
+        String url = getString(R.string.url, serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -301,7 +302,7 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
                     }
                 }){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("nombre", nombre);
                 params.put("descripcion", descripcion);
@@ -316,7 +317,8 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
 
     void getReportes() {
         infiniteListView.startLoading();
-        String url = "http://104.236.33.228:8050/reportes/reporte/informativo/list/?page=" + page + "&search=" + search;
+        String serviceUrl = getString(R.string.list_reporte_informativo, page, search);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

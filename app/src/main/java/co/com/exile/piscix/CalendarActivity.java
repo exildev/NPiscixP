@@ -167,12 +167,14 @@ public class CalendarActivity extends AppCompatActivity {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String s = formater.format(start.getTime());
         String e = formater.format(end.getTime());
-        String url = "http://104.236.33.228:8050/notificaciones/calendar/?start=" + s + "&end=" + e;
-        Log.i("url", url);
+        String serviceUrl = getString(R.string.calendar_notificaciones, s, e);
+        String url = getString(R.string.url, serviceUrl);
+        Log.e("tales", url);
         JsonArrayRequest loginRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 infiniteListView.stopLoading();
+                Log.e("tales", response.toString());
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject activity = response.getJSONObject(i);

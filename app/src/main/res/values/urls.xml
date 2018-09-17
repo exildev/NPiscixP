@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="url">http://104.236.33.228:8050%1$s</string>
+    <string name="url">http://ec2-18-223-116-221.us-east-2.compute.amazonaws.com:8080%1$s</string>
     <string name="login_piscinero">/usuarios/login/piscinero/</string>
     <string name="login_supervisor">/usuarios/login/supervisor/</string>
+    <string name="logout">/usuarios/logout/</string>
+    <string name="islogin">/usuarios/is/login/</string>
     <string name="get_cliente">/usuarios/single/cliente/%1$d/</string>
     <string name="get_clientes">/usuarios/service/list/cliente/?page=%1$d&amp;search=%2$s</string>
     <string name="planillas_pendientes">/actividades/planilladiaria/pendiente/list/?page=%1$d</string>
@@ -16,6 +18,7 @@
     <string name="reporte_form">/reportes/reporte/form/</string>
     <string name="foto_reporte">/reportes/fotoreporte/list/?reporte=</string>
     <string name="list_reporte">/reportes/reporte/list/?piscina__casa__cliente=%1$d&amp;page=%2$d&amp;search=%3$s</string>
+    <string name="list_reporte_informativo">/reportes/reporte/informativo/list/?page=%1$d&amp;search=%2$s</string>
     <string name="list_reporte_no_cliente">/reportes/reporte/list/?page=%1$d&amp;search=%2$s</string>
     <string name="solucion_form">/mantenimiento/service/mantanimiento/form/</string>
     <string name="list_piscineros">/usuarios/service/list/piscinero/?page=%1$d&amp;search=%2$s</string>
@@ -24,4 +27,11 @@
     <string name="asigancion_form">/usuarios/service/asignacion/form/piscinero/</string>
     <string name="asigancion_form_orden">/usuarios/service/asignacion/form/piscinero/%1$d/</string>
     <string name="gps_casa">/usuarios/service/asignacion/gps/%1$d/</string>
+
+    <string name="calendar_notificaciones">/notificaciones/calendar/?start=%1$s&amp;end=%2$s</string>
+    <string name="media">/media/</string>
+    <string name="list_mantenimiento">/mantenimiento/service/mantanimiento/list/?page=%1$d&amp;search=%2$s</string>
+    <string name="foto_mantenimiento">/mantenimiento/service/fotomantenimiento/list/?mantenimiento=</string>
+    <string name="respuesta_form">/reportes/respuesta/form/</string>
+    <string name="respuesta_list">/reportes/respuesta/list/?reporte=%1$d</string>
 </resources>

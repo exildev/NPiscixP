@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import co.com.exile.piscix.R;
 import co.com.exile.piscix.VolleySingleton;
 import co.com.exile.piscix.models.Message;
 
@@ -63,10 +64,10 @@ public class Notix {
     }
 
     private void initSocket() {
-        Log.i("hola", "hola");
         messages = new ArrayList<>();
         try {
-            mSocket = IO.socket("http://104.236.33.228:1196");
+            //TODO: Actualizar esta URL
+            mSocket = IO.socket("http://ec2-18-223-116-221.us-east-2.compute.amazonaws.com:1196");
             mSocket.on("identify", onIdentify);
             mSocket.on("success-login", onSuccesLogin);
             mSocket.on("error-login", onErrorLogin);
@@ -81,7 +82,8 @@ public class Notix {
     }
 
     void setUser(Context context) {
-        String url = "http://104.236.33.228:8050/usuarios/is/login/";
+        String serviceUrl = context.getString(R.string.islogin);
+        String url = context.getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

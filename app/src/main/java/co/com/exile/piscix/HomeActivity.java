@@ -272,7 +272,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, AboutActivity.class));
         } else if (id == R.id.nav_logout) {
             User.delete(this);
-            String url = "http://104.236.33.228:8050/usuarios/logout/";
+            String serviceUrl = getString(R.string.logout);
+            String url = getString(R.string.url, serviceUrl);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

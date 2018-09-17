@@ -128,7 +128,8 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
     }
 
     void send(final Mensaje mensaje) {
-        String url = "http://104.236.33.228:8050/reportes/respuesta/form/";
+        String serviceUrl = getString(R.string.respuesta_form);
+        String url = getString(R.string.url, serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -188,7 +189,8 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
     }
 
     void getMensajes() {
-        String url = "http://104.236.33.228:8050/reportes/respuesta/list/?reporte=" + reporte;
+        String serviceUrl = getString(R.string.respuesta_list, reporte);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

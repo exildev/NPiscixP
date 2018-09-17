@@ -241,7 +241,9 @@ public class SolucionesFragment extends Fragment {
 
     void getReportes() {
         infiniteListView.startLoading();
-        String url = "http://104.236.33.228:8050/mantenimiento/service/mantanimiento/list/?page=" + page + "&search=" + search;
+
+        String serviceUrl = getString(R.string.list_mantenimiento, page, search);
+        String url = getString(R.string.url, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -319,10 +321,12 @@ public class SolucionesFragment extends Fragment {
     }
 
     private void initGallery(int position){
+        String serviceUrl = getString(R.string.foto_mantenimiento);
+        String url = getString(R.string.url, serviceUrl);
         int id = itemList.get(position).getId();
         Intent intent = new Intent(this.getActivity(), GalleryActivity.class);
         intent.putExtra("id", id);
-        intent.putExtra("url", "http://104.236.33.228:8050/mantenimiento/service/fotomantenimiento/list/?mantenimiento=");
+        intent.putExtra("url", url);
         startActivity(intent);
     }
 

@@ -86,7 +86,8 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     void setImageGallery(String[] urlArray){
-        final String urlBase = "http://104.236.33.228:8050/media/";
+        String serviceUrl = getString(R.string.media);
+        final String urlBase = getString(R.string.url, serviceUrl);
         SimpleViewPager simpleViewPager = (SimpleViewPager) findViewById(R.id.simple_view_pager);
         simpleViewPager.setVisibility(View.VISIBLE);
         simpleViewPager.setImageUrls(urlArray, new ImageURLLoader() {
