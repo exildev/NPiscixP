@@ -151,7 +151,11 @@ public class CalendarActivity extends AppCompatActivity {
                     if (actividad.getColor().equals("gray")) {
                         holder.icon.setCardBackgroundColor(ContextCompat.getColor(CalendarActivity.this, R.color.grey));
                     } else {
-                        holder.icon.setCardBackgroundColor(Color.parseColor(actividad.getColor()));
+                        try {
+                            holder.icon.setCardBackgroundColor(Color.parseColor(actividad.getColor()));
+                        } catch (IllegalArgumentException e) {
+                            Log.e("tales", "error", e);
+                        }
                     }
                 }
                 return convertView;
@@ -182,9 +186,7 @@ public class CalendarActivity extends AppCompatActivity {
                         String date = activity.getString("start");
                         String color = activity.getString("color");
                         String type = activity.getString("type");
-                        if (type.equals("Actividad")) {
-                            infiniteListView.addNewItem(new Actividad(title, color, date));
-                        }
+                        infiniteListView.addNewItem(new Actividad(title, color, date));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

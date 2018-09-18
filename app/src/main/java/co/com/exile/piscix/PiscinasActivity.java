@@ -189,7 +189,10 @@ public class PiscinasActivity extends AppCompatActivity {
                         double profundidad = campo.getDouble("profundidad");
                         boolean estado = campo.getBoolean("estado");
                         String cliente = campo.getString("casa__cliente__first_name") + " " + campo.getString("casa__cliente__last_name");
-                        boolean asignacion = campo.getBoolean("asignacion");
+                        boolean asignacion = false;
+                        if (campo.get("asignacion") != JSONObject.NULL) {
+                            asignacion = campo.getJSONObject("asignacion").getBoolean("estado");
+                        }
 
                         infiniteListView.addNewItem(new PiscinaAsignacion(id, nombre, tipo, ancho, largo, profundidad, estado, cliente, asignacion));
                     }
