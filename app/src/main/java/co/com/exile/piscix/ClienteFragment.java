@@ -1,11 +1,14 @@
 package co.com.exile.piscix;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
@@ -36,7 +39,7 @@ import co.com.exile.piscix.models.Cliente;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ClienteFragment extends Fragment implements OnSearchListener{
+public class ClienteFragment extends Fragment implements OnSearchListener {
     private int page;
     private String search = "";
     private ArrayList<Cliente> itemList;
@@ -62,7 +65,7 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
         return fragment;
     }
 
-    void setInfiniteList(View fragment){
+    void setInfiniteList(View fragment) {
         infiniteListView = (InfiniteListView) fragment.findViewById(R.id.infiniteListView);
 
         itemList = new ArrayList<>();
@@ -127,11 +130,15 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
         getClientes();
     }
 
-    void setFab(View fragment){
+    void setFab(View fragment) {
         FloatingActionButton fab = (FloatingActionButton) fragment.findViewById(R.id.qr_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_CAMERA);
+                    return;
+                }
                 initScan();
             }
         });
@@ -140,12 +147,12 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() != null) {
+        if (result != null) {
+            if (result.getContents() != null) {
                 try {
                     int cliente = Integer.parseInt(result.getContents());
                     launchCliente(cliente);
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     View view = getView();
                     assert view != null;
                     Snackbar.make(view, "Debe escanear un codigo QR valido", 1200).show();
@@ -156,7 +163,7 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
         }
     }
 
-    void getClientes(){
+    void getClientes() {
         infiniteListView.startLoading();
         String serviceUrl = getString(R.string.get_clientes, page, search);
         String url = getString(R.string.url, serviceUrl);
@@ -167,21 +174,21 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
                     infiniteListView.stopLoading();
                     JSONArray object_list = response.getJSONArray("object_list");
                     int count = response.getInt("count");
-                    if (response.has("next")){
+                    if (response.has("next")) {
                         page = response.getInt("next");
                     }
-                    for (int i = 0; i < object_list.length(); i++){
+                    for (int i = 0; i < object_list.length(); i++) {
                         JSONObject campo = object_list.getJSONObject(i);
                         String first_name = campo.getString("first_name");
                         int id = campo.getInt("id");
                         String imagen = campo.getString("imagen");
                         String last_name = campo.getString("last_name");
                         boolean tipo = campo.getBoolean("tipo");
-                        infiniteListView.addNewItem(new Cliente(first_name,id, imagen, last_name, tipo));
+                        infiniteListView.addNewItem(new Cliente(first_name, id, imagen, last_name, tipo));
                     }
-                    if (itemList.size() == count){
+                    if (itemList.size() == count) {
                         infiniteListView.hasMore(false);
-                    }else {
+                    } else {
                         infiniteListView.hasMore(true);
                     }
                 } catch (JSONException e) {
@@ -207,13 +214,13 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
         VolleySingleton.getInstance(this.getActivity()).addToRequestQueue(clientesRequest);
     }
 
-    void initScan(){
+    void initScan() {
         IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
         integrator.setOrientationLocked(false);
         integrator.initiateScan();
     }
 
-    void launchCliente(int id){
+    void launchCliente(int id) {
         Intent intent = new Intent(this.getContext(), ProfileActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
@@ -232,4 +239,5 @@ public class ClienteFragment extends Fragment implements OnSearchListener{
         TextView subtitle;
     }
 
+    private final int PERMISSIONS_REQUEST_CAMERA = 1;
 }
