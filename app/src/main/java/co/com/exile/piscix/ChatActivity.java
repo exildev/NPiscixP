@@ -49,19 +49,14 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        String reporte_title = getIntent().getStringExtra("reporte_title");
+        toolbar.setTitle(reporte_title);
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
-                appBarLayout.setExpanded(true);
             }
         });
 
@@ -98,8 +93,7 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
         notix = NotixFactory.buildNotix(this);
         notix.setNotixListener(this);
 
-        setReporte();
-
+        reporte = getIntent().getIntExtra("reporte", -1);
         setInfiniteList();
 
         visitMessages();
@@ -130,6 +124,8 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
     void send(final Mensaje mensaje) {
         String serviceUrl = getString(R.string.respuesta_form);
         String url = getString(R.string.url, serviceUrl);
+
+        Log.e("tales5", reporte + "");
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -143,7 +139,8 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("login", error.toString());
+
+                        Log.e("login", "tales" + new String(error.networkResponse.data));
                     }
                 }) {
             @Override
@@ -156,26 +153,6 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
         };
         loginRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(this).addToRequestQueue(loginRequest);
-    }
-
-    void setReporte() {
-        reporte = getIntent().getIntExtra("reporte", -1);
-        String reporte_title = getIntent().getStringExtra("reporte_title");
-        String reporte_fecha = getIntent().getStringExtra("reporte_fecha");
-        String reporte_cliente = getIntent().getStringExtra("reporte_cliente");
-
-        TextView title = (TextView) findViewById(R.id.reporte_title);
-        TextView fecha = (TextView) findViewById(R.id.reporte_fecha);
-        TextView cliente = (TextView) findViewById(R.id.reporte_cliente);
-
-        title.setText(reporte_title);
-        fecha.setText(reporte_fecha);
-        cliente.setText(reporte_cliente);
-
-        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        collapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.colorTransparent));
-        collapsingToolbarLayout.setTitle(reporte_title);
-
     }
 
     void setInfiniteList() {

@@ -1,27 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    app:layout_behavior="co.com.exile.piscix.PatchedScrollingViewBehavior"
     tools:context="co.com.exile.piscix.ChatActivity"
-    tools:showIn="@layout/activity_chat">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_chat"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#EEEEEE"
-        android:orientation="vertical"
-        app:scrollbarVisible="true" />
+    tools:showIn="@layout/activity_chat"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.v7.widget.CardView
         android:id="@+id/writer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,4 +41,16 @@
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
-</LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/content_chat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#EEEEEE"
+        android:orientation="vertical"
+        app:scrollbarVisible="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/writer"/>
+</android.support.constraint.ConstraintLayout>
