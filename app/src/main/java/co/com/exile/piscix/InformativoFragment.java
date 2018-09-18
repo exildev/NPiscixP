@@ -76,7 +76,7 @@ import co.com.exile.piscix.notix.NotixFactory;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InformativoFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class InformativoFragment extends Fragment implements OnSearchListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
     private static final int REQUEST_LOCATION_SETTINGS = 12;
@@ -85,7 +85,6 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
     private ArrayList<Informativo> itemList;
     private int page;
     private String search = "";
-    private SearchView searchView;
     private Notix notix;
 
     private ArrayList<Integer> newItems;
@@ -100,11 +99,9 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
         notix = NotixFactory.buildNotix(this.getContext());
     }
 
-    public static InformativoFragment InformativoFragmentInstance(SearchView searchView) {
+    public static InformativoFragment InformativoFragmentInstance() {
         // Required empty public constructor
-        InformativoFragment f = new InformativoFragment();
-        f.searchView = searchView;
-        return f;
+        return new InformativoFragment();
     }
 
 
@@ -115,7 +112,6 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
         View fragment = inflater.inflate(R.layout.fragment_informativo, container, false);
         visitMessages();
         setInfiniteList(fragment);
-        setSearchView();
         setFab(fragment);
 
         mGoogleClient = new GoogleApiClient.Builder(this.getContext())
@@ -436,30 +432,6 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
         va.start();
     }
 
-    void setSearchView() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Toast like print
-                Log.i("search", "SearchOnQueryTextSubmit: " + query);
-                if (!searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                VolleySingleton.getInstance(InformativoFragment.this.getContext()).cancelAll();
-                search = s;
-                infiniteListView.clearList();
-                page = 1;
-                getReportes();
-                return false;
-            }
-        });
-    }
-
     static class ViewHolder {
         TextView nombre;
         TextView subtitle;
@@ -550,6 +522,8 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
     }
 
     protected void startLocationUpdates() {
+        if(this.getContext() == null) return;
+
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             validPermissions();
             return;
@@ -656,5 +630,13 @@ public class InformativoFragment extends Fragment implements GoogleApiClient.Con
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onSearch(String search) {
+        this.search = search;
+        infiniteListView.clearList();
+        page = 1;
+        getReportes();
     }
 }

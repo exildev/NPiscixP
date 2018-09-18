@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import co.com.exile.piscix.models.Cliente;
 import co.com.exile.piscix.models.User;
 import co.com.exile.piscix.notix.Notix;
 import co.com.exile.piscix.notix.NotixFactory;
@@ -39,6 +40,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private boolean inHome = true;
     private Menu mMenu;
     private Notix notix;
+    private OnSearchListener searchListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setUser();
     }
 
+    private void setSearchView(){
+        MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
+        myActionMenuItem.setVisible(true);
+        final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast like print
+                Log.i("search", "SearchOnQueryTextSubmit: " + query);
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (searchListener != null) {
+                    searchListener.onSearch(s);
+                }
+                return false;
+            }
+        });
+    }
+
     private void setUser() {
         if (getIntent().hasExtra("user")) {
             try {
@@ -100,8 +126,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (action.equals("Solucion")) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
-            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = SolucionesFragment.SolucionesFragmentInstance(searchView);
+            SolucionesFragment fragment = SolucionesFragment.SolucionesFragmentInstance();
+            searchListener = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
@@ -111,8 +137,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (action.equals("informativo")) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
-            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = InformativoFragment.InformativoFragmentInstance(searchView);
+            InformativoFragment fragment = InformativoFragment.InformativoFragmentInstance();
+            searchListener = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
@@ -167,6 +193,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             moveTo(getIntent().getStringExtra("action"));
             getIntent().removeExtra("action");
         }
+
+        setSearchView();
         return true;
     }
 
@@ -209,8 +237,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_clientes || id == R.id.clientes_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
-            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = ClienteFragment.ClienteFragmentInstance(searchView);
+            ClienteFragment fragment = ClienteFragment.ClienteFragmentInstance();
+            searchListener = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
@@ -238,8 +266,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_reportes || id == R.id.reporte_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
-            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = ListReporteFragment.listReporteFragmentInstance(searchView);
+            ListReporteFragment fragment = ListReporteFragment.listReporteFragmentInstance();
+            searchListener = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
@@ -249,8 +277,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_soluciones || id == R.id.soluciones_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
-            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = SolucionesFragment.SolucionesFragmentInstance(searchView);
+            SolucionesFragment fragment = SolucionesFragment.SolucionesFragmentInstance();
+            searchListener = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)
@@ -260,8 +288,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_informativos || id == R.id.informativos_btn) {
             MenuItem myActionMenuItem = mMenu.findItem(R.id.action_search);
             myActionMenuItem.setVisible(true);
-            SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-            Fragment fragment = InformativoFragment.InformativoFragmentInstance(searchView);
+            InformativoFragment fragment = InformativoFragment.InformativoFragmentInstance();
+            searchListener = fragment;
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.main_frame, fragment)

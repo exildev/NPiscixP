@@ -36,23 +36,20 @@ import co.com.exile.piscix.models.Cliente;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ClienteFragment extends Fragment {
+public class ClienteFragment extends Fragment implements OnSearchListener{
     private int page;
     private String search = "";
     private ArrayList<Cliente> itemList;
     private InfiniteListView infiniteListView;
-    private SearchView searchView;
 
     public ClienteFragment() {
         // Required empty public constructor
         page = 1;
     }
 
-    public static ClienteFragment ClienteFragmentInstance(SearchView searchView) {
+    public static ClienteFragment ClienteFragmentInstance() {
         // Required empty public constructor
-        ClienteFragment f = new ClienteFragment();
-        f.searchView = searchView;
-        return f;
+        return new ClienteFragment();
     }
 
 
@@ -61,7 +58,6 @@ public class ClienteFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_cliente, container, false);
         setInfiniteList(fragment);
-        setSearchView();
         setFab(fragment);
         return fragment;
     }
@@ -211,28 +207,6 @@ public class ClienteFragment extends Fragment {
         VolleySingleton.getInstance(this.getActivity()).addToRequestQueue(clientesRequest);
     }
 
-    void setSearchView(){
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Toast like print
-                Log.i("search", "SearchOnQueryTextSubmit: " + query);
-                if( ! searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String s) {
-                search = s;
-                infiniteListView.clearList();
-                page = 1;
-                getClientes();
-                return false;
-            }
-        });
-    }
-
     void initScan(){
         IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
         integrator.setOrientationLocked(false);
@@ -243,6 +217,14 @@ public class ClienteFragment extends Fragment {
         Intent intent = new Intent(this.getContext(), ProfileActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSearch(String search) {
+        this.search = search;
+        infiniteListView.clearList();
+        page = 1;
+        getClientes();
     }
 
     static class ViewHolder {

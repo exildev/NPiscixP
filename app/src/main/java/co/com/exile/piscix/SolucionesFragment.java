@@ -44,11 +44,10 @@ import co.com.exile.piscix.notix.NotixFactory;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SolucionesFragment extends Fragment {
+public class SolucionesFragment extends Fragment implements OnSearchListener {
 
     private InfiniteListView infiniteListView;
     private String search = "";
-    private SearchView searchView;
     private ArrayList<Solucion> itemList;
     private int page;
     private Notix notix;
@@ -70,15 +69,12 @@ public class SolucionesFragment extends Fragment {
         View fragment = inflater.inflate(R.layout.fragment_soluciones, container, false);
         visitMessages();
         setInfiniteList(fragment);
-        setSearchView();
         return fragment;
     }
 
-    public static SolucionesFragment SolucionesFragmentInstance(SearchView searchView) {
+    public static SolucionesFragment SolucionesFragmentInstance() {
         // Required empty public constructor
-        SolucionesFragment f = new SolucionesFragment();
-        f.searchView = searchView;
-        return f;
+        return new SolucionesFragment();
     }
 
     void setInfiniteList(View fragment) {
@@ -296,30 +292,6 @@ public class SolucionesFragment extends Fragment {
         VolleySingleton.getInstance(this.getContext()).addToRequestQueue(reportesRequest);
     }
 
-    void setSearchView() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Toast like print
-                Log.i("search", "SearchOnQueryTextSubmit: " + query);
-                if (!searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                VolleySingleton.getInstance(SolucionesFragment.this.getContext()).cancelAll();
-                search = s;
-                infiniteListView.clearList();
-                page = 1;
-                getReportes();
-                return false;
-            }
-        });
-    }
-
     private void initGallery(int position){
         String serviceUrl = getString(R.string.foto_mantenimiento);
         String url = getString(R.string.url, serviceUrl);
@@ -360,5 +332,13 @@ public class SolucionesFragment extends Fragment {
             }
         }
         notix.visitMessages(messages);
+    }
+
+    @Override
+    public void onSearch(String search) {
+        this.search = search;
+        infiniteListView.clearList();
+        page = 1;
+        getReportes();
     }
 }

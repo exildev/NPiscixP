@@ -82,7 +82,7 @@ import co.com.exile.piscix.utils.ScalingUtilities;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListReporteFragment extends Fragment implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class ListReporteFragment extends Fragment implements OnSearchListener, IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
@@ -94,7 +94,6 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
     private ArrayList<Reporte> itemList;
     private int page;
     private String search = "";
-    private SearchView searchView;
 
     private GoogleApiClient mGoogleClient;
     private LocationRequest mLocationRequest;
@@ -105,11 +104,9 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         images = new ArrayList<>();
     }
 
-    public static ListReporteFragment listReporteFragmentInstance(SearchView searchView) {
+    public static ListReporteFragment listReporteFragmentInstance() {
         // Required empty public constructor
-        ListReporteFragment f = new ListReporteFragment();
-        f.searchView = searchView;
-        return f;
+        return new ListReporteFragment();
     }
 
 
@@ -118,7 +115,6 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_list_reporte, container, false);
         setInfiniteList(fragment);
-        setSearchView();
         IPicker.setOnSelectedListener(this);
 
         mGoogleClient = new GoogleApiClient.Builder(this.getContext())
@@ -395,30 +391,6 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
         va.start();
     }
 
-    void setSearchView() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Toast like print
-                Log.i("search", "SearchOnQueryTextSubmit: " + query);
-                if (!searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                VolleySingleton.getInstance(ListReporteFragment.this.getContext()).cancelAll();
-                search = s;
-                infiniteListView.clearList();
-                page = 1;
-                getReportes();
-                return false;
-            }
-        });
-    }
-
     private void solucion(final int position) {
         new MaterialDialog.Builder(this.getContext())
                 .title("Solución")
@@ -688,6 +660,8 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
     }
 
     protected void startLocationUpdates() {
+        if(this.getContext() == null) return;
+
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             validPermissions();
             return;
@@ -699,6 +673,14 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleClient, this);
+    }
+
+    @Override
+    public void onSearch(String search) {
+        this.search = search;
+        infiniteListView.clearList();
+        page = 1;
+        getReportes();
     }
 
     @Override
@@ -753,14 +735,10 @@ public class ListReporteFragment extends Fragment implements IPicker.OnSelectedL
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    public void onConnectionSuspended(int i) { }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     @Override
     public void onLocationChanged(Location location) {
