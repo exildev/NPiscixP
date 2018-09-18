@@ -34,4 +34,6 @@
     <string name="foto_mantenimiento">/mantenimiento/service/fotomantenimiento/list/?mantenimiento=</string>
     <string name="respuesta_form">/reportes/respuesta/form/</string>
     <string name="respuesta_list">/reportes/respuesta/list/?reporte=%1$d</string>
+
+    <string name="notix">/notificaciones/connections/</string>
 </resources>

@@ -26,11 +26,7 @@ public class NotixFactory {
     public static ArrayList<JSONObject> notifications = new ArrayList<>();
 
     public static Notix buildNotix(Context context) {
-        Notix notix = Notix.getInstance();
-        if (!notix.hasUser()) {
-            notix.setUser(context);
-        }
-        return notix;
+        return Notix.getInstance(context);
     }
 
     public static void buildNotification(Context context, JSONObject notification) {

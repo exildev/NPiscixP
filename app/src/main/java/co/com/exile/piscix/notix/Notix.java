@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -39,16 +40,34 @@ public class Notix {
     private onNotixListener notixListener;
     private AlarmListener alarmListener;
 
-    private Notix() {
-        initSocket();
+    private Notix(Context context) {
+        getNotixURL(context);
     }
 
-    public static Notix getInstance() {
+    public static Notix getInstance(Context context) {
         if (instance == null) {
-            instance = new Notix();
+            instance = new Notix(context);
         }
 
         return instance;
+    }
+
+    private void getNotixURL(final Context context) {
+        String serviceUrl = context.getString(R.string.notix);
+        String url = context.getString(R.string.url, serviceUrl);
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                initSocket(response, context);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Activities", error.toString());
+            }
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
     public void setNotixListener(onNotixListener notixListener) {
@@ -63,11 +82,11 @@ public class Notix {
         return mSocket.connected();
     }
 
-    private void initSocket() {
+    private void initSocket(String url, Context context) {
         messages = new ArrayList<>();
         try {
-            //TODO: Actualizar esta URL
-            mSocket = IO.socket("http://ec2-18-223-116-221.us-east-2.compute.amazonaws.com:1196");
+            Log.e("tales5", url);
+            mSocket = IO.socket("http://" + url);
             mSocket.on("identify", onIdentify);
             mSocket.on("success-login", onSuccesLogin);
             mSocket.on("error-login", onErrorLogin);
@@ -76,6 +95,10 @@ public class Notix {
             mSocket.on("alarm", onAlarm);
             mSocket.on("list-alarms", onShowAlarm);
             mSocket.connect();
+
+            if (!hasUser()) {
+                setUser(context);
+            }
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -107,7 +130,7 @@ public class Notix {
         VolleySingleton.getInstance(context).addToRequestQueue(reportesRequest);
     }
 
-    boolean hasUser() {
+    private boolean hasUser() {
         return !(username == null || type == null || django_id == null);
     }
 
