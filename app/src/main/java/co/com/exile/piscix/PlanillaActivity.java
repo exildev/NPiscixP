@@ -50,7 +50,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlanillaActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class PlanillaActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
     private static final int REQUEST_LOCATION_SETTINGS = 12;
@@ -133,7 +133,7 @@ public class PlanillaActivity extends AppCompatActivity implements GoogleApiClie
         if (planilla != -1) {
             serviceUrl = getString(R.string.planilla_edit, planilla);
         }
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         final StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -222,7 +222,7 @@ public class PlanillaActivity extends AppCompatActivity implements GoogleApiClie
     void getData() {
         showLoading();
         String serviceUrl = getString(R.string.planilla_info, planilla);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -32,7 +32,7 @@ import java.util.Locale;
 
 import co.com.exile.piscix.models.Actividad;
 
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarActivity extends BaseActivity {
     private InfiniteListView infiniteListView;
     private ArrayList<Actividad> itemList;
 
@@ -172,7 +172,7 @@ public class CalendarActivity extends AppCompatActivity {
         String s = formater.format(start.getTime());
         String e = formater.format(end.getTime());
         String serviceUrl = getString(R.string.calendar_notificaciones, s, e);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         Log.e("tales", url);
         JsonArrayRequest loginRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override

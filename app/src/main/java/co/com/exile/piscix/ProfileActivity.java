@@ -38,7 +38,7 @@ import co.com.exile.piscix.models.Casa;
 import co.com.exile.piscix.models.Contacto;
 import co.com.exile.piscix.models.Piscina;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     private String name;
 
@@ -191,7 +191,7 @@ public class ProfileActivity extends AppCompatActivity {
         showLoading();
         int id = getIntent().getIntExtra("id", -1);
         String serviceUrl = getString(R.string.get_cliente, id);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest formRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

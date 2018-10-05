@@ -51,7 +51,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapCasaActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener {
+public class MapCasaActivity extends BaseActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleClient;
@@ -218,7 +218,7 @@ public class MapCasaActivity extends AppCompatActivity implements OnMapReadyCall
         final String lat = String.valueOf(myPosition.getPosition().latitude);
         final String lng = String.valueOf(myPosition.getPosition().longitude);
 
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
 
         Log.i("url", url);
 

@@ -60,7 +60,7 @@ import co.com.exile.piscix.utils.ScalingUtilities;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 
-public class ReporteActivity extends AppCompatActivity implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class ReporteActivity extends BaseActivity implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
@@ -156,7 +156,7 @@ public class ReporteActivity extends AppCompatActivity implements IPicker.OnSele
     private void setTypeSpinner() {
         showLoading();
         String serviceUrl = getString(R.string.get_reporte_tipo);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -276,7 +276,7 @@ public class ReporteActivity extends AppCompatActivity implements IPicker.OnSele
                     .setAutoClearOnSuccess(true);
 
             String serviceUrl = getString(R.string.reporte_form);
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             MultipartUploadRequest upload =
                     new MultipartUploadRequest(getBaseContext(), url)
                             .setNotificationConfig(notificationConfig)

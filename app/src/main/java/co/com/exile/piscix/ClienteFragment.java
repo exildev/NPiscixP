@@ -39,7 +39,7 @@ import co.com.exile.piscix.models.Cliente;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ClienteFragment extends Fragment implements OnSearchListener {
+public class ClienteFragment extends BaseFragment implements OnSearchListener {
     private int page;
     private String search = "";
     private ArrayList<Cliente> itemList;
@@ -166,7 +166,7 @@ public class ClienteFragment extends Fragment implements OnSearchListener {
     void getClientes() {
         infiniteListView.startLoading();
         String serviceUrl = getString(R.string.get_clientes, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest clientesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

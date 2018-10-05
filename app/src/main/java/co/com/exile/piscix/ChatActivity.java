@@ -35,7 +35,7 @@ import co.com.exile.piscix.notix.Notix;
 import co.com.exile.piscix.notix.NotixFactory;
 import co.com.exile.piscix.notix.onNotixListener;
 
-public class ChatActivity extends AppCompatActivity implements onNotixListener {
+public class ChatActivity extends BaseActivity implements onNotixListener {
 
     private RecyclerView infiniteListView;
     private ArrayList<Mensaje> itemList;
@@ -123,7 +123,7 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
 
     void send(final Mensaje mensaje) {
         String serviceUrl = getString(R.string.respuesta_form);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
 
         Log.e("tales5", reporte + "");
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
@@ -167,7 +167,7 @@ public class ChatActivity extends AppCompatActivity implements onNotixListener {
 
     void getMensajes() {
         String serviceUrl = getString(R.string.respuesta_list, reporte);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

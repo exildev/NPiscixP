@@ -68,7 +68,7 @@ import co.com.exile.piscix.notix.Notix;
 import co.com.exile.piscix.notix.NotixFactory;
 import co.com.exile.piscix.notix.onNotixListener;
 
-public class RutaActivity extends AppCompatActivity implements onNotixListener {
+public class RutaActivity extends BaseActivity implements onNotixListener {
 
     ViewPager mViewPager;
     private Notix notix;
@@ -167,7 +167,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    public static class PlaceholderFragment extends BaseFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
         private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
         private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
         private static final int REQUEST_LOCATION_SETTINGS = 12;
@@ -328,7 +328,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
             if (section == 1) {
                 serviceUrl = getString(R.string.asignaciones, page);
             }
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             Log.i("url", url);
 
             JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -428,7 +428,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
 
         void salida(int planillaId, final MaterialDialog loading) {
             String serviceUrl = getString(R.string.salida_planilla, planillaId);
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override
@@ -482,7 +482,7 @@ public class RutaActivity extends AppCompatActivity implements onNotixListener {
                     .show();
 
             String serviceUrl = getString(R.string.reporte_informativo_form);
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override

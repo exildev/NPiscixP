@@ -35,7 +35,7 @@ import co.com.exile.piscix.notix.NotixFactory;
 import co.com.exile.piscix.notix.onNotixListener;
 import tarek360.animated.icons.NotificationAlertIcon;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, onNotixListener {
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, onNotixListener {
 
     private boolean inHome = true;
     private Menu mMenu;
@@ -301,7 +301,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_logout) {
             User.delete(this);
             String serviceUrl = getString(R.string.logout);
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             StringRequest request = new StringRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

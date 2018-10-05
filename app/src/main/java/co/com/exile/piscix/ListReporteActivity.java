@@ -77,7 +77,7 @@ import java.util.Map;
 import co.com.exile.piscix.models.Reporte;
 import co.com.exile.piscix.utils.ScalingUtilities;
 
-public class ListReporteActivity extends AppCompatActivity implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class ListReporteActivity extends BaseActivity implements IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
@@ -283,7 +283,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
 
     private void initGallery(int position) {
         String serviceUrl = getString(R.string.foto_reporte);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         int id = itemList.get(position).getId();
 
         Intent intent = new Intent(this, GalleryActivity.class);
@@ -297,7 +297,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
         infiniteListView.startLoading();
 
         String serviceUrl = getString(R.string.list_reporte, id, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -513,7 +513,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
                     .setAutoClearOnSuccess(true);
 
             String serviceUrl = getString(R.string.solucion_form);
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             MultipartUploadRequest upload =
                     new MultipartUploadRequest(this, url)
                             .setNotificationConfig(notificationConfig)
@@ -574,7 +574,7 @@ public class ListReporteActivity extends AppCompatActivity implements IPicker.On
                 .show();
 
         String serviceUrl = getString(R.string.solucion_form);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

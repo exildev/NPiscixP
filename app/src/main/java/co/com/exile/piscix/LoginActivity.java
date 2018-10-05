@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -25,7 +23,8 @@ import java.util.Map;
 
 import co.com.exile.piscix.models.User;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
             serviceUrl = getString(R.string.login_piscinero);
         }
 
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -85,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("username", username);
                 params.put("password", password);
@@ -102,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("piscinero", piscinero);
         startActivity(intent);
+        finish();
     }
 
     private void showLoading() {

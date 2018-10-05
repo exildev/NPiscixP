@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapRutaActivity extends AppCompatActivity implements OnMapReadyCallback, RoutingListener {
+public class MapRutaActivity extends BaseActivity implements OnMapReadyCallback, RoutingListener {
 
     private GoogleMap mMap;
     private int page = 1;
@@ -86,7 +86,7 @@ public class MapRutaActivity extends AppCompatActivity implements OnMapReadyCall
 
     private void loadItems() {
         String serviceUrl = getString(R.string.list_asignaciones_piscinero, piscinero, page);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -2,6 +2,8 @@ package co.com.exile.piscix.notix;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -54,7 +56,7 @@ public class Notix {
 
     private void getNotixURL(final Context context) {
         String serviceUrl = context.getString(R.string.notix);
-        String url = context.getString(R.string.url, serviceUrl);
+        String url = getURL(context, serviceUrl);
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -68,6 +70,19 @@ public class Notix {
         });
         request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    private String getURL(final Context context, String serviceUrl) {
+        return Uri.parse(getURL(context))
+                .buildUpon()
+                .appendEncodedPath(serviceUrl)
+                .build()
+                .toString();
+    }
+
+    private String getURL(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("UrlPref", Context.MODE_PRIVATE);
+        return sharedPref.getString("url", null);
     }
 
     public void setNotixListener(onNotixListener notixListener) {
@@ -106,7 +121,7 @@ public class Notix {
 
     void setUser(Context context) {
         String serviceUrl = context.getString(R.string.islogin);
-        String url = context.getString(R.string.url, serviceUrl);
+        String url = getURL(context, serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

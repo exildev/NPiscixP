@@ -44,7 +44,7 @@ import co.com.exile.piscix.models.Piscinero;
  * Use the {@link PiscineroFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PiscineroFragment extends Fragment {
+public class PiscineroFragment extends BaseFragment {
     private InfiniteListView infiniteListView;
     private ArrayList<Piscinero> itemList;
     private int page = 1;
@@ -186,7 +186,7 @@ public class PiscineroFragment extends Fragment {
     void getReportes() {
         infiniteListView.startLoading();
         String serviceUrl = getString(R.string.list_piscineros, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

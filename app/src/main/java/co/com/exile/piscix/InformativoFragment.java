@@ -76,7 +76,7 @@ import co.com.exile.piscix.notix.NotixFactory;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InformativoFragment extends Fragment implements OnSearchListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class InformativoFragment extends BaseFragment implements OnSearchListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
     private static final int REQUEST_LOCATION_SETTINGS = 12;
@@ -272,7 +272,7 @@ public class InformativoFragment extends Fragment implements OnSearchListener, G
                 .show();
 
         String serviceUrl = getString(R.string.reporte_informativo_form);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -314,7 +314,7 @@ public class InformativoFragment extends Fragment implements OnSearchListener, G
     void getReportes() {
         infiniteListView.startLoading();
         String serviceUrl = getString(R.string.list_reporte_informativo, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

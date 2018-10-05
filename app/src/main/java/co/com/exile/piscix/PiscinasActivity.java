@@ -36,7 +36,7 @@ import java.util.Map;
 
 import co.com.exile.piscix.models.PiscinaAsignacion;
 
-public class PiscinasActivity extends AppCompatActivity {
+public class PiscinasActivity extends BaseActivity {
 
     private int piscinero;
     private InfiniteListView infiniteListView;
@@ -167,7 +167,7 @@ public class PiscinasActivity extends AppCompatActivity {
     void getReportes() {
         infiniteListView.startLoading();
         String serviceUrl = getString(R.string.list_piscinas, piscinero, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -237,7 +237,7 @@ public class PiscinasActivity extends AppCompatActivity {
                 .progress(true, 0)
                 .show();
         String serviceUrl = getString(R.string.asigancion_form);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

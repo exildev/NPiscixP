@@ -44,7 +44,7 @@ import co.com.exile.piscix.notix.NotixFactory;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SolucionesFragment extends Fragment implements OnSearchListener {
+public class SolucionesFragment extends BaseFragment implements OnSearchListener {
 
     private InfiniteListView infiniteListView;
     private String search = "";
@@ -239,7 +239,7 @@ public class SolucionesFragment extends Fragment implements OnSearchListener {
         infiniteListView.startLoading();
 
         String serviceUrl = getString(R.string.list_mantenimiento, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -294,7 +294,7 @@ public class SolucionesFragment extends Fragment implements OnSearchListener {
 
     private void initGallery(int position){
         String serviceUrl = getString(R.string.foto_mantenimiento);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         int id = itemList.get(position).getId();
         Intent intent = new Intent(this.getActivity(), GalleryActivity.class);
         intent.putExtra("id", id);

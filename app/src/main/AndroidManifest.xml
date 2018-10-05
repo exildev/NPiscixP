@@ -19,8 +19,7 @@
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
         <activity
-            android:name=".LoginActivity"
-            android:noHistory="true">
+            android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -126,6 +125,10 @@
         <activity
             android:name=".TalesActivity"
             android:label="@string/title_activity_tales"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UrlActivity"
+            android:label="@string/title_activity_url"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

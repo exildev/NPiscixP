@@ -82,7 +82,7 @@ import co.com.exile.piscix.utils.ScalingUtilities;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListReporteFragment extends Fragment implements OnSearchListener, IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class ListReporteFragment extends BaseFragment implements OnSearchListener, IPicker.OnSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 3;
@@ -257,7 +257,7 @@ public class ListReporteFragment extends Fragment implements OnSearchListener, I
     private void initGallery(int position){
         int id = itemList.get(position).getId();
         String serviceUrl = getString(R.string.foto_reporte);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
 
         Intent intent = new Intent(this.getActivity(), GalleryActivity.class);
         intent.putExtra("id", id);
@@ -268,7 +268,7 @@ public class ListReporteFragment extends Fragment implements OnSearchListener, I
     void getReportes() {
         infiniteListView.startLoading();
         String serviceUrl = getString(R.string.list_reporte_no_cliente, page, search);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest reportesRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -490,7 +490,7 @@ public class ListReporteFragment extends Fragment implements OnSearchListener, I
                     .setAutoClearOnSuccess(true);
 
             String serviceUrl = getString(R.string.solucion_form);
-            String url = getString(R.string.url, serviceUrl);
+            String url = getUrl(serviceUrl);
             MultipartUploadRequest upload =
                     new MultipartUploadRequest(this.getContext(), url)
                             .setNotificationConfig(notificationConfig)
@@ -554,7 +554,7 @@ public class ListReporteFragment extends Fragment implements OnSearchListener, I
                 .show();
 
         String serviceUrl = getString(R.string.solucion_form);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         StringRequest loginRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

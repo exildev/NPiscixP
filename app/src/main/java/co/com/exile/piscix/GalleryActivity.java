@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import eu.fiskur.simpleviewpager.ImageURLLoader;
 import eu.fiskur.simpleviewpager.SimpleViewPager;
 
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     void setImageGallery(String[] urlArray){
         String serviceUrl = getString(R.string.media);
-        final String urlBase = getString(R.string.url, serviceUrl);
+        final String urlBase = getUrl(serviceUrl);
         SimpleViewPager simpleViewPager = (SimpleViewPager) findViewById(R.id.simple_view_pager);
         simpleViewPager.setVisibility(View.VISIBLE);
         simpleViewPager.setImageUrls(urlArray, new ImageURLLoader() {

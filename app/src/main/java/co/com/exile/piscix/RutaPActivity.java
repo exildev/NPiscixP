@@ -33,7 +33,7 @@ import java.io.UnsupportedEncodingException;
 import co.com.exile.piscix.helper.SimpleItemTouchHelperCallback;
 import co.com.exile.piscix.models.Asignacion;
 
-public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnStartDragListener {
+public class RutaPActivity extends BaseActivity implements ItemAdapter.OnStartDragListener {
 
     private static final int MAP_SAVE = 1;
     private ItemTouchHelper mItemTouchHelper;
@@ -121,7 +121,7 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
 
     private void loadItems() {
         String serviceUrl = getString(R.string.list_asignaciones_piscinero, piscinero, page);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -183,7 +183,7 @@ public class RutaPActivity extends AppCompatActivity implements ItemAdapter.OnSt
                 .show();
 
         String serviceUrl = getString(R.string.asigancion_form_orden, asignacion);
-        String url = getString(R.string.url, serviceUrl);
+        String url = getUrl(serviceUrl);
         StringRequest request = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
