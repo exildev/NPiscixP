@@ -129,18 +129,21 @@ public class MapRutaActivity extends BaseActivity implements OnMapReadyCallback,
                 .travelMode(Routing.TravelMode.DRIVING)
                 .withListener(this)
                 .waypoints(waypoints)
+                .key(getString(R.string.google_maps_key))
                 .build();
         routing.execute();
     }
 
     @Override
     public void onRoutingFailure(RouteException e) {
+        Log.e("tales5", "routing failed");
+        e.printStackTrace();
 
     }
 
     @Override
     public void onRoutingStart() {
-
+        Log.e("tales5", "routing start");
     }
 
     @Override
